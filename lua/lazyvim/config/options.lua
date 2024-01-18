@@ -41,7 +41,7 @@ opt.autowrite = true            -- Enable auto write
 opt.writebackup = false         -- if a file is being edited by another program (or was written to file while editing with another program), it is not allowed to be edited
 
 -- Tabs & indents ~~~~
-opt.textwidth = 4               -- set max width before wrapping
+-- opt.textwidth = 4               -- set max width before wrapping
 opt.tabstop = 2                 -- Number of spaces tabs count for
 opt.shiftwidth = 2              -- Size of an indent
 opt.expandtab = true            -- Use spaces instead of tabs
