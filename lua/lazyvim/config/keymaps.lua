@@ -172,7 +172,7 @@ map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close Tab" })
 map("n", "<leader><tab>[", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 
 -- easy mode
-map("n", "<Up>", "<Nop>", { desc = "no up for you" })
-map("n", "<Left>", "<Nop>", { desc = "no up for you" })
-map("n", "<Right>", "<Nop>", { desc = "no up for you" })
-map("n", "<Down>", "<Nop>", { desc = "no up for you" })
+map({ "n", "i", "x", "v", "x", "o" }, "<Up>", "<Nop>", { desc = "no up for you" })
+map({ "n", "i", "x", "v", "x", "o" }, "<Left>", "<Nop>", { desc = "no up for you" })
+map({ "n", "i", "x", "v", "x", "o" }, "<Right>", "<Nop>", { desc = "no up for you" })
+map({ "n", "i", "x", "v", "x", "o" }, "<Down>", "<Nop>", { desc = "no up for you" })

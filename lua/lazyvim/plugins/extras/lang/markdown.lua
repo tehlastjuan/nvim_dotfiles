@@ -59,8 +59,6 @@ return {
     },
     config = function()
       vim.cmd([[do FileType]])
-      local g = vim.g
-      g.mkdp_theme = 'dark'
     end,
   },
 
@@ -71,7 +69,8 @@ return {
       for _, ft in ipairs({ "markdown", "norg", "rmd", "org" }) do
         opts[ft] = {
           headline_highlights = {},
-          bullets = {}
+          -- disable bullets for now. See https://github.com/lukas-reineke/headlines.nvim/issues/66
+          bullets = {},
         }
         for i = 1, 6 do
           local hl = "Headline" .. i

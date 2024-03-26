@@ -1,4 +1,5 @@
-local Util = require("lazyvim.util")
+_G.LazyVim = require("lazyvim.util")
+--local Util = require("lazyvim.util")
 
 ---@class LazyVimConfig: LazyVimOptions
 local M = {}
@@ -138,7 +139,7 @@ function M.json.load()
     if ok then
       M.json.data = vim.tbl_deep_extend("force", M.json.data, json or {})
       if M.json.data.version ~= M.json.version then
-        Util.json.migrate()
+        LazyVim.json.migrate()
       end
     end
   end
@@ -154,8 +155,8 @@ function M.init()
     end
 
     package.preload["lazyvim.plugins.lsp.format"] = function()
-      Util.deprecate([[require("lazyvim.plugins.lsp.format")]], [[require("lazyvim.util").format]])
-      return Util.format
+      LazyVim.deprecate([[require("lazyvim.plugins.lsp.format")]], [[require("lazyvim.util").format]])
+      return LazyVim.format
     end
 
     -- delay notifications till vim.notify was replaced or after 500ms
@@ -168,7 +169,7 @@ function M.init()
     M.load("keymaps")
     M.load("autocmds")
 
-    Util.plugin.setup()
+    LazyVim.plugin.setup()
     M.json.load()
   end
 end
@@ -183,8 +184,8 @@ function M.setup(opts)
   end
   options = vim.tbl_deep_extend("force", defaults, opts or {}) or {}
 
-  Util.format.setup()
-  Util.root.setup()
+  LazyVim.format.setup()
+  LazyVim.root.setup()
 end
 
 ---@param buf? number
@@ -206,7 +207,7 @@ end
 function M.load(name)
   local function _load(mod)
     if require("lazy.core.cache").find(mod)[1] then
-      Util.try(function()
+      LazyVim.try(function()
         require(mod)
       end, { msg = "Failed loading " .. mod })
     end

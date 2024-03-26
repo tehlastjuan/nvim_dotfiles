@@ -57,8 +57,7 @@ return {
         "bash",
         "c",
         "css",
-        "comment",
-        "html",
+        -- "comment",
         "diff",
         "html",
         "javascript",
@@ -78,6 +77,7 @@ return {
         "typescript",
         "vim",
         "vimdoc",
+        "xml",
         "yaml",
       },
       incremental_selection = {

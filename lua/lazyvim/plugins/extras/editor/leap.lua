@@ -1,6 +1,6 @@
 return {
   -- disable flash
-  { "folke/flash.nvim", enabled = false, optional = true },
+  -- { "folke/flash.nvim", enabled = false, optional = true },
 
   -- easily jump to any location and enhanced f/t motions for Leap
   {
@@ -36,20 +36,20 @@ return {
   },
 
   -- rename surround mappings from gs to gz to prevent conflict with leap
-  -- {
-  --   "echasnovski/mini.surround",
-  --   opts = {
-  --     mappings = {
-  --       add = "gza", -- Add surrounding in Normal and Visual modes
-  --       delete = "gzd", -- Delete surrounding
-  --       find = "gzf", -- Find surrounding (to the right)
-  --       find_left = "gzF", -- Find surrounding (to the left)
-  --       highlight = "gzh", -- Highlight surrounding
-  --       replace = "gzr", -- Replace surrounding
-  --       update_n_lines = "gzn", -- Update `n_lines`
-  --     },
-  --   },
-  -- },
+  {
+    "echasnovski/mini.surround",
+    opts = {
+      mappings = {
+        add = "gza", -- Add surrounding in Normal and Visual modes
+        delete = "gzd", -- Delete surrounding
+        find = "gzf", -- Find surrounding (to the right)
+        find_left = "gzF", -- Find surrounding (to the left)
+        highlight = "gzh", -- Highlight surrounding
+        replace = "gzr", -- Replace surrounding
+        update_n_lines = "gzn", -- Update `n_lines`
+      },
+    },
+  },
 
   -- makes some plugins dot-repeatable like leap
   { "tpope/vim-repeat", event = "VeryLazy" },

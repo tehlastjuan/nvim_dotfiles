@@ -35,15 +35,15 @@ vim.api.nvim_create_autocmd("User", {
 })
 
 return {
-  -- {
-  --   "LazyVim/LazyVim",
-  --   config = function(_, opts)
-  --     opts = opts or {}
-  --     -- disable the colorscheme
-  --     opts.colorscheme = function() end
-  --     require("lazyvim").setup(opts)
-  --   end,
-  -- },
+  {
+    "LazyVim/LazyVim",
+    config = function(_, opts)
+      opts = opts or {}
+      -- disable the colorscheme
+      opts.colorscheme = function() end
+      require("lazyvim").setup(opts)
+    end,
+  },
   {
     "nvim-treesitter/nvim-treesitter",
     opts = { highlight = { enable = false } },
