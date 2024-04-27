@@ -27,6 +27,7 @@ return {
 			hurl = { -- hurl default
 				show_headers = false, -- do not show http headers
 				floating = false, -- use floating windows (need guihua.lua)
+				json5 = false,
 				formatters = { -- format the result by filetype
 					json = { "jq" },
 					html = { "prettier", "--parser", "html" },
@@ -95,6 +96,245 @@ return {
 			}
 		end,
 	},
+
+	{
+		"folke/edgy.nvim",
+		event = "VeryLazy",
+		init = function()
+			vim.opt.laststatus = 3
+			vim.opt.splitkeep = "screen"
+		end,
+		opts = {
+			exit_when_last = true,
+			animate = {
+				enabled = false,
+			},
+			wo = {
+				winbar = false,
+			},
+			bottom = {
+				{
+					ft = "lazyterm",
+					title = "LazyTerm",
+					size = { height = 0.25 },
+					filter = function(buf)
+						return not vim.b[buf].lazyterm_cmd
+					end,
+				},
+				-- "Trouble",
+				-- { ft = "qf", title = "QuickFix" },
+				-- {
+				-- 	ft = "help",
+				-- 	size = { height = 20 },
+				-- 	-- only show help buffers
+				-- 	filter = function(buf)
+				-- 		return vim.bo[buf].buftype == "help"
+				-- 	end,
+				-- },
+			},
+			left = {
+			-- 	-- Neo-tree filesystem always takes half the screen height
+			-- 	{
+			-- 		title = "Neo-Tree",
+			-- 		ft = "neo-tree",
+			-- 		filter = function(buf)
+			-- 			return vim.b[buf].neo_tree_source == "filesystem"
+			-- 		end,
+			-- 		size = { height = 0.5 },
+			-- 	},
+			-- 	{
+			-- 		title = "Neo-Tree Git",
+			-- 		ft = "neo-tree",
+			-- 		filter = function(buf)
+			-- 			return vim.b[buf].neo_tree_source == "git_status"
+			-- 		end,
+			-- 		pinned = true,
+			-- 		open = "Neotree position=right git_status",
+			-- 	},
+			-- 	{
+			-- 		title = "Neo-Tree Buffers",
+			-- 		ft = "neo-tree",
+			-- 		filter = function(buf)
+			-- 			return vim.b[buf].neo_tree_source == "buffers"
+			-- 		end,
+			-- 		pinned = true,
+			-- 		open = "Neotree position=top buffers",
+			-- 	},
+			-- 	{
+			-- 		ft = "Outline",
+			-- 		pinned = true,
+			-- 		open = "SymbolsOutlineOpen",
+			-- 	},
+			-- 	-- any other neo-tree windows
+				"neo-tree",
+			},
+			-- keys = {
+			-- 	-- increase width
+			-- 	["<c-Right>"] = function(win)
+			-- 		win:resize("width", 2)
+			-- 	end,
+			-- 	-- decrease width
+			-- 	["<c-Left>"] = function(win)
+			-- 		win:resize("width", -2)
+			-- 	end,
+			-- 	-- increase height
+			-- 	["<c-Up>"] = function(win)
+			-- 		win:resize("height", 2)
+			-- 	end,
+			-- 	-- decrease height
+			-- 	["<c-Down>"] = function(win)
+			-- 		win:resize("height", -2)
+			-- 	end,
+			-- },
+		},
+	},
+
+	-- {
+	-- 	"jpalardy/vim-slime",
+	-- 	lazy = false,
+	-- 	init = function()
+	-- 		vim.g.slime_no_mappings = 1
+	-- 		vim.g.slime_cell_delimiter = "# %%"
+	-- 		vim.api.nvim_set_keymap(
+	-- 			"n",
+	-- 			"<Leader>a",
+	-- 			':execute "normal \\<Plug>SlimeLineSend"<CR>j',
+	-- 			{ noremap = true }
+	-- 		)
+	-- 		vim.api.nvim_set_keymap("v", "<Leader>s", "<Plug>SlimeRegionSend", { noremap = true })
+	-- 		vim.api.nvim_set_keymap(
+	-- 			"n",
+	-- 			"<Leader>s",
+	-- 			':execute "normal \\<Plug>SlimeSendCell"<CR>/' .. vim.g.slime_cell_delimiter .. "<CR>:nohlsearch<CR>",
+	-- 			{ noremap = true }
+	-- 		)
+	-- 	end,
+	-- },
+
+	{
+		"jpalardy/vim-slime",
+		init = function()
+			-- these two should be set before the plugin loads
+			vim.g.slime_target = "neovim"
+			vim.g.slime_no_mappings = true
+		end,
+		config = function()
+			vim.g.slime_input_pid = false
+			vim.g.slime_suggest_default = true
+			vim.g.slime_menu_config = false
+			vim.g.slime_neovim_ignore_unlisted = false
+			-- options not set here are g:slime_neovim_menu_order, g:slime_neovim_menu_delimiter, and g:slime_get_jobid
+			-- see the documentation above to learn about those options
+
+			-- called MotionSend but works with textobjects as well
+			vim.keymap.set("n", "gz", "<Plug>SlimeMotionSend", { remap = true, silent = false })
+			vim.keymap.set("n", "gzz", "<Plug>SlimeLineSend", { remap = true, silent = false })
+			vim.keymap.set("x", "gz", "<Plug>SlimeRegionSend", { remap = true, silent = false })
+			vim.keymap.set("n", "gzc", "<Plug>SlimeConfig", { remap = true, silent = false })
+		end,
+	},
+
+	-- {
+	-- 	"luckasRanarison/nvim-devdocs",
+	-- 	dependencies = {
+	-- 		"nvim-lua/plenary.nvim",
+	-- 		"nvim-telescope/telescope.nvim",
+	-- 		"nvim-treesitter/nvim-treesitter",
+	-- 	},
+	-- 	lazy = false,
+	-- 	enable = true,
+	-- 	opts = {
+	-- 		dir_path = vim.fn.stdpath("data") .. "/devdocs", -- installation directory
+	-- 		telescope = {}, -- passed to the telescope picker
+	-- 		filetypes = {},
+	-- 		float_win = { -- passed to nvim_open_win(), see :h api-floatwin
+	-- 			relative = "editor",
+	-- 			height = 500,
+	-- 			width = 800,
+	-- 			border = "rounded",
+	-- 		},
+	-- 		wrap = true, -- text wrap, only applies to floating window
+	-- 		previewer_cmd = "glow", -- for example: "glow"
+	-- 		cmd_args = { "-w", "80", "-s", "dark", "-p" },
+	-- 		cmd_ignore = {}, -- ignore cmd rendering for the listed docs
+	-- 		picker_cmd = true, -- use cmd previewer in picker preview
+	-- 		picker_cmd_args = { "-w", "80", "-s", "dark", "-p" },
+	-- 		mappings = { open_in_browser = "" },
+	-- 		ensure_installed = {
+	-- 			"c",
+	-- 			-- "node",
+	-- 			-- "javascript",
+	-- 			-- "typescript",
+	-- 			-- "npm",
+	-- 			-- "sass",
+	-- 			-- "css",
+	-- 			-- "html",
+	-- 			-- "lua-5.4",
+	-- 			-- "cpp",
+	-- 			-- "go",
+	-- 			-- "python-3.12",
+	-- 			-- "jsdoc",
+	-- 			"git",
+	-- 		}, -- get automatically installed
+	-- 		after_open = function(bufnr) end, -- callback that runs after the Devdocs window is opened. Devdocs buffer ID will be passed in
+	-- 	},
+	-- },
+
+	{
+		"kevinhwang91/rnvimr",
+		-- keys = { { "<leader>r", "" } },
+		init = function()
+			vim.g.rnvimr_draw_border = 1
+			vim.g.rnvimr_enable_bw = 1
+			local winwd = vim.fn.winwidth(0)
+			local winhg = vim.fn.winheight(0)
+			vim.g.rnvimr_layout = {
+				relative = "editor",
+				width = winwd * 0.900,
+				height = winhg * 0.900,
+				col = winwd * 0.050,
+				row = winhg * 0.050,
+				style = "minimal",
+			}
+			vim.g.rnvimr_ranger_cmd = {
+				"ranger",
+				"--cmd=set preview_directories true",
+				-- "--cmd=set column_ratios 2,5,0",
+				-- "--cmd=set preview_files false",
+				-- "--cmd=set preview_images truefalse",
+				-- "--cmd=set padding_right false",
+				-- "--cmd=set collapse_preview true",
+			}
+		end,
+		config = function()
+			vim.keymap.set("n", "<leader>r", function()
+				vim.api.nvim_command("RnvimrToggle")
+			end, { desc = "Ranger" })
+		end,
+	},
+
+	-- {
+	-- 	"jakemason/ouroboros",
+	-- 	dependencies = {
+	-- 		"nvim-lua/plenary.nvim",
+	-- 		"nvim-telescope/telescope.nvim",
+	-- 		"nvim-treesitter/nvim-treesitter",
+	-- 	},
+	-- 	config = function()
+	-- 		-- these are the defaults, customize as desired
+	-- 		require("ouroboros").setup({
+	-- 			extension_preferences_table = {
+	-- 				c = { h = 2, hpp = 1 },
+	-- 				h = { c = 2, cpp = 1 },
+	-- 				cpp = { hpp = 2, h = 1 },
+	-- 				hpp = { cpp = 1, c = 2 },
+	-- 			},
+	-- 			-- if this is true and the matching file is already open in a pane, we'll
+	-- 			-- switch to that pane instead of opening it in the current buffer
+	-- 			switch_to_open_pane_if_possible = false,
+	-- 		})
+	-- 	end,
+	-- },
 
 	-- {
 	-- 	"goolord/alpha-nvim",
