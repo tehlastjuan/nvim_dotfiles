@@ -6,6 +6,24 @@ return {
 		priority = 1000, -- make sure to load this before all the other start plugins
 		opts = {
 			style = "cool", -- Default theme style. Choose between 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer'
+			transparent = false, -- Show/hide background
+			term_colors = false, -- Change terminal color as per the selected theme style
+			ending_tildes = false, -- Show the end-of-buffer tildes. By default they are hidden
+			cmp_itemkind_reverse = true, -- reverse item kind highlights in cmp menu
+
+			code_style = { -- italic, bold, underline, none
+				comments = "italic",
+				keywords = "none",
+				functions = "none",
+				strings = "none",
+				variables = "none",
+			},
+
+			lualine = {
+				transparent = false, -- lualine center bar transparency
+			},
+
+			highlights = {}, -- Override highlight groups
 			colors = {
 				bg0 = "#1e222a",
 			},
@@ -17,8 +35,10 @@ return {
 		},
 		config = function(_, opts)
 			require("onedark").setup(opts)
-			require("onedark").load()
-			--
+			vim.cmd("colorscheme onedark")
+		end,
+	},
+}
 			-- local c = require("onedark.colors")
 			-- local hl = require("onedark.highlights")
 			-- local cfg = vim.g.onedark_config
@@ -80,6 +100,4 @@ return {
 			-- 		-- CursorLine = { "#1e222a" },
 			-- 	},
 			-- })
-		end,
-	},
-}
+

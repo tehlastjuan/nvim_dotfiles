@@ -8,8 +8,8 @@ return {
 			{ "<leader>bo", "<Cmd>BufferLineCloseOthers<CR>", desc = "Delete other buffers" },
 			{ "<leader>br", "<Cmd>BufferLineCloseRight<CR>", desc = "Delete buffers to the right" },
 			{ "<leader>bl", "<Cmd>BufferLineCloseLeft<CR>", desc = "Delete buffers to the left" },
-			{ "<S-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev buffer" },
-			{ "<S-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next buffer" },
+			-- { "<S-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev buffer" },
+			-- { "<S-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next buffer" },
 			{ "[b", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev buffer" },
 			{ "]b", "<cmd>BufferLineCycleNext<cr>", desc = "Next buffer" },
 		},
@@ -32,8 +32,12 @@ return {
 				show_tab_indicators = false,
 				show_close_icon = false,
 				color_icons = true,
-        close_command = function(n) require("mini.bufremove").delete(n, false) end,
-        right_mouse_command = function(n) require("mini.bufremove").delete(n, false) end,
+				close_command = function(n)
+					require("mini.bufremove").delete(n, false)
+				end,
+				right_mouse_command = function(n)
+					require("mini.bufremove").delete(n, false)
+				end,
 				diagnostics = "nvim_lsp",
 				diagnostics_indicator = function(_, _, diag)
 					local icons = require("lazyvim.config").icons.diagnostics
@@ -71,7 +75,6 @@ return {
 		"nvim-lualine/lualine.nvim",
 		opts = function()
 			local icons = require("lazyvim.config").icons
-
 			return {
 				options = {
 					theme = "auto",
@@ -117,31 +120,32 @@ return {
 					},
 					lualine_y = {
 						-- { "progress", padding = 1 },
-            {
-              "diff",
-              symbols = {
-                added = icons.git.added,
-                modified = icons.git.modified,
-                removed = icons.git.removed,
-              },
-              source = function()
-                local gitsigns = vim.b.gitsigns_status_dict
-                if gitsigns then
-                  return {
-                    added = gitsigns.added,
-                    modified = gitsigns.changed,
-                    removed = gitsigns.removed,
-                  }
-                end
-              end,
-            },
+						{
+							"diff",
+							symbols = {
+								added = icons.git.added,
+								modified = icons.git.modified,
+								removed = icons.git.removed,
+							},
+							source = function()
+								local gitsigns = vim.b.gitsigns_status_dict
+								if gitsigns then
+									return {
+										added = gitsigns.added,
+										modified = gitsigns.changed,
+										removed = gitsigns.removed,
+									}
+								end
+							end,
+						},
 					},
 					lualine_z = {
 						{ "location", padding = 1 },
 					},
 				},
 				extensions = { "lazy" },
-			}
+			},
+      require("lualine").setup({ options = { theme = "onedark", }, })
 		end,
 	},
 
@@ -187,32 +191,18 @@ return {
 	},
 
 	-- Displays a popup with possible key bindings of the command you started typing
-  {
-    "folke/which-key.nvim",
-    opts = function(_, opts)
-      if LazyVim.has("noice.nvim") then
-        opts.defaults["<leader>sn"] = { name = "+noice" }
-      end
-    end,
-  },
+	{
+		"folke/which-key.nvim",
+		opts = function(_, opts)
+			if LazyVim.has("noice.nvim") then
+				opts.defaults["<leader>sn"] = { name = "+noice" }
+			end
+		end,
+	},
 
 	-- icons
 	{ "nvim-tree/nvim-web-devicons", lazy = true },
 
 	-- ui components
 	{ "MunifTanjim/nui.nvim", lazy = true },
-
--- 	{
--- 		"goolord/alpha-nvim",
--- 		optional = true,
--- 		enabled = function()
--- 			require("lazyvim.util").warn({
--- 				"`dashboard.nvim` is now the default LazyVim starter plugin.",
--- 				"",
--- 				"To keep using `alpha.nvim`, please enable the `lazyvim.plugins.extras.ui.alpha` extra.",
--- 				"Or to hide this message, remove the alpha spec from your config.",
--- 			})
--- 			return false
--- 		end,
--- 	},
 }

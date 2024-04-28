@@ -49,9 +49,11 @@ return {
 			end
 		end,
 		opts = {
+      close_if_last_window = true,
 			sources = { "filesystem", "buffers", "git_status", "document_symbols" },
 			open_files_do_not_replace_types = { "terminal", "Trouble", "trouble", "qf", "Outline" },
 			filesystem = {
+        hide_dotfiles = false,
 				bind_to_cwd = false,
 				follow_current_file = { enabled = true },
 				use_libuv_file_watcher = true,
@@ -215,7 +217,7 @@ return {
 
 			return {
 				defaults = {
-					prompt_prefix = " ",
+					prompt_prefix = " ", -- "  ",
 					selection_caret = " ",
 					-- open files in the first window that is an actual file.
 					-- use the current window if no other window is available.
@@ -257,6 +259,9 @@ return {
 		event = "VeryLazy",
 		opts = {
 			plugins = { spelling = true },
+      icons = {
+        separator = '󰁕',
+      },
 			defaults = {
 				mode = { "n", "v" },
 				["g"] = { name = "+goto" },
