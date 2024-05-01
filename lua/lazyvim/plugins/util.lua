@@ -134,8 +134,7 @@ return {
 	{
 		"folke/edgy.nvim",
 		event = "VeryLazy",
-		keys = {
-    },
+		keys = {},
 		opts = function()
 			local opts = {
 				exit_when_last = true,
@@ -175,19 +174,19 @@ return {
 					-- { title = "Neotest Output", ft = "neotest-output-panel", size = { height = 15 } },
 				},
 				-- left = {
-					-- {
-					--   title = "Neo-Tree",
-					--   ft = "neo-tree",
-					--   filter = function(buf)
-					--     return vim.b[buf].neo_tree_source == "filesystem"
-					--   end,
-					--   pinned = true,
-					--   open = function()
-					--     vim.api.nvim_input("<esc><space>e")
-					--   end,
-					--   size = { height = 0.5 },
-					-- },
-						-- "neo-tree",
+				-- {
+				--   title = "Neo-Tree",
+				--   ft = "neo-tree",
+				--   filter = function(buf)
+				--     return vim.b[buf].neo_tree_source == "filesystem"
+				--   end,
+				--   pinned = true,
+				--   open = function()
+				--     vim.api.nvim_input("<esc><space>e")
+				--   end,
+				--   size = { height = 0.5 },
+				-- },
+				-- "neo-tree",
 				-- },
 			}
 			return opts
@@ -205,37 +204,18 @@ return {
 		end,
 	},
 
-	-- -- Fix bufferline offsets when edgy is loaded
-	-- {
-	-- 	"akinsho/bufferline.nvim",
-	-- 	optional = true,
-	-- 	opts = function()
-	-- 		local Offset = require("bufferline.offset")
-	-- 		if not Offset.edgy then
-	-- 			local get = Offset.get
-	-- 			Offset.get = function()
-	-- 				if package.loaded.edgy then
-	-- 					local layout = require("edgy.config").layout
-	-- 					local ret = { left = "", left_size = 0, right = "", right_size = 0 }
-	-- 					for _, pos in ipairs({ "left", "right" }) do
-	-- 						local sb = layout[pos]
-	-- 						if sb and #sb.wins > 0 then
-	-- 							local title = " Sidebar" .. string.rep(" ", sb.bounds.width - 8)
-	-- 							ret[pos] = "%#EdgyTitle#" .. title .. "%*" .. "%#WinSeparator#│%*"
-	-- 							ret[pos .. "_size"] = sb.bounds.width
-	-- 						end
-	-- 					end
-	-- 					ret.total_size = ret.left_size + ret.right_size
-	-- 					if ret.total_size > 0 then
-	-- 						return ret
-	-- 					end
-	-- 				end
-	-- 				return get()
-	-- 			end
-	-- 			Offset.edgy = true
-	-- 		end
-	-- 	end,
-	-- },
+	-- clisp
+	{ "adolenc/cl-neovim" },
+	{ "gpanders/nvim-parinfer" },
+  -- { "vlime/vlime" },
+
+	{
+	   "monkoose/nvlime",
+	   dependencies = {
+	     "monkoose/parsley",
+	   }
+	 },
+
 
 	-- { "jpalardy/vim-slime" },
 	-- { "luckasRanarison/nvim-devdocs" }
