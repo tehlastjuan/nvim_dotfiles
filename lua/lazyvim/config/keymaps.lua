@@ -29,16 +29,16 @@ map({ "n", "t" }, "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease 
 map({ "n", "t" }, "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
 
 -- Move Lines
-map("n", "<A-j>", "<cmd>m .+1<cr>==", { desc = "Move down" })
-map("n", "<A-k>", "<cmd>m .-2<cr>==", { desc = "Move up" })
-map("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move down" })
-map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
-map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
-map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
+-- map("n", "<A-j>", "<cmd>m .+1<cr>==", { desc = "Move down" })
+-- map("n", "<A-k>", "<cmd>m .-2<cr>==", { desc = "Move up" })
+-- map("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move down" })
+-- map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
+-- map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
+-- map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
 -- buffers
-map("n", "<c-k>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
-map("n", "<c-j>", "<cmd>bnext<cr>", { desc = "Next buffer" })
+map("n", "<c-,>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
+map("n", "<c-.>", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "<leader>j", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 map("n", "<leader>k", "<cmd>bnext<cr>", { desc = "Next buffer" })
 -- map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
@@ -140,12 +140,13 @@ map("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
 -- map("n", "<leader>L", function() Util.news.changelog() end, { desc = "LazyVim Changelog" })
 
 -- floating terminal
-local lazyterm = function() Util.terminal(nil, { cwd = Util.root() }) end
+-- local lazyterm = function() Util.terminal(nil, { cwd = Util.root() }) end
 -- map("n", "<leader>ft", lazyterm, { desc = "Terminal (root dir)" })
 -- map("n", "<leader>fT", function() Util.terminal() end, { desc = "Terminal (cwd)" })
 -- map("n", "<c-/>", lazyterm, { desc = "Terminal (root dir)" })
-map("n", "<c-/>", lazyterm, { desc = "Terminal (cwd)" })
-map("n", "<c-_>", lazyterm, { desc = "which_key_ignore" })
+-- map("n", "<leader>fT", function() Util.terminal() end, { desc = "Terminal (cwd)" })
+-- map("n", "<c-/>", lazyterm, { desc = "Terminal (cwd)" })
+-- map("n", "<c-_>", lazyterm, { desc = "which_key_ignore" })
 
 -- Terminal Mappings
 map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
@@ -155,6 +156,23 @@ map("t", "<C-k>", "<cmd>wincmd k<cr>", { desc = "Go to upper window" })
 map("t", "<C-l>", "<cmd>wincmd l<cr>", { desc = "Go to right window" })
 map("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
 map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
+
+-- toggleterm
+map({ "n" }, "<C-/>", "<cmd>ToggleTerm<cr>", { desc = "Toggleterm", })
+map({ "n" }, "<leader>tf", "<cmd>ToggleTerm direction=float<cr>", { desc = "Toggleterm float", })
+map({ "n" }, "<leader>th", "<cmd>ToggleTerm size=15 direction=horizontal<cr>", { desc = "Toggleterm horizontal split", })
+map({ "n" }, "<leader>tv", "<cmd>ToggleTerm size=65 direction=vertical<cr>", { desc = "Toggleterm vertical split", })
+
+-- local trim_spaces = true
+map("n", "<leader>cs", function()
+    require("toggleterm").send_lines_to_terminal("single_line", true, { args = vim.v.count })
+end, { desc = "Send selection to Terminal" })
+map("v", "<leader>cu", function()
+    require("toggleterm").send_lines_to_terminal("visual_lines", true, { args = vim.v.count })
+end, { desc = "Send visual lines to Terminal" })
+map("v", "<leader>cv", function()
+    require("toggleterm").send_lines_to_terminal("visual_selection", true, { args = vim.v.count })
+end, { desc = "Send visual selection to Terminal" })
 
 -- windows
 map("n", "<leader>ww", "<C-W>p", { desc = "Other window", remap = true })
@@ -177,3 +195,8 @@ map({ "n", "i", "x", "v", "x", "o" }, "<Up>", "<Nop>", { desc = "no up for you" 
 map({ "n", "i", "x", "v", "x", "o" }, "<Left>", "<Nop>", { desc = "no up for you" })
 map({ "n", "i", "x", "v", "x", "o" }, "<Right>", "<Nop>", { desc = "no up for you" })
 map({ "n", "i", "x", "v", "x", "o" }, "<Down>", "<Nop>", { desc = "no up for you" })
+
+-- ranger
+map("n", "<leader>r", function() vim.api.nvim_command("RnvimrToggle") end, { desc = "Ranger" })
+
+map("n", "<leader>uh", function() vim.lsp.inlay_hint(0, nil) end, { desc = "Toggle Inlay Hints" })

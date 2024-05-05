@@ -55,6 +55,7 @@ opt.breakat = '\\ \\	;:,!?'    -- Long lines break chars
 opt.startofline = false         -- Cursor in same column for few commands
 opt.splitbelow = false          -- Put new windows below current
 opt.splitright = true           -- force all vertical splits to go to the right of current window
+opt.splitkeep = "screen"        -- Default splitting will cause your main splits to jump when opening an edgebar.
 opt.breakindentopt = { shift = 2, min = 20 }
 -- opt.formatoptions = "jcroqlnt"  -- tcqj
 opt.formatoptions = opt.formatoptions

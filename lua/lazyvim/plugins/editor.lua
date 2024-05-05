@@ -217,7 +217,7 @@ return {
 
 			return {
 				defaults = {
-					prompt_prefix = " ", -- "  ",
+					prompt_prefix = " ", -- "  ",
 					selection_caret = " ",
 					-- open files in the first window that is an actual file.
 					-- use the current window if no other window is available.
@@ -240,8 +240,8 @@ return {
 							["<a-h>"] = find_files_with_hidden,
 							["<C-Down>"] = actions.cycle_history_next,
 							["<C-Up>"] = actions.cycle_history_prev,
-							["<C-f>"] = actions.preview_scrolling_down,
-							["<C-b>"] = actions.preview_scrolling_up,
+							["<C-a>"] = actions.preview_scrolling_down,
+							["<C-s>"] = actions.preview_scrolling_up,
 						},
 						n = {
 							["q"] = actions.close,

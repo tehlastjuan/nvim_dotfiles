@@ -11,7 +11,7 @@ return {
 			},
 			highlights = {
 				fill = {
-					bg = "#1b202a",
+					bg = "#1e222a",
 				},
 			},
 		},
@@ -99,6 +99,7 @@ return {
 
 	{
 		"kevinhwang91/rnvimr",
+    -- cmd = { "RnvimrToggle" },
 		-- keys = { { "<leader>r", "" } },
 		init = function()
 			vim.g.rnvimr_draw_border = 1
@@ -123,12 +124,36 @@ return {
 				-- "--cmd=set collapse_preview true",
 			}
 		end,
-		config = function()
-			vim.keymap.set("n", "<leader>r", function()
-				vim.api.nvim_command("RnvimrToggle")
-			end, { desc = "Ranger" })
-		end,
 	},
+
+  {
+    "akinsho/toggleterm.nvim",
+    cmd = { "ToggleTerm", "TermExec" },
+    opts = {
+      highlights = {
+        -- Normal = { link = "Normal" },
+        Normal = { link = "CursorColumn" },
+        NormalNC = { link = "NormalNC" },
+        NormalFloat = { link = "Normal" },
+        FloatBorder = { link = "FloatBorder" },
+        StatusLine = { link = "StatusLine" },
+        StatusLineNC = { link = "StatusLineNC" },
+        WinBar = { link = "WinBar" },
+        WinBarNC = { link = "WinBarNC" },
+      },
+      size = 65,
+      open_mapping = [[<c-/>]],
+      terminal_mappings = true,
+      shade_terminals = true,
+      -- shading_factor = 0,
+      direction = "vertical",
+      close_on_exit = true,
+      -- float_opts = {
+        -- border = "single",
+        -- highlights = { border = "Normal", background = "Normal" },
+      -- },
+    },
+  },
 
 	-- custom edgy
 	{
@@ -188,6 +213,17 @@ return {
 				-- },
 				-- "neo-tree",
 				-- },
+				-- right = {
+				-- 	{
+				-- 		ft = "lazyterm",
+				-- 		title = "LazyTerm",
+				-- 		size = { height = 0.5 },
+				-- 		filter = function(buf)
+				-- 			-- return vim.api.nvim_win_get_config(win).relative == ""
+				-- 			return not vim.b[buf].lazyterm_cmd
+				-- 		end,
+				-- 	},
+				-- },
 			}
 			return opts
 		end,
@@ -207,15 +243,19 @@ return {
 	-- clisp
 	{ "adolenc/cl-neovim" },
 	{ "gpanders/nvim-parinfer" },
-  -- { "vlime/vlime" },
+	-- { "vlime/vlime" },
 
 	{
-	   "monkoose/nvlime",
-	   dependencies = {
-	     "monkoose/parsley",
-	   }
-	 },
+		"monkoose/nvlime",
+		dependencies = {
+			"monkoose/parsley",
+		},
+	},
 
+	-- prolog
+	{
+		"adimit/prolog.vim",
+	},
 
 	-- { "jpalardy/vim-slime" },
 	-- { "luckasRanarison/nvim-devdocs" }
