@@ -37,14 +37,6 @@ return {
 	},
 
 	{
-		"iamcco/markdown-preview.nvim",
-		ft = "markdown",
-		build = function()
-			vim.fn["mkdp#util#install"]()
-		end,
-	},
-
-	{
 		"lervag/vimtex",
 		-- opt = true,
 		config = function()
@@ -99,7 +91,7 @@ return {
 
 	{
 		"kevinhwang91/rnvimr",
-    -- cmd = { "RnvimrToggle" },
+		-- cmd = { "RnvimrToggle" },
 		-- keys = { { "<leader>r", "" } },
 		init = function()
 			vim.g.rnvimr_draw_border = 1
@@ -126,130 +118,83 @@ return {
 		end,
 	},
 
-  {
-    "akinsho/toggleterm.nvim",
-    cmd = { "ToggleTerm", "TermExec" },
-    opts = {
-      highlights = {
-        -- Normal = { link = "Normal" },
-        Normal = { link = "CursorColumn" },
-        NormalNC = { link = "NormalNC" },
-        NormalFloat = { link = "Normal" },
-        FloatBorder = { link = "FloatBorder" },
-        StatusLine = { link = "StatusLine" },
-        StatusLineNC = { link = "StatusLineNC" },
-        WinBar = { link = "WinBar" },
-        WinBarNC = { link = "WinBarNC" },
-      },
-      size = 65,
-      open_mapping = [[<c-/>]],
-      terminal_mappings = true,
-      shade_terminals = true,
-      -- shading_factor = 0,
-      direction = "vertical",
-      close_on_exit = true,
-      -- float_opts = {
-        -- border = "single",
-        -- highlights = { border = "Normal", background = "Normal" },
-      -- },
-    },
-  },
-
-	-- custom edgy
 	{
-		"folke/edgy.nvim",
-		event = "VeryLazy",
-		keys = {},
-		opts = function()
-			local opts = {
-				exit_when_last = true,
-				animate = {
-					enabled = false,
-				},
-				wo = {
-					winbar = false,
-				},
-
-				bottom = {
-					{
-						ft = "lazyterm",
-						title = "LazyTerm",
-						size = { height = 0.25 },
-						filter = function(buf)
-							return not vim.b[buf].lazyterm_cmd
-						end,
-					},
-					-- "Trouble",
-					-- {
-					--   ft = "trouble",
-					--   filter = function(buf, win)
-					--     return vim.api.nvim_win_get_config(win).relative == ""
-					--   end,
-					-- },
-					-- { ft = "qf", title = "QuickFix" },
-					-- {
-					--   ft = "help",
-					--   size = { height = 20 },
-					--   -- don't open help files in edgy that we're editing
-					--   filter = function(buf)
-					--     return vim.bo[buf].buftype == "help"
-					--   end,
-					-- },
-					-- { title = "Spectre", ft = "spectre_panel", size = { height = 0.4 } },
-					-- { title = "Neotest Output", ft = "neotest-output-panel", size = { height = 15 } },
-				},
-				-- left = {
-				-- {
-				--   title = "Neo-Tree",
-				--   ft = "neo-tree",
-				--   filter = function(buf)
-				--     return vim.b[buf].neo_tree_source == "filesystem"
-				--   end,
-				--   pinned = true,
-				--   open = function()
-				--     vim.api.nvim_input("<esc><space>e")
-				--   end,
-				--   size = { height = 0.5 },
-				-- },
-				-- "neo-tree",
-				-- },
-				-- right = {
-				-- 	{
-				-- 		ft = "lazyterm",
-				-- 		title = "LazyTerm",
-				-- 		size = { height = 0.5 },
-				-- 		filter = function(buf)
-				-- 			-- return vim.api.nvim_win_get_config(win).relative == ""
-				-- 			return not vim.b[buf].lazyterm_cmd
-				-- 		end,
-				-- 	},
-				-- },
-			}
-			return opts
-		end,
-	},
-
-	-- prevent neo-tree from opening files in edgy windows
-	{
-		"nvim-neo-tree/neo-tree.nvim",
-		optional = true,
-		opts = function(_, opts)
-			opts.open_files_do_not_replace_types = opts.open_files_do_not_replace_types
-				or { "terminal", "Trouble", "qf", "Outline", "trouble" }
-			table.insert(opts.open_files_do_not_replace_types, "edgy")
-		end,
+		"akinsho/toggleterm.nvim",
+		cmd = { "ToggleTerm", "TermExec" },
+		opts = {
+			highlights = {
+				-- Normal = { link = "Normal" },
+				Normal = { link = "CursorColumn" },
+				NormalNC = { link = "NormalNC" },
+				NormalFloat = { link = "Normal" },
+				FloatBorder = { link = "FloatBorder" },
+				StatusLine = { link = "StatusLine" },
+				StatusLineNC = { link = "StatusLineNC" },
+				WinBar = { link = "WinBar" },
+				WinBarNC = { link = "WinBarNC" },
+			},
+			size = 65,
+			open_mapping = [[<c-/>]],
+			terminal_mappings = true,
+			shade_terminals = true,
+			-- shading_factor = 0,
+			direction = "vertical",
+			close_on_exit = true,
+			-- float_opts = {
+			-- border = "single",
+			-- highlights = { border = "Normal", background = "Normal" },
+			-- },
+		},
 	},
 
 	-- clisp
-	{ "adolenc/cl-neovim" },
-	{ "gpanders/nvim-parinfer" },
-	-- { "vlime/vlime" },
+	-- {
+	-- 	"neovim/nvim-lspconfig",
+	--    config = function()
+	-- 		local lspconfig = require("lspconfig")
+	--
+	-- 		-- Check if the config is already defined (useful when reloading this file)
+	-- 		if not lspconfig.configs.cl_lsp then
+	-- 			lspconfig.configs.cl_lsp = {
+	-- 				default_config = {
+	-- 					cmd = { vim.env.HOME .. "~/.roswell/bin/cl-lsp" },
+	-- 					filetypes = { "lisp" },
+	-- 					root_dir = lspconfig.util.find_git_ancestor,
+	-- 					settings = {},
+	-- 				},
+	-- 			}
+	-- 		end
+	-- 	end,
+	-- },
 
 	{
 		"monkoose/nvlime",
 		dependencies = {
 			"monkoose/parsley",
+			"adolenc/cl-neovim",
+			"gpanders/nvim-parinfer",
+			{
+				"nvim-treesitter/nvim-treesitter",
+				opts = function(_, opts)
+					if type(opts.ensure_installed) == "table" then
+						vim.list_extend(opts.ensure_installed, { "commonlisp" })
+					end
+				end,
+			},
 		},
+		cmp_enabled = function()
+			vim.g.nvlime_config.cmp.enabled = true
+		end,
+		config = function()
+			require("cmp").setup.filetype({ "lisp" }, {
+				sources = {
+					{ name = "nvim_lsp" },
+					{ name = "path" },
+					{ name = "buffer" },
+					{ name = "nvlime" },
+				},
+			})
+		end,
 	},
 
 	-- prolog
