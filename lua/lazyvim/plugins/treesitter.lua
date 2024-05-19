@@ -69,6 +69,7 @@ return {
         "luap",
         "markdown",
         "markdown_inline",
+        "php",
         "python",
         "query",
         "regex",

@@ -199,8 +199,23 @@ return {
 
 	-- prolog
 	{
-		"adimit/prolog.vim",
+		"neovim/nvim-lspconfig",
+    dependencies = {
+      "jamesnvc/lsp_server",
+      -- "hargettp/prolog_lsp"
+    },
+		config = function()
+			require("lspconfig").prolog_ls.setup({})
+		end,
 	},
+
+	-- {
+	-- 	"jamesnvc/lsp_server",
+	-- 	config = function()
+	-- 		-- require('lspconfig/prolog_lsp')
+	-- 		require("lspconfig").prolog_ls.setup({})
+	-- 	end,
+	-- },
 
 	-- { "jpalardy/vim-slime" },
 	-- { "luckasRanarison/nvim-devdocs" }
