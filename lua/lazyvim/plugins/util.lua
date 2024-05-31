@@ -1,20 +1,33 @@
 return {
 
+  -- Session management. This saves your session in the background,
+  -- keeping track of open buffers, window arrangement, and more.
+  -- You can restore sessions when returning through the dashboard.
+  {
+    "folke/persistence.nvim",
+    event = "BufReadPre",
+    opts = { options = vim.opt.sessionoptions:get() },
+    -- stylua: ignore
+    keys = {
+      { "<leader>qs", function() require("persistence").load() end, desc = "Restore Session" },
+      { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
+      { "<leader>qd", function() require("persistence").stop() end, desc = "Don't Save Current Session" },
+    },
+  },
+
+  -- library used by other plugins
+  { "nvim-lua/plenary.nvim", lazy = true },
+
 	{
 		"akinsho/bufferline.nvim",
 		opts = {
 			options = {
 				style_preset = {
 					require("bufferline").style_preset.no_italic,
-					require("bufferline").style_preset.no_bold,
+					-- require("bufferline").style_preset.no_bold,
 				},
 			},
-			highlights = {
-				fill = {
-					bg = "#1e222a",
-				},
-			},
-		},
+		}
 	},
 
 	{
@@ -96,6 +109,7 @@ return {
 		init = function()
 			vim.g.rnvimr_draw_border = 1
 			vim.g.rnvimr_enable_bw = 1
+			vim.g.rnvimr_enable_picker = 1
 			local winwd = vim.fn.winwidth(0)
 			local winhg = vim.fn.winheight(0)
 			vim.g.rnvimr_layout = {
@@ -123,8 +137,8 @@ return {
 		cmd = { "ToggleTerm", "TermExec" },
 		opts = {
 			highlights = {
-				-- Normal = { link = "Normal" },
-				Normal = { link = "CursorColumn" },
+				Normal = { link = "Normal" },
+				-- Normal = { link = "CursorColumn" },
 				NormalNC = { link = "NormalNC" },
 				NormalFloat = { link = "Normal" },
 				FloatBorder = { link = "FloatBorder" },
@@ -145,6 +159,138 @@ return {
 			-- highlights = { border = "Normal", background = "Normal" },
 			-- },
 		},
+	},
+
+	{
+		"nvim-telescope/telescope.nvim",
+		opts = function()
+			return {
+				defaults = {
+					sorting_strategy = "ascending",
+					create_layout = function(picker)
+						local Layout = require("telescope.pickers.layout")
+
+						local config = {
+							preview = {
+								win = 1000,
+								split = "right",
+								-- width = 0.5,
+								style = "minimal",
+							},
+							results = {
+								split = "below",
+								height = 10,
+								style = "minimal",
+							},
+							prompt = {
+								split = "above",
+								height = 1,
+								style = "minimal",
+							},
+						}
+
+						local function create_window(enter, opts)
+							local bufnr = vim.api.nvim_create_buf(false, true)
+							local winid = vim.api.nvim_open_win(bufnr, enter, opts)
+							vim.wo[winid].winhighlight = "Normal:Normal"
+
+							return Layout.Window({
+								bufnr = bufnr,
+								winid = winid,
+							})
+						end
+						local function destroy_window(window)
+							if window then
+								if vim.api.nvim_win_is_valid(window.winid) then
+									vim.api.nvim_win_close(window.winid, true)
+								end
+								if vim.api.nvim_buf_is_valid(window.bufnr) then
+									vim.api.nvim_buf_delete(window.bufnr, { force = true })
+								end
+							end
+						end
+
+						local layout = Layout({
+							picker = picker,
+							mount = function(self)
+								self.preview = create_window(false, config.preview)
+								config.results["win"] = self.preview.winid
+								self.results = create_window(false, config.results)
+								config.prompt["win"] = self.results.winid
+								self.prompt = create_window(true, config.prompt)
+							end,
+							unmount = function(self)
+								destroy_window(self.results)
+								destroy_window(self.preview)
+								destroy_window(self.prompt)
+							end,
+							update = function(self) end,
+						})
+
+						return layout
+					end,
+				},
+			}
+		end,
+	},
+
+	{
+		"nvim-telescope/telescope.nvim",
+		custom_theme = function()
+			local themes = require("telescope.themes")
+
+			function themes.get_custom(opts)
+				opts = opts or {}
+
+				local theme_opts = {
+					theme = "custom",
+
+					sorting_strategy = "descending",
+					layout_strategy = "vertical",
+
+					results_title = false,
+					prompt_title = false,
+					dynamic_preview_title = false,
+
+					layout_config = {
+						anchor = "S",
+						width = 0.8,
+						height = 0.67,
+						preview_cutoff = 1,
+						preview_height = 25,
+						prompt_position = "bottom",
+						-- mirror = true,
+					},
+
+					-- resolve.resolve_width()
+					-- border = true,
+					-- # ivy
+					-- borderchars = {
+					-- 	prompt = { "─", " ", " ", " ", "─", "─", " ", " " },
+					-- 	results = { " " },
+					-- 	preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+					-- },
+					-- # ivy-alt
+					-- borderchars = {
+					-- 	prompt = { " ", " ", "─", " ", " ", " ", "─", "─" },
+					-- 	results = { "─", " ", " ", " ", "─", "─", " ", " " },
+					-- 	preview = { "─", " ", "─", "│", "┬", "─", "─", "╰" },
+					-- },
+					-- # cursor
+					borderchars = {
+						prompt = { " ", "│", "─", "│", "│", "│", "╯", "╰" },
+						-- prompt = { "─", "│", " ", "│", "╭", "╮", "│", "│" },
+						results = { "─", "│", " ", "│", "╭", "╮", "│", "│" },
+						-- results = { "─", "│", "─", "│", "├", "┤", "╯", "╰" },
+						preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+					},
+				}
+
+				return vim.tbl_deep_extend("force", theme_opts, opts)
+			end
+
+			return themes
+		end,
 	},
 
 	-- clisp
@@ -198,23 +344,43 @@ return {
 	},
 
 	-- prolog
-	{
-		"neovim/nvim-lspconfig",
-    dependencies = {
-      "jamesnvc/lsp_server",
-      -- "hargettp/prolog_lsp"
-    },
-		config = function()
-			require("lspconfig").prolog_ls.setup({})
-		end,
-	},
-
 	-- {
-	-- 	"jamesnvc/lsp_server",
+	-- 	"neovim/nvim-lspconfig",
+	-- 	dependencies = {
+	-- 		"jamesnvc/lsp_server",
+	-- 		-- "hargettp/prolog_lsp"
+	-- 	},
 	-- 	config = function()
-	-- 		-- require('lspconfig/prolog_lsp')
 	-- 		require("lspconfig").prolog_ls.setup({})
 	-- 	end,
+	-- },
+
+	-- java
+	-- {
+	-- 	"nvim-java/nvim-java",
+	-- 	dependencies = {
+	-- 		"nvim-java/lua-async-await",
+	-- 		"nvim-java/nvim-java-refactor",
+	-- 		"nvim-java/nvim-java-core",
+	-- 		"nvim-java/nvim-java-test",
+	-- 		"nvim-java/nvim-java-dap",
+	-- 		"MunifTanjim/nui.nvim",
+	-- 		"neovim/nvim-lspconfig",
+	-- 		"mfussenegger/nvim-dap",
+	-- 		{
+	-- 			"williamboman/mason.nvim",
+	-- 			opts = {
+	-- 				registries = {
+	-- 					"github:nvim-java/mason-registry",
+	-- 					"github:mason-org/mason-registry",
+	-- 				},
+	-- 			},
+	-- 		},
+	-- 	},
+	--    init = function()
+	--      require('java').setup()
+	--      require('lspconfig').jdtls.setup({})
+	--    end,
 	-- },
 
 	-- { "jpalardy/vim-slime" },

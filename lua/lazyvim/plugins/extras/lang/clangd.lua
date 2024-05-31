@@ -1,12 +1,24 @@
 return {
+  recommended = function()
+    return LazyVim.extras.wants({
+      ft = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
+      root = {
+        ".clangd",
+        ".clang-tidy",
+        ".clang-format",
+        "compile_commands.json",
+        "compile_flags.txt",
+        "configure.ac", -- AutoTools
+      },
+    })
+  end,
 
   -- Add C/C++ to treesitter
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
       if type(opts.ensure_installed) == "table" then
-        vim.list_extend(opts.ensure_installed, { "c" })
-        -- vim.list_extend(opts.ensure_installed, { "c", "cpp" })
+        vim.list_extend(opts.ensure_installed, { "c", "cpp" })
       end
     end,
   },
@@ -50,7 +62,7 @@ return {
         -- Ensure mason installs the server
         clangd = {
           keys = {
-            { "<leader>cR", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
+            { "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
           },
           root_dir = function(fname)
             return require("lspconfig.util").root_pattern(
@@ -66,7 +78,7 @@ return {
             ) or require("lspconfig.util").find_git_ancestor(fname)
           end,
           capabilities = {
-            offsetEncoding = { "utf-16" },
+            offsetEncoding = { "utf-8" },
           },
           cmd = {
             "clangd",
@@ -145,7 +157,7 @@ return {
             type = "codelldb",
             request = "attach",
             name = "Attach to process",
-            processId = require("dap.utils").pick_process,
+            pid = require("dap.utils").pick_process,
             cwd = "${workspaceFolder}",
           },
         }

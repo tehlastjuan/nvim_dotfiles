@@ -1,4 +1,20 @@
 return {
+  recommended = function()
+    return LazyVim.extras.wants({
+      ft = "markdown",
+      root = "README.md",
+    })
+  end,
+  {
+    "stevearc/conform.nvim",
+    optional = true,
+    opts = {
+      formatters_by_ft = {
+        ["markdown"] = { { "prettierd", "prettier" }, "markdownlint", "markdown-toc" },
+        ["markdown.mdx"] = { { "prettierd", "prettier" }, "markdownlint", "markdown-toc" },
+      },
+    },
+  },
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
@@ -24,15 +40,15 @@ return {
       })
     end,
   },
-  -- {
-  --   "mfussenegger/nvim-lint",
-  --   optional = true,
-  --   opts = {
-  --     linters_by_ft = {
-  --       markdown = { "markdownlint" },
-  --     },
-  --   },
-  -- },
+  {
+    "mfussenegger/nvim-lint",
+    optional = true,
+    opts = {
+      linters_by_ft = {
+        markdown = { "markdownlint" },
+      },
+    },
+  },
   {
     "neovim/nvim-lspconfig",
     opts = {

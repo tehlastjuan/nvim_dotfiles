@@ -5,6 +5,7 @@ local Util = require("lazyvim.util")
 -- use `vim.keymap.set` instead
 -- local map = Util.safe_keymap_set
 local map = vim.keymap.set
+-- local map = LazyVim.safe_keymap_set
 
 -- Press jk fast to exit insert mode
 map("i", "jk", "<ESC>", { desc = "ESC" })
@@ -12,9 +13,9 @@ map("i", "kj", "<ESC>", { desc = "ESC" })
 
 -- better up/down
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
-map({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+-- map({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
-map({ "n", "x" }, "<Up>", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+-- map({ "n", "x" }, "<Up>", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 
 -- Move to window using the <ctrl> hjkl keys
 map("n", "<C-h>", "<C-w>h", { desc = "Go to left window", remap = true })
@@ -37,12 +38,14 @@ map({ "n", "t" }, "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase
 -- map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
 -- buffers
-map("n", "<c-,>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
-map("n", "<c-.>", "<cmd>bnext<cr>", { desc = "Next buffer" })
+-- map("n", "<c-,>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
+-- map("n", "<c-.>", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "<leader>j", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 map("n", "<leader>k", "<cmd>bnext<cr>", { desc = "Next buffer" })
 -- map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
 -- map("n", "<leader>`", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
+map("n", "<leader>bd", LazyVim.ui.bufremove, { desc = "Delete Buffer" })
+map("n", "<leader>bD", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window" })
 
 -- Clear search with <esc>
 map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
@@ -75,6 +78,10 @@ map("n", "<leader>K", "<cmd>norm! K<cr>", { desc = "Keywordprg" })
 map("v", "<", "<gv")
 map("v", ">", ">gv")
 
+-- commenting
+map("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Below" })
+map("n", "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Above" })
+
 -- lazy
 map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
 
@@ -98,7 +105,6 @@ local diagnostic_goto = function(next, severity)
     go({ severity = severity })
   end
 end
-
 -- map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Line Diagnostics" })
 map("n", "<leader>nd", diagnostic_goto(true), { desc = "Next Diagnostic" })
 map("n", "<leader>pd", diagnostic_goto(false), { desc = "Prev Diagnostic" })
@@ -125,16 +131,27 @@ if vim.lsp.inlay_hint then
 end
 
 map("n", "<leader>uT", function() if vim.b.ts_highlight then vim.treesitter.stop() else vim.treesitter.start() end end, { desc = "Toggle Treesitter Highlight" })
+map("n", "<leader>ub", function() LazyVim.toggle("background", false, {"light", "dark"}) end, { desc = "Toggle Background" })
 
 -- lazygit
 map("n", "<leader>gg", function() Util.terminal({ "lazygit" }, { cwd = Util.root(), esc_esc = false, ctrl_hjkl = false }) end, { desc = "Lazygit (root dir)" })
 map("n", "<leader>gG", function() Util.terminal({ "lazygit" }, {esc_esc = false, ctrl_hjkl = false}) end, { desc = "Lazygit (cwd)" })
+
+map("n", "<leader>gf", function()
+  local git_path = vim.api.nvim_buf_get_name(0)
+  LazyVim.lazygit({args = { "-f", vim.trim(git_path) }})
+end, { desc = "Lazygit Current File History" })
+
+map("n", "<leader>gl", function()
+  LazyVim.lazygit({ args = { "log" } })
+end, { desc = "Lazygit Log" })
 
 -- quit
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
 
 -- highlights under cursor
 map("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
+map("n", "<leader>uI", "<cmd>InspectTree<cr>", { desc = "Inspect Tree" })
 
 -- LazyVim Changelog
 -- map("n", "<leader>L", function() Util.news.changelog() end, { desc = "LazyVim Changelog" })
@@ -181,6 +198,8 @@ map("n", "<leader>w-", "<C-W>s", { desc = "Split window below", remap = true })
 map("n", "<leader>w|", "<C-W>v", { desc = "Split window right", remap = true })
 map("n", "<leader>-", "<C-W>s", { desc = "Split window below", remap = true })
 map("n", "<leader>|", "<C-W>v", { desc = "Split window right", remap = true })
+map("n", "<leader>wm", function() LazyVim.toggle.maximize() end, { desc = "Maximize Toggle" })
+map("n", "<leader>m", function() LazyVim.toggle.maximize() end, { desc = "Maximize Toggle" })
 
 -- tabs
 -- map("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last Tab" })
@@ -198,5 +217,9 @@ map({ "n", "i", "x", "v", "x", "o" }, "<Down>", "<Nop>", { desc = "no up for you
 
 -- ranger
 map("n", "<leader>r", function() vim.api.nvim_command("RnvimrToggle") end, { desc = "Ranger" })
-
 map("n", "<leader>uh", function() vim.lsp.inlay_hint(0, nil) end, { desc = "Toggle Inlay Hints" })
+
+-- window debug
+map("n", "<leader>ux", function() print (vim.inspect(vim.api.nvim_get_current_win())) end, { desc = "Get current window" })
+map("n", "<leader>uy", function() print (vim.inspect(vim.api.nvim_list_bufs())) end, { desc = "List buffers" })
+map("n", "<leader>uz", function() print (vim.inspect(vim.api.nvim_list_wins())) end, { desc = "List windows" })

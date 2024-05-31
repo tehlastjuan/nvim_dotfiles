@@ -11,6 +11,7 @@ return {
         -- ['*'] = { 'global linter' },
         -- Use the "_" filetype to run linters on filetypes that don't have other linters configured.
         -- ['_'] = { 'fallback linter' },
+        -- ["*"] = { "typos" },
       },
       -- LazyVim extension to easily override linter options
       -- or add custom linters.
@@ -40,7 +41,7 @@ return {
       lint.linters_by_ft = opts.linters_by_ft
 
       function M.debounce(ms, fn)
-        local timer = vim.loop.new_timer()
+        local timer = vim.uv.new_timer()
         return function(...)
           local argv = { ... }
           timer:start(ms, 0, function()
@@ -56,6 +57,9 @@ return {
         -- * otherwise will split filetype by "." and add all those linters
         -- * this differs from conform.nvim which only uses the first filetype that has a formatter
         local names = lint._resolve_linter_by_ft(vim.bo.filetype)
+
+        -- Create a copy of the names table to avoid modifying the original.
+        names = vim.list_extend({}, names)
 
         -- Add fallback linters.
         if #names == 0 then

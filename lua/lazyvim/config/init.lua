@@ -1,23 +1,18 @@
 _G.LazyVim = require("lazyvim.util")
---local Util = require("lazyvim.util")
 
 ---@class LazyVimConfig: LazyVimOptions
 local M = {}
 
-M.version = "10.8.0" -- x-release-please-version
+M.version = "10.21.1" -- x-release-please-version
+LazyVim.config = M
 
 ---@class LazyVimOptions
 local defaults = {
   -- load the default settings
   defaults = {
-    -- require('lazyvim.config.keymaps'),
-    -- require('lazyvim.config.options'),
-    -- require('lazyvim.config.autocmds'),
     autocmds = true, -- lazyvim.config.autocmds
     keymaps = true, -- lazyvim.config.keymaps
   },
-  -- icons used by other plugins
-  -- stylua: ignore
   icons = {
     misc = {
       dots = "󰇘",
@@ -121,7 +116,7 @@ local defaults = {
 }
 
 M.json = {
-  version = 2,
+  version = 6,
   data = {
     version = nil, ---@type string?
     news = {}, ---@type table<string, string>
@@ -145,47 +140,51 @@ function M.json.load()
   end
 end
 
-M.did_init = false
-function M.init()
-  if not M.did_init then
-    M.did_init = true
-    local plugin = require("lazy.core.config").spec.plugins.LazyVim
-    if plugin then
-      vim.opt.rtp:append(plugin.dir)
-    end
-
-    package.preload["lazyvim.plugins.lsp.format"] = function()
-      LazyVim.deprecate([[require("lazyvim.plugins.lsp.format")]], [[require("lazyvim.util").format]])
-      return LazyVim.format
-    end
-
-    -- delay notifications till vim.notify was replaced or after 500ms
-    require("lazyvim.util").lazy_notify()
-
-    -- load options here, before lazy init while sourcing plugin modules
-    -- this is needed to make sure options will be correctly applied
-    -- after installing missing plugins
-    M.load("options")
-    M.load("keymaps")
-    M.load("autocmds")
-
-    LazyVim.plugin.setup()
-    M.json.load()
-  end
-end
 
 ---@type LazyVimOptions
 local options
 
+
 ---@param opts? LazyVimOptions
 function M.setup(opts)
-  if not M.did_init then
-    M.init()
-  end
   options = vim.tbl_deep_extend("force", defaults, opts or {}) or {}
 
-  LazyVim.format.setup()
-  LazyVim.root.setup()
+  -- autocmds can be loaded lazily when not opening a file
+  local lazy_autocmds = vim.fn.argc(-1) == 0
+  if not lazy_autocmds then
+    M.load("autocmds")
+  end
+
+  local group = vim.api.nvim_create_augroup("LazyVim", { clear = true })
+  vim.api.nvim_create_autocmd("User", {
+    group = group,
+    pattern = "VeryLazy",
+    callback = function()
+      if lazy_autocmds then
+        M.load("autocmds")
+      end
+      M.load("keymaps")
+
+      LazyVim.format.setup()
+      LazyVim.root.setup()
+
+      vim.api.nvim_create_user_command("LazyExtras", function()
+        LazyVim.extras.show()
+      end, { desc = "Manage LazyVim extras" })
+
+      vim.api.nvim_create_user_command("LazyHealth", function()
+        vim.cmd([[Lazy! load all]])
+        vim.cmd([[checkhealth]])
+      end, { desc = "Load all plugins and run :checkhealth" })
+
+      local health = require("lazy.health")
+      vim.list_extend(health.valid, {
+        "recommended",
+        "desc",
+        "vscode",
+      })
+    end,
+  })
 end
 
 ---@param buf? number
@@ -198,6 +197,9 @@ function M.get_kind_filter(buf)
   end
   if M.kind_filter[ft] == false then
     return
+  end
+  if type(M.kind_filter[ft]) == "table" then
+    return M.kind_filter[ft]
   end
   ---@diagnostic disable-next-line: return-type-mismatch
   return type(M.kind_filter) == "table" and type(M.kind_filter.default) == "table" and M.kind_filter.default or nil
@@ -225,6 +227,39 @@ function M.load(name)
   vim.api.nvim_exec_autocmds("User", { pattern = pattern, modeline = false })
 end
 
+M.did_init = false
+function M.init()
+  if M.did_init then
+    return
+  end
+  M.did_init = true
+  local plugin = require("lazy.core.config").spec.plugins.LazyVim
+  if plugin then
+    vim.opt.rtp:append(plugin.dir)
+  end
+
+  package.preload["lazyvim.plugins.lsp.format"] = function()
+    LazyVim.deprecate([[require("lazyvim.plugins.lsp.format")]], [[LazyVim.format]])
+    return LazyVim.format
+  end
+
+  -- delay notifications till vim.notify was replaced or after 500ms
+  LazyVim.lazy_notify()
+
+  -- load options here, before lazy init while sourcing plugin modules
+  -- this is needed to make sure options will be correctly applied
+  -- after installing missing plugins
+  M.load("options")
+  M.load("keymaps")
+  M.load("autocmds")
+
+  if vim.g.deprecation_warnings == false then
+    vim.deprecate = function() end
+  end
+
+  LazyVim.plugin.setup()
+  M.json.load()
+end
 
 setmetatable(M, {
   __index = function(_, key)

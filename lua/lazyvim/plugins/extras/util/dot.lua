@@ -7,6 +7,21 @@ local function have(path)
 end
 
 return {
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        bashls = {},
+      },
+    },
+  },
+  {
+    "williamboman/mason.nvim",
+    opts = function(_, opts)
+      opts.ensure_installed = opts.ensure_installed or {}
+      vim.list_extend(opts.ensure_installed, { "shellcheck" })
+    end,
+  },
   -- add some stuff to treesitter
   {
     "nvim-treesitter/nvim-treesitter",
@@ -18,14 +33,16 @@ return {
       end
 
       vim.filetype.add({
-        extension = { rasi = "rasi" },
+        extension = { rasi = "rasi", rofi = "rasi", wofi = "rasi" },
+        filename = {
+          ["vifmrc"] = "vim",
+        },
         pattern = {
           [".*/waybar/config"] = "jsonc",
           [".*/mako/config"] = "dosini",
-          [".*/foot/*.ini"] = "bash",
-          [".*/kitty/*.conf"] = "bash",
-          [".*/sway/.*%.conf"] = "hyprlang",
-          [".*/hypr/.*%.conf"] = "hyprlang",
+          [".*/kitty/.+%.conf"] = "bash",
+          [".*/hypr/.+%.conf"] = "hyprlang",
+          ["%.env%.[%w_.-]+"] = "sh",
         },
       })
 

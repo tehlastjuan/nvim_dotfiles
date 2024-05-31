@@ -1,4 +1,10 @@
 return {
+  recommended = function()
+    return LazyVim.extras.wants({
+      ft = "yaml.ansible",
+      root = { "ansible.cfg", ".ansible-lint" },
+    })
+  end,
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
@@ -25,12 +31,14 @@ return {
   },
   {
     "mfussenegger/nvim-ansible",
+    ft = {},
     keys = {
       {
-        "<leader>tr",
+        "<leader>ta",
         function()
           require("ansible").run()
         end,
+        desc = "Ansible Run Playbook/Role",
         silent = true,
       },
     },

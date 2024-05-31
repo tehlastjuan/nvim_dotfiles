@@ -47,7 +47,17 @@ end
 function M.detectors.pattern(buf, patterns)
   patterns = type(patterns) == "string" and { patterns } or patterns
   local path = M.bufpath(buf) or vim.uv.cwd()
-  local pattern = vim.fs.find(patterns, { path = path, upward = true })[1]
+  local pattern = vim.fs.find(function(name)
+    for _, p in ipairs(patterns) do
+      if name == p then
+        return true
+      end
+      if p:sub(1, 1) == "*" and name:find(vim.pesc(p:sub(2)) .. "$") then
+        return true
+      end
+    end
+    return false
+  end, { path = path, upward = true })[1]
   return pattern and { vim.fs.dirname(pattern) } or {}
 end
 
@@ -142,7 +152,10 @@ function M.setup()
     LazyVim.root.info()
   end, { desc = "LazyVim roots for the current buffer" })
 
-  vim.api.nvim_create_autocmd({ "LspAttach", "BufWritePost", "DirChanged" }, {
+  -- FIX: doesn't properly clear cache in neo-tree `set_root` (which should happen presumably on `DirChanged`),
+  -- probably because the event is triggered in the neo-tree buffer, therefore add `BufEnter`
+  -- Maybe this is too frequent on `BufEnter` and something else should be done instead??
+  vim.api.nvim_create_autocmd({ "LspAttach", "BufWritePost", "DirChanged", "BufEnter" }, {
     group = vim.api.nvim_create_augroup("lazyvim_root_cache", { clear = true }),
     callback = function(event)
       M.cache[event.buf] = nil

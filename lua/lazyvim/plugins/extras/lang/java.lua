@@ -16,6 +16,20 @@ local function extend_or_override(config, custom, ...)
 end
 
 return {
+  recommended = function()
+    return LazyVim.extras.wants({
+      ft = "java",
+      root = {
+        "build.gradle",
+        "build.gradle.kts",
+        "build.xml", -- Ant
+        "pom.xml", -- Maven
+        "settings.gradle", -- Gradle
+        "settings.gradle.kts", -- Gradle
+      },
+    })
+  end,
+
   -- Add java to treesitter.
   {
     "nvim-treesitter/nvim-treesitter",
@@ -104,11 +118,18 @@ return {
         dap = { hotcodereplace = "auto", config_overrides = {} },
         dap_main = {},
         test = true,
+        settings = {
+          java = {
+            inlayHints = {
+              parameterNames = {
+                enabled = "all",
+              },
+            },
+          },
+        },
       }
     end,
-    config = function()
-      local opts = LazyVim.opts("nvim-jdtls") or {}
-
+    config = function(_, opts)
       -- Find the extra bundles that should be passed on the jdtls command-line
       -- if nvim-dap is enabled with java debug/test.
       local mason_registry = require("mason-registry")
@@ -144,6 +165,7 @@ return {
           init_options = {
             bundles = bundles,
           },
+          settings = opts.settings,
           -- enable CMP capabilities
           capabilities = LazyVim.has("cmp-nvim-lsp") and require("cmp_nvim_lsp").default_capabilities() or nil,
         }, opts.jdtls)

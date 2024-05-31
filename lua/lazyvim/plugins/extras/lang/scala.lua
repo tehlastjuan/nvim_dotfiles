@@ -3,6 +3,12 @@
 -- If you like you can setup your own key bindings.
 -- For minimalistic setup have a look at https://github.com/scalameta/nvim-metals/discussions/39
 return {
+  recommended = function()
+    return LazyVim.extras.wants({
+      ft = "scala",
+      root = { "build.sbt", "build.sc", "build.gradle", "pom.xml" },
+    })
+  end,
   {
     "hrsh7th/nvim-cmp",
     requires = {
@@ -20,7 +26,7 @@ return {
     ft = { "scala", "sbt", "java" },
     init = function()
       local metals_config = require("metals").bare_config()
-      metals_config.init_options.statusBarProvider = "on"
+      metals_config.init_options.statusBarProvider = "off"
       metals_config.settings = {
         showImplicitArguments = true,
         excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
@@ -64,6 +70,24 @@ return {
         },
       }
     end,
+    keys = {
+      {
+        "<leader>me",
+        function()
+          require("telescope").extensions.metals.commands()
+        end,
+        desc = "Metals commands",
+        ft = { "scala", "sbt", "java" },
+      },
+      {
+        "<leader>mc",
+        function()
+          require("metals").compile_cascade()
+        end,
+        desc = "Metals compile cascade",
+        ft = { "scala", "sbt", "java" },
+      },
+    },
   },
   {
     "nvim-treesitter/nvim-treesitter",
