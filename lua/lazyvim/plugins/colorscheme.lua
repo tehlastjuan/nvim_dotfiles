@@ -60,17 +60,18 @@ return {
         -- NeoTreeFileName = { bg = "#1e222a" },
         -- NeoTreeFileNameOpened = { bg = "#1e222a" },
         -- NeoTreeFilterTerm = { bg = "#1e222a" },
-        NeoTreeFloatBorder = { fg = "#363c51", bg = "#1e222a" },
+        NeoTreeFloatBorder = { fg = "#363c51", bg = "#242b38" },
         NeoTreeFloatTitle = { fg = "#a5b0c5", bg = "#242b38" },
-        NeoTreeFloatNormal = { fg = "#a5b0c5", bg = "#1e222a" },
+        NeoTreeFloatNormal = { fg = "#a5b0c5", bg = "#242b38" },
 
-        NormalFloat = { bg = "#1e222a" },
+        NormalFloat = { bg = "#242b38" },
         FloatBorder = { fg = "#363c51", bg = "#1e222a" },
         WhichKeyFloat = { bg = "#242b38" },
         MasonNormal = { bg = "#242b38" },
         LazyNormal = { bg = "#242b38" },
         TelescopePromptNormal = { bg = "#242b38" },
         BufferLineOffsetSeparator = { fg = "#363c51", bg = "#1e222a" },
+        -- LspInfoTip = { fg = "#a5b0c5", bg = "#242b38" },
 
       },
 

@@ -245,4 +245,8 @@ return {
       attach_jdtls()
     end,
   },
+  {
+    "mfussenegger/nvim-dap",
+    config = function() end,
+  },
 }

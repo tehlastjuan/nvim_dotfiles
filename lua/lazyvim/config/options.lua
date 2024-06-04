@@ -29,7 +29,7 @@ vim.g.lazygit_config = true
 vim.g.deprecation_warnings = false
 
 -- Show the current document symbols location from Trouble in lualine
-vim.g.trouble_lualine = true
+vim.g.trouble_lualine = false
 
 local opt = vim.opt
 
@@ -107,7 +107,7 @@ opt.termguicolors = true -- True color support
 opt.signcolumn = "yes" -- Always show the signcolumn, otherwise it would shift the text each time
 opt.showmode = false -- Dont show mode since we have a statusline
 opt.laststatus = 3 -- global statusline
-opt.conceallevel = 2 -- so that `` is visible in markdown file
+opt.conceallevel = 0 -- so that `` is visible in markdown file
 
 opt.numberwidth = 2 -- set number column width to 2 {default 4}
 opt.scrolloff = 8 -- Keep at least 2 lines above/below

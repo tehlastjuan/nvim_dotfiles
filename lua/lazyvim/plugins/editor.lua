@@ -63,7 +63,6 @@ return {
       })
     end,
     opts = {
-      close_if_last_window = true,
       sources = { "filesystem", "buffers", "git_status", "document_symbols" },
       open_files_do_not_replace_types = { "terminal", "Trouble", "trouble", "qf", "Outline" },
       filesystem = {
@@ -372,103 +371,106 @@ return {
     cmd = { "TroubleToggle", "Trouble" },
     opts = {
       auto_close = true, -- auto close when there are no items
-      auto_open = false, -- auto open when there are items
-      auto_preview = true, -- automatically open preview when on an item
-      auto_refresh = true, -- auto refresh when open
-      auto_jump = false, -- auto jump to the item when there's only one
-      focus = true, -- Focus the window when opened
-      restore = true, -- restores the last location in the list when opening
       follow = true, -- Follow the current item
-      indent_guides = true, -- show indent guides
-      ---@type trouble.Window.opts
-      win = {}, -- window options for the results window. Can be a split or a floating window.
-      -- Window options for the preview window. Can be a split, floating window,
-      -- or `main` to show the preview in the main editor window.
-      ---@type trouble.Window.opts
-      preview = {
-        type = "main",
-        -- when a buffer is not yet loaded, the preview window will be created
-        -- in a scratch buffer with only syntax highlighting enabled.
-        -- Set to false, if you want the preview to always be a real loaded buffer.
-        scratch = true,
-      },
       ---@type table<string, trouble.Mode>
       modes = {
-        diagnostics_buffer = {
-          mode = "diagnostics", -- inherit from diagnostics mode
+        diagnostics = {
+          auto_close = true, -- auto close when there are no items
+          auto_open = false, -- auto open when there are items
+          auto_preview = false, -- automatically open preview when on an item
+          auto_refresh = true, -- auto refresh when open
+          auto_jump = false, -- auto jump to the item when there's only one
+          focus = false, -- Focus the window when opened
+          restore = false, -- restores the last location in the list when opening
+          follow = true, -- Follow the current item
+          indent_guides = true, -- show indent guides
+          win = {
+            type = "split",
+            relative = "editor",
+            position = "bottom",
+            size = { height = 6 },
+          },
+          sort = { "severity", "pos" },
           filter = { buf = 0 }, -- filter diagnostics to the current buffer
         },
-        preview_float = {
-          mode = "diagnostics",
+        symbols = {
+          auto_close = false, -- auto close when there are no items
+          auto_open = false, -- auto open when there are items
+          auto_preview = false, -- automatically open preview when on an item
+          auto_refresh = true, -- auto refresh when open
+          auto_jump = false, -- auto jump to the item when there's only one
+          focus = false, -- Focus the window when opened
+          restore = true, -- restores the last location in the list when opening
+          follow = true, -- Follow the current item
+          indent_guides = true, -- show indent guides
+          pinned = true,
+          win = {
+            type = "split",
+            relative = "editor",
+            position = "left",
+            size = 40,
+          },
+        },
+        lsp_document_symbols = {
+          auto_close = false, -- auto close when there are no items
+          auto_open = false, -- auto open when there are items
+          auto_preview = true, -- automatically open preview when on an item
+          auto_refresh = true, -- auto refresh when open
+          auto_jump = false, -- auto jump to the item when there's only one
+          focus = true, -- Focus the window when opened
+          restore = false, -- restores the last location in the list when opening
+          follow = true, -- Follow the current item
+          indent_guides = true, -- show indent guides
+          pinned = true;
+          win = {
+            fixed = true,
+            type = "split",
+            relative = "editor",
+            position = "left",
+            size = 40,
+          },
           preview = {
             type = "float",
             relative = "editor",
             border = "rounded",
-            title = "Preview",
-            title_pos = "center",
-            position = { 0, -2 },
-            size = { width = 0.3, height = 0.3 },
+            -- title = "Preview",
+            -- title_pos = "center",
+            position = { 2, 46 },
+            size = { width = 90, height = 25 },
             zindex = 200,
           },
         },
-      },
-      -- stylua: ignore
-      icons = {
-        ---@type trouble.Indent.symbols
-        indent = {
-          top           = "│ ",
-          middle        = "├╴",
-          last          = "└╴",
-          -- last          = "-╴",
-          -- last       = "╰╴", -- rounded
-          fold_open     = " ",
-          fold_closed   = " ",
-          ws            = "  ",
-        },
-        folder_closed   = " ",
-        folder_open     = " ",
-        kinds = {
-          Array         = " ",
-          Boolean       = "󰨙 ",
-          Class         = " ",
-          Constant      = "󰏿 ",
-          Constructor   = " ",
-          Enum          = " ",
-          EnumMember    = " ",
-          Event         = " ",
-          Field         = " ",
-          File          = " ",
-          Function      = "󰊕 ",
-          Interface     = " ",
-          Key           = " ",
-          Method        = "󰊕 ",
-          Module        = " ",
-          Namespace     = "󰦮 ",
-          Null          = " ",
-          Number        = "󰎠 ",
-          Object        = " ",
-          Operator      = " ",
-          Package       = " ",
-          Property      = " ",
-          String        = " ",
-          Struct        = "󰆼 ",
-          TypeParameter = " ",
-          Variable      = "󰀫 ",
-        },
+        -- cascade = {
+        --   mode = "diagnostics", -- inherit from diagnostics mode
+        --   filter = function(items)
+        --     local severity = vim.diagnostic.severity.HINT
+        --     for _, item in ipairs(items) do
+        --       severity = math.min(severity, item.severity)
+        --     end
+        --     return vim.tbl_filter(function(item)
+        --       return item.severity == severity
+        --     end, items)
+        --   end,
+        -- },
       },
       -- use_diagnostic_signs = false,
     },
     keys = {
       { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)" },
-      { "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics (Trouble)" },
-      { "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols (Trouble)" },
+      { "<leader>xf", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics (Trouble)" },
+      { "<leader>xs", "<cmd>Trouble symbols toggle<cr>", desc = "Symbols (Trouble)" },
       {
-        "<leader>cS",
-        "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+        "<leader>xS",
+        "<cmd>Trouble lsp_document_symbols toggle focus=false<cr>",
         desc = "LSP references/definitions/... (Trouble)",
       },
-      { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List (Trouble)" },
-      { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List (Trouble)" },
+      -- {
+      --   "<leader>xS",
+      --   "<cmd>Trouble lsp toggle focus=false win.position=left<cr>",
+      --   desc = "LSP references/definitions/... (Trouble)",
+      -- },
+      { "<leader>xl", "<cmd>Trouble loclist toggle<cr>", desc = "Location List (Trouble)" },
+      { "<leader>xq", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List (Trouble)" },
       {
         "[q",
         function()
@@ -511,8 +513,10 @@ return {
     keys = {
       { "]t", function() require("todo-comments").jump_next() end, desc = "Next Todo Comment" },
       { "[t", function() require("todo-comments").jump_prev() end, desc = "Previous Todo Comment" },
-      { "<leader>xt", "<cmd>TodoTrouble<cr>", desc = "Todo (Trouble)" },
-      { "<leader>xT", "<cmd>TodoTrouble keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme (Trouble)" },
+      { "<leader>xt", "<cmd>Trouble todo<cr>", desc = "Todo (Trouble)" },
+      { "<leader>xT", "<cmd>Trouble todo filter = {tag = {TODO,FIX,FIXME}}<cr>", desc = "Todo/Fix/Fixme (Trouble)" },
+      { "<leader>xt", "<cmd>Trouble todo toggle<cr>", desc = "Todo (Trouble)" },
+      { "<leader>xT", "<cmd>Trouble todo toggle filter = {tag = {TODO,FIX,FIXME}}<cr>", desc = "Todo/Fix/Fixme (Trouble)" },
       { "<leader>st", "<cmd>TodoTelescope<cr>", desc = "Todo" },
       { "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme" },
     },

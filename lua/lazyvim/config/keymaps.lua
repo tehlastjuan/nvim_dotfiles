@@ -38,8 +38,8 @@ map({ "n", "t" }, "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase
 -- map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
 -- buffers
--- map("n", "<c-,>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
--- map("n", "<c-.>", "<cmd>bnext<cr>", { desc = "Next buffer" })
+map("n", "<c-,>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
+map("n", "<c-.>", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "<leader>j", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 map("n", "<leader>k", "<cmd>bnext<cr>", { desc = "Next buffer" })
 -- map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })

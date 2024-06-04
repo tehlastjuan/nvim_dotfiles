@@ -140,6 +140,39 @@ function M.json.load()
   end
 end
 
+M.did_init = false
+function M.init()
+  if M.did_init then
+    return
+  end
+  M.did_init = true
+  local plugin = require("lazy.core.config").spec.plugins.LazyVim
+  if plugin then
+    vim.opt.rtp:append(plugin.dir)
+  end
+
+  package.preload["lazyvim.plugins.lsp.format"] = function()
+    LazyVim.deprecate([[require("lazyvim.plugins.lsp.format")]], [[LazyVim.format]])
+    return LazyVim.format
+  end
+
+  -- delay notifications till vim.notify was replaced or after 500ms
+  LazyVim.lazy_notify()
+
+  -- load options here, before lazy init while sourcing plugin modules
+  -- this is needed to make sure options will be correctly applied
+  -- after installing missing plugins
+  M.load("options")
+  M.load("keymaps")
+  M.load("autocmds")
+
+  if vim.g.deprecation_warnings == false then
+    vim.deprecate = function() end
+  end
+
+  LazyVim.plugin.setup()
+  M.json.load()
+end
 
 ---@type LazyVimOptions
 local options
@@ -225,40 +258,6 @@ function M.load(name)
   end
   local pattern = "LazyVim" .. name:sub(1, 1):upper() .. name:sub(2)
   vim.api.nvim_exec_autocmds("User", { pattern = pattern, modeline = false })
-end
-
-M.did_init = false
-function M.init()
-  if M.did_init then
-    return
-  end
-  M.did_init = true
-  local plugin = require("lazy.core.config").spec.plugins.LazyVim
-  if plugin then
-    vim.opt.rtp:append(plugin.dir)
-  end
-
-  package.preload["lazyvim.plugins.lsp.format"] = function()
-    LazyVim.deprecate([[require("lazyvim.plugins.lsp.format")]], [[LazyVim.format]])
-    return LazyVim.format
-  end
-
-  -- delay notifications till vim.notify was replaced or after 500ms
-  LazyVim.lazy_notify()
-
-  -- load options here, before lazy init while sourcing plugin modules
-  -- this is needed to make sure options will be correctly applied
-  -- after installing missing plugins
-  M.load("options")
-  M.load("keymaps")
-  M.load("autocmds")
-
-  if vim.g.deprecation_warnings == false then
-    vim.deprecate = function() end
-  end
-
-  LazyVim.plugin.setup()
-  M.json.load()
 end
 
 setmetatable(M, {
