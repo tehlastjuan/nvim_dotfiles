@@ -288,14 +288,14 @@ return {
   },
 
   -- Displays a popup with possible key bindings of the command you started typing
-  {
-    "folke/which-key.nvim",
-    opts = function(_, opts)
-      if LazyVim.has("noice.nvim") then
-        opts.defaults["<leader>sn"] = { name = "+noice" }
-      end
-    end,
-  },
+  -- {
+  --   "folke/which-key.nvim",
+  --   opts = function(_, opts)
+  --     if LazyVim.has("noice.nvim") then
+  --       opts.defaults["<leader>sn"] = { name = "+noice" }
+  --     end
+  --   end,
+  -- },
 
   -- icons
   { "nvim-tree/nvim-web-devicons", lazy = true },

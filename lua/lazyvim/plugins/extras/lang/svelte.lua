@@ -1,11 +1,11 @@
 return {
   recommended = function()
     return LazyVim.extras.wants({
-      ft = "astro",
+      ft = "svelte",
       root = {
-        "astro.config.js",
-        "astro.config.mjs",
-        "astro.config.cjs",
+        "svelte.config.js",
+        "svelte.config.mjs",
+        "svelte.config.cjs",
       },
     })
   end,
@@ -15,7 +15,7 @@ return {
 
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = { ensure_installed = { "astro" } },
+    opts = { ensure_installed = { "svelte" } },
   },
 
   -- LSP Servers
@@ -23,7 +23,20 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        astro = {},
+        svelte = {
+          keys = {
+            {
+              "<leader>co",
+              LazyVim.lsp.action["source.organizeImports"],
+              desc = "Organize Imports",
+            },
+          },
+          capabilities = {
+            workspace = {
+              didChangeWatchedFiles = vim.fn.has("nvim-0.10") == 0 and { dynamicRegistration = true },
+            },
+          },
+        },
       },
     },
   },
@@ -34,8 +47,8 @@ return {
     opts = function(_, opts)
       LazyVim.extend(opts.servers.vtsls, "settings.vtsls.tsserver.globalPlugins", {
         {
-          name = "@astrojs/ts-plugin",
-          location = LazyVim.get_pkg_path("astro-language-server", "/node_modules/@astrojs/ts-plugin"),
+          name = "typescript-svelte-plugin",
+          location = LazyVim.get_pkg_path("svelte-language-server", "/node_modules/typescript-svelte-plugin"),
           enableForWorkspaceTypeScriptVersions = true,
         },
       })
@@ -47,7 +60,7 @@ return {
     opts = function(_, opts)
       if LazyVim.has_extra("formatting.prettier") then
         opts.formatters_by_ft = opts.formatters_by_ft or {}
-        opts.formatters_by_ft.astro = { "prettier" }
+        opts.formatters_by_ft.svelte = { "prettier" }
       end
     end,
   },

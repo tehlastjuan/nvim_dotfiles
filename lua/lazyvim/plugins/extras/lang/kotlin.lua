@@ -15,16 +15,12 @@ return {
   -- Add packages(linting, debug adapter)
   {
     "williamboman/mason.nvim",
-    opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed or {}, { "ktlint", "kotlin-debug-adapter" })
-    end,
+    opts = { ensure_installed = { "ktlint" } },
   },
   -- Add syntax highlighting
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed or {}, { "kotlin" })
-    end,
+    opts = { ensure_installed = { "kotlin" } },
   },
   -- Add language server
   {
@@ -35,7 +31,7 @@ return {
       },
     },
   },
-  -- Add linting as optional
+  -- Add linting
   {
     "mfussenegger/nvim-lint",
     optional = true,
@@ -44,7 +40,7 @@ return {
       linters_by_ft = { kotlin = { "ktlint" } },
     },
   },
-  -- Add formatting as optional
+  -- Add formatting
   {
     "stevearc/conform.nvim",
     optional = true,
@@ -52,7 +48,7 @@ return {
       formatters_by_ft = { kotlin = { "ktlint" } },
     },
   },
-  -- Add formatting and linting as optional
+  -- Add formatting and linting
   {
     "nvimtools/none-ls.nvim",
     optional = true,
@@ -72,7 +68,7 @@ return {
     opts = function()
       local dap = require("dap")
       if not dap.adapters.kotlin then
-        require("dap").adapters.kotlin = {
+        dap.adapters.kotlin = {
           type = "executable",
           command = "kotlin-debug-adapter",
           options = { auto_continue_if_many_stopped = false },
@@ -108,7 +104,7 @@ return {
           port = 5005,
           args = {},
           projectRoot = vim.fn.getcwd,
-          hostName = "localhost",
+          hostName = "127.0.0.1",
           timeout = 2000,
         },
       }

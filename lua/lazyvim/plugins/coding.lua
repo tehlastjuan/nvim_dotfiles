@@ -199,7 +199,6 @@ return {
     "folke/ts-comments.nvim",
     event = "VeryLazy",
     opts = {},
-    enabled = vim.fn.has("nvim-0.10") == 1,
   },
 
   -- Better text-objects
@@ -238,14 +237,14 @@ return {
   {
     "folke/lazydev.nvim",
     ft = "lua",
-    opts = function()
-      return {
-        library = {
-          uv = "luvit-meta/library",
-          lazyvim = "LazyVim",
-        },
-      }
-    end,
+    cmd = "LazyDev",
+    opts = {
+      library = {
+        { path = "luvit-meta/library", words = { "vim%.uv" } },
+        { path = "LazyVim", words = { "LazyVim" } },
+        { path = "lazy.nvim", words = { "LazyVim" } },
+      },
+    },
   },
   -- Manage libuv types with lazy. Plugin will never be loaded
   { "Bilal2453/luvit-meta", lazy = true },

@@ -22,6 +22,7 @@ return {
       }
     end,
     keys = {
+      { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
       {
         "<leader>aa",
         function()
@@ -50,13 +51,6 @@ return {
         mode = { "n", "v" },
       },
     },
-    init = function()
-      LazyVim.on_load("which-key.nvim", function()
-        vim.schedule(function()
-          require("which-key").register({ a = { name = "+ai" } }, { prefix = "<leader>" })
-        end)
-      end)
-    end,
     config = function(_, opts)
       local chat = require("CopilotChat")
       require("CopilotChat.integrations.cmp").setup()
