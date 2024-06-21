@@ -65,6 +65,7 @@ return {
         NeoTreeFloatNormal = { fg = "#a5b0c5", bg = "#242b38" },
 
         NormalFloat = { bg = "#242b38" },
+        SnippetTabstop = { bg = "#1e222a" },
         FloatBorder = { fg = "#363c51", bg = "#1e222a" },
         WhichKeyFloat = { bg = "#242b38" },
         MasonNormal = { bg = "#242b38" },
