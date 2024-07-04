@@ -3,7 +3,7 @@ _G.LazyVim = require("lazyvim.util")
 ---@class LazyVimConfig: LazyVimOptions
 local M = {}
 
-M.version = "10.21.1" -- x-release-please-version
+M.version = "12.25.0" -- x-release-please-version
 LazyVim.config = M
 
 ---@class LazyVimOptions
@@ -17,64 +17,67 @@ local defaults = {
     misc = {
       dots = "󰇘",
     },
+    ft = {
+      octo = "",
+    },
     dap = {
-      Stopped             = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
-      Breakpoint          = " ",
+      Stopped = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
+      Breakpoint = " ",
       BreakpointCondition = " ",
-      BreakpointRejected  = { " ", "DiagnosticError" },
-      LogPoint            = ".>",
+      BreakpointRejected = { " ", "DiagnosticError" },
+      LogPoint = ".>",
     },
     diagnostics = {
       Error = " ",
-      Warn  = " ",
-      Hint  = " ",
-      Info  = " ",
+      Warn = " ",
+      Hint = " ",
+      Info = " ",
     },
     git = {
-      added    = " ",
+      added = " ",
       modified = " ",
-      removed  = " ",
+      removed = " ",
     },
     kinds = {
-      Array         = " ",
-      Boolean       = "󰨙 ",
-      Class         = " ",
-      Codeium       = "󰘦 ",
-      Color         = " ",
-      Control       = " ",
-      Collapsed     = " ",
-      Constant      = "󰏿 ",
-      Constructor   = " ",
-      Copilot       = " ",
-      Enum          = " ",
-      EnumMember    = " ",
-      Event         = " ",
-      Field         = " ",
-      File          = " ",
-      Folder        = " ",
-      Function      = "󰊕 ",
-      Interface     = " ",
-      Key           = " ",
-      Keyword       = " ",
-      Method        = "󰊕 ",
-      Module        = " ",
-      Namespace     = "󰦮 ",
-      Null          = " ",
-      Number        = "󰎠 ",
-      Object        = " ",
-      Operator      = " ",
-      Package       = " ",
-      Property      = " ",
-      Reference     = " ",
-      Snippet       = " ",
-      String        = " ",
-      Struct        = "󰆼 ",
-      TabNine       = "󰏚 ",
-      Text          = " ",
+      Array = " ",
+      Boolean = "󰨙 ",
+      Class = " ",
+      Codeium = "󰘦 ",
+      Color = " ",
+      Control = " ",
+      Collapsed = " ",
+      Constant = "󰏿 ",
+      Constructor = " ",
+      Copilot = " ",
+      Enum = " ",
+      EnumMember = " ",
+      Event = " ",
+      Field = " ",
+      File = " ",
+      Folder = " ",
+      Function = "󰊕 ",
+      Interface = " ",
+      Key = " ",
+      Keyword = " ",
+      Method = "󰊕 ",
+      Module = " ",
+      Namespace = "󰦮 ",
+      Null = " ",
+      Number = "󰎠 ",
+      Object = " ",
+      Operator = " ",
+      Package = " ",
+      Property = " ",
+      Reference = " ",
+      Snippet = " ",
+      String = " ",
+      Struct = "󰆼 ",
+      TabNine = "󰏚 ",
+      Text = " ",
       TypeParameter = " ",
-      Unit          = " ",
-      Value         = " ",
-      Variable      = "󰀫 ",
+      Unit = " ",
+      Value = " ",
+      Variable = "󰀫 ",
     },
   },
   ---@type table<string, string[]|boolean>?
@@ -140,43 +143,8 @@ function M.json.load()
   end
 end
 
-M.did_init = false
-function M.init()
-  if M.did_init then
-    return
-  end
-  M.did_init = true
-  local plugin = require("lazy.core.config").spec.plugins.LazyVim
-  if plugin then
-    vim.opt.rtp:append(plugin.dir)
-  end
-
-  package.preload["lazyvim.plugins.lsp.format"] = function()
-    LazyVim.deprecate([[require("lazyvim.plugins.lsp.format")]], [[LazyVim.format]])
-    return LazyVim.format
-  end
-
-  -- delay notifications till vim.notify was replaced or after 500ms
-  LazyVim.lazy_notify()
-
-  -- load options here, before lazy init while sourcing plugin modules
-  -- this is needed to make sure options will be correctly applied
-  -- after installing missing plugins
-  M.load("options")
-  M.load("keymaps")
-  M.load("autocmds")
-
-  if vim.g.deprecation_warnings == false then
-    vim.deprecate = function() end
-  end
-
-  LazyVim.plugin.setup()
-  M.json.load()
-end
-
 ---@type LazyVimOptions
 local options
-
 
 ---@param opts? LazyVimOptions
 function M.setup(opts)
@@ -218,6 +186,22 @@ function M.setup(opts)
       })
     end,
   })
+
+  LazyVim.track("colorscheme")
+  LazyVim.try(function()
+    if type(M.colorscheme) == "function" then
+      M.colorscheme()
+    else
+      vim.cmd.colorscheme(M.colorscheme)
+    end
+  end, {
+    msg = "Could not load your colorscheme",
+    on_error = function(msg)
+      LazyVim.error(msg)
+      vim.cmd.colorscheme("habamax")
+    end,
+  })
+  LazyVim.track()
 end
 
 ---@param buf? number
@@ -258,6 +242,40 @@ function M.load(name)
   end
   local pattern = "LazyVim" .. name:sub(1, 1):upper() .. name:sub(2)
   vim.api.nvim_exec_autocmds("User", { pattern = pattern, modeline = false })
+end
+
+M.did_init = false
+function M.init()
+  if M.did_init then
+    return
+  end
+  M.did_init = true
+  local plugin = require("lazy.core.config").spec.plugins.LazyVim
+  if plugin then
+    vim.opt.rtp:append(plugin.dir)
+  end
+
+  package.preload["lazyvim.plugins.lsp.format"] = function()
+    LazyVim.deprecate([[require("lazyvim.plugins.lsp.format")]], [[LazyVim.format]])
+    return LazyVim.format
+  end
+
+  -- delay notifications till vim.notify was replaced or after 500ms
+  LazyVim.lazy_notify()
+
+  -- load options here, before lazy init while sourcing plugin modules
+  -- this is needed to make sure options will be correctly applied
+  -- after installing missing plugins
+  M.load("options")
+  M.load("keymaps")
+  M.load("autocmds")
+
+  if vim.g.deprecation_warnings == false then
+    vim.deprecate = function() end
+  end
+
+  LazyVim.plugin.setup()
+  M.json.load()
 end
 
 setmetatable(M, {

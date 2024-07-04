@@ -31,7 +31,7 @@ return {
         },
         mapping = cmp.mapping.preset.insert({
           ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
-          ["<C-m>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+          ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
           ["<C-b>"] = cmp.mapping.scroll_docs(-4),
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
           ["<C-Space>"] = cmp.mapping.complete(),
@@ -50,11 +50,23 @@ return {
           { name = "buffer" },
         }),
         formatting = {
-          format = function(_, item)
-            local icons = require("lazyvim.config").icons.kinds
+          format = function(entry, item)
+            local icons = LazyVim.config.icons.kinds
             if icons[item.kind] then
               item.kind = icons[item.kind] .. item.kind
             end
+
+            local widths = {
+              abbr = vim.g.cmp_widths and vim.g.cmp_widths.abbr or 40,
+              menu = vim.g.cmp_widths and vim.g.cmp_widths.menu or 30,
+            }
+
+            for key, width in pairs(widths) do
+              if item[key] and vim.fn.strdisplaywidth(item[key]) > width then
+                item[key] = vim.fn.strcharpart(item[key], 0, width - 1) .. "…"
+              end
+            end
+
             return item
           end,
         },
@@ -112,7 +124,9 @@ return {
           return LazyVim.cmp.expand(item.body)
         end,
       }
-      table.insert(opts.sources, { name = "snippets" })
+      if LazyVim.has("nvim-snippets") then
+        table.insert(opts.sources, { name = "snippets" })
+      end
     end,
     keys = {
       {
@@ -161,44 +175,16 @@ return {
   --   },
   -- },
 
-  {
-    "echasnovski/mini.surround",
-    keys = function(_, keys)
-      -- Populate the keys based on the user's options
-      local plugin = require("lazy.core.config").spec.plugins["mini.surround"]
-      local opts = require("lazy.core.plugin").values(plugin, "opts", false)
-      local mappings = {
-        { opts.mappings.add, desc = "Add surrounding", mode = { "n", "v" } },
-        { opts.mappings.delete, desc = "Delete surrounding" },
-        { opts.mappings.find, desc = "Find right surrounding" },
-        { opts.mappings.find_left, desc = "Find left surrounding" },
-        { opts.mappings.highlight, desc = "Highlight surrounding" },
-        { opts.mappings.replace, desc = "Replace surrounding" },
-        { opts.mappings.update_n_lines, desc = "Update `MiniSurround.config.n_lines`" },
-      }
-      mappings = vim.tbl_filter(function(m)
-        return m[1] and #m[1] > 0
-      end, mappings)
-      return vim.list_extend(mappings, keys)
-    end,
-    opts = {
-      mappings = {
-        add = "gsa", -- Add surrounding in Normal and Visual modes
-        delete = "gsd", -- Delete surrounding
-        find = "gsf", -- Find surrounding (to the right)
-        find_left = "gsF", -- Find surrounding (to the left)
-        highlight = "gsh", -- Highlight surrounding
-        replace = "gsr", -- Replace surrounding
-        update_n_lines = "gsn", -- Update `n_lines`
-      },
-    },
-  },
-
   -- comments
   {
     "folke/ts-comments.nvim",
     event = "VeryLazy",
     opts = {},
+    enabled = vim.fn.has("nvim-0.10") == 1,
+  },
+  {
+    import = "lazyvim.plugins.extras.coding.mini-comment",
+    enabled = vim.fn.has("nvim-0.10") == 0,
   },
 
   -- Better text-objects

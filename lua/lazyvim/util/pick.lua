@@ -12,14 +12,51 @@ local M = setmetatable({}, {
 ---@field buf? number
 ---@field show_untracked? boolean
 
----@type table<string, string>
-M.commands = {
-  files = "find_files",
-}
+---@class LazyPicker
+---@field name string
+---@field open fun(command:string, opts?:lazyvim.util.pick.Opts)
+---@field commands table<string, string>
+
+---@type LazyPicker?
+M.picker = nil
+
+---@param picker LazyPicker
+function M.register(picker)
+  -- this only happens when using :LazyExtras
+  -- so allow to get the full spec
+  if vim.v.vim_did_enter == 1 then
+    return true
+  end
+
+  if M.picker and M.picker.name ~= M.want() then
+    M.picker = nil
+  end
+
+  if M.picker and M.picker.name ~= picker.name then
+    LazyVim.warn(
+      "`LazyVim.pick`: picker already set to `" .. M.picker.name .. "`,\nignoring new picker `" .. picker.name .. "`"
+    )
+    return false
+  end
+  M.picker = picker
+  return true
+end
+
+function M.want()
+  vim.g.lazyvim_picker = vim.g.lazyvim_picker or "auto"
+  if vim.g.lazyvim_picker == "auto" then
+    return LazyVim.has_extra("editor.fzf") and "fzf" or "telescope"
+  end
+  return vim.g.lazyvim_picker
+end
 
 ---@param command? string
 ---@param opts? lazyvim.util.pick.Opts
 function M.open(command, opts)
+  if not M.picker then
+    return LazyVim.error("LazyVim.pick: picker not set")
+  end
+
   command = command or "auto"
   opts = opts or {}
 
@@ -43,11 +80,14 @@ function M.open(command, opts)
       and not vim.uv.fs_stat(cwd .. "/.rgignore")
     then
       command = "git_files"
-      opts.show_untracked = opts.show_untracked ~= false
+      if opts.show_untracked == nil then
+        opts.show_untracked = true
+        opts.recurse_submodules = false
+      end
     end
   end
-  command = M.commands[command] or command
-  M._open(command, opts)
+  command = M.picker.commands[command] or command
+  M.picker.open(command, opts)
 end
 
 ---@param command? string
@@ -55,14 +95,8 @@ end
 function M.wrap(command, opts)
   opts = opts or {}
   return function()
-    M.open(command, vim.deepcopy(opts))
+    LazyVim.pick.open(command, vim.deepcopy(opts))
   end
-end
-
----@param command string
----@param opts? lazyvim.util.pick.Opts
-function M._open(command, opts)
-  return LazyVim.telescope.open(command, opts)
 end
 
 function M.config_files()

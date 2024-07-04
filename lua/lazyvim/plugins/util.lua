@@ -49,23 +49,23 @@ return {
     },
   },
 
-  {
-    "lervag/vimtex",
-    -- opt = true,
-    config = function()
-      vim.g.vimtex_view_method = "zathura"
-      vim.g.vimtex_quickfix_mode = 0
-      vim.g.vimtex_view_general_viewer = "zathura"
-      vim.g.vimtex_compiler_latexmk_engines = {
-        _ = "-lualatex",
-      }
-      vim.g.tex_comment_nospell = 1
-      vim.g.vimtex_compiler_progname = "latexrun"
-      vim.g.vimtex_view_general_options = [[--unique file:@pdf\#src:@line@tex]]
-      -- vim.g.vimtex_view_general_options_latexmk = '--unique'
-    end,
-    ft = "tex",
-  },
+  -- {
+  --   "lervag/vimtex",
+  --   -- opt = true,
+  --   config = function()
+  --     vim.g.vimtex_view_method = "zathura"
+  --     vim.g.vimtex_quickfix_mode = 0
+  --     vim.g.vimtex_view_general_viewer = "zathura"
+  --     vim.g.vimtex_compiler_latexmk_engines = {
+  --       _ = "-lualatex",
+  --     }
+  --     vim.g.tex_comment_nospell = 1
+  --     vim.g.vimtex_compiler_progname = "latexrun"
+  --     vim.g.vimtex_view_general_options = [[--unique file:@pdf\#src:@line@tex]]
+  --     -- vim.g.vimtex_view_general_options_latexmk = '--unique'
+  --   end,
+  --   ft = "tex",
+  -- },
 
   {
     "NvChad/nvim-colorizer.lua",
@@ -163,6 +163,12 @@ return {
 
   {
     "nvim-telescope/telescope.nvim",
+    dependencies = {
+      import = "lazyvim.plugins.extras.editor.telescope",
+      enabled = function()
+        return LazyVim.pick.want() == "telescope"
+      end,
+    },
     opts = function()
       return {
         defaults = {
@@ -234,64 +240,64 @@ return {
     end,
   },
 
-  {
-    "nvim-telescope/telescope.nvim",
-    custom_theme = function()
-      local themes = require("telescope.themes")
-
-      function themes.get_custom(opts)
-        opts = opts or {}
-
-        local theme_opts = {
-          theme = "custom",
-
-          sorting_strategy = "descending",
-          layout_strategy = "vertical",
-
-          results_title = false,
-          prompt_title = false,
-          dynamic_preview_title = false,
-
-          layout_config = {
-            anchor = "S",
-            width = 0.8,
-            height = 0.67,
-            preview_cutoff = 1,
-            preview_height = 25,
-            prompt_position = "bottom",
-            -- mirror = true,
-          },
-
-          -- resolve.resolve_width()
-          -- border = true,
-          -- # ivy
-          -- borderchars = {
-          -- 	prompt = { "─", " ", " ", " ", "─", "─", " ", " " },
-          -- 	results = { " " },
-          -- 	preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
-          -- },
-          -- # ivy-alt
-          -- borderchars = {
-          -- 	prompt = { " ", " ", "─", " ", " ", " ", "─", "─" },
-          -- 	results = { "─", " ", " ", " ", "─", "─", " ", " " },
-          -- 	preview = { "─", " ", "─", "│", "┬", "─", "─", "╰" },
-          -- },
-          -- # cursor
-          borderchars = {
-            prompt = { " ", "│", "─", "│", "│", "│", "╯", "╰" },
-            -- prompt = { "─", "│", " ", "│", "╭", "╮", "│", "│" },
-            results = { "─", "│", " ", "│", "╭", "╮", "│", "│" },
-            -- results = { "─", "│", "─", "│", "├", "┤", "╯", "╰" },
-            preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
-          },
-        }
-
-        return vim.tbl_deep_extend("force", theme_opts, opts)
-      end
-
-      return themes
-    end,
-  },
+  -- {
+  --   "nvim-telescope/telescope.nvim",
+  --   custom_theme = function()
+  --     local themes = require("telescope.themes")
+  --
+  --     function themes.get_custom(opts)
+  --       opts = opts or {}
+  --
+  --       local theme_opts = {
+  --         theme = "custom",
+  --
+  --         sorting_strategy = "descending",
+  --         layout_strategy = "vertical",
+  --
+  --         results_title = false,
+  --         prompt_title = false,
+  --         dynamic_preview_title = false,
+  --
+  --         layout_config = {
+  --           anchor = "S",
+  --           width = 0.8,
+  --           height = 0.67,
+  --           preview_cutoff = 1,
+  --           preview_height = 25,
+  --           prompt_position = "bottom",
+  --           -- mirror = true,
+  --         },
+  --
+  --         -- resolve.resolve_width()
+  --         -- border = true,
+  --         -- # ivy
+  --         -- borderchars = {
+  --         -- 	prompt = { "─", " ", " ", " ", "─", "─", " ", " " },
+  --         -- 	results = { " " },
+  --         -- 	preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+  --         -- },
+  --         -- # ivy-alt
+  --         -- borderchars = {
+  --         -- 	prompt = { " ", " ", "─", " ", " ", " ", "─", "─" },
+  --         -- 	results = { "─", " ", " ", " ", "─", "─", " ", " " },
+  --         -- 	preview = { "─", " ", "─", "│", "┬", "─", "─", "╰" },
+  --         -- },
+  --         -- # cursor
+  --         borderchars = {
+  --           prompt = { " ", "│", "─", "│", "│", "│", "╯", "╰" },
+  --           -- prompt = { "─", "│", " ", "│", "╭", "╮", "│", "│" },
+  --           results = { "─", "│", " ", "│", "╭", "╮", "│", "│" },
+  --           -- results = { "─", "│", "─", "│", "├", "┤", "╯", "╰" },
+  --           preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+  --         },
+  --       }
+  --
+  --       return vim.tbl_deep_extend("force", theme_opts, opts)
+  --     end
+  --
+  --     return themes
+  --   end,
+  -- },
 
   -- clisp
   -- {
@@ -313,35 +319,35 @@ return {
   -- 	end,
   -- },
 
-  {
-    "monkoose/nvlime",
-    dependencies = {
-      "monkoose/parsley",
-      "adolenc/cl-neovim",
-      "gpanders/nvim-parinfer",
-      {
-        "nvim-treesitter/nvim-treesitter",
-        opts = function(_, opts)
-          if type(opts.ensure_installed) == "table" then
-            vim.list_extend(opts.ensure_installed, { "commonlisp" })
-          end
-        end,
-      },
-    },
-    cmp_enabled = function()
-      vim.g.nvlime_config.cmp.enabled = true
-    end,
-    config = function()
-      require("cmp").setup.filetype({ "lisp" }, {
-        sources = {
-          { name = "nvim_lsp" },
-          { name = "path" },
-          { name = "buffer" },
-          { name = "nvlime" },
-        },
-      })
-    end,
-  },
+  -- {
+  --   "monkoose/nvlime",
+  --   dependencies = {
+  --     "monkoose/parsley",
+  --     "adolenc/cl-neovim",
+  --     "gpanders/nvim-parinfer",
+  --     {
+  --       "nvim-treesitter/nvim-treesitter",
+  --       opts = function(_, opts)
+  --         if type(opts.ensure_installed) == "table" then
+  --           vim.list_extend(opts.ensure_installed, { "commonlisp" })
+  --         end
+  --       end,
+  --     },
+  --   },
+  --   cmp_enabled = function()
+  --     vim.g.nvlime_config.cmp.enabled = true
+  --   end,
+  --   config = function()
+  --     require("cmp").setup.filetype({ "lisp" }, {
+  --       sources = {
+  --         { name = "nvim_lsp" },
+  --         { name = "path" },
+  --         { name = "buffer" },
+  --         { name = "nvlime" },
+  --       },
+  --     })
+  --   end,
+  -- },
 
   {
     "chomosuke/typst-preview.nvim",

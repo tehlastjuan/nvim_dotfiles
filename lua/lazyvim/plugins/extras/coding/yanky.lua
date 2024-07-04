@@ -8,8 +8,18 @@ return {
     highlight = { timer = 150 },
   },
   keys = {
+    {
+      "<leader>p",
+      function()
+        if LazyVim.pick.picker.name == "telescope" then
+          require("telescope").extensions.yank_history.yank_history({})
+        else
+          vim.cmd([[YankyRingHistory]])
+        end
+      end,
+      desc = "Open Yank History",
+    },
         -- stylua: ignore
-    { "<leader>p", function() require("telescope").extensions.yank_history.yank_history({ }) end, desc = "Open Yank History" },
     { "y", "<Plug>(YankyYank)", mode = { "n", "x" }, desc = "Yank Text" },
     { "p", "<Plug>(YankyPutAfter)", mode = { "n", "x" }, desc = "Put Yanked Text After Cursor" },
     { "P", "<Plug>(YankyPutBefore)", mode = { "n", "x" }, desc = "Put Yanked Text Before Cursor" },
