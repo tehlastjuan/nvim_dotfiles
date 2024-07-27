@@ -161,84 +161,84 @@ return {
     },
   },
 
-  {
-    "nvim-telescope/telescope.nvim",
-    dependencies = {
-      import = "lazyvim.plugins.extras.editor.telescope",
-      enabled = function()
-        return LazyVim.pick.want() == "telescope"
-      end,
-    },
-    opts = function()
-      return {
-        defaults = {
-          sorting_strategy = "ascending",
-          create_layout = function(picker)
-            local Layout = require("telescope.pickers.layout")
-
-            local config = {
-              preview = {
-                win = 1000,
-                split = "right",
-                -- width = 0.5,
-                style = "minimal",
-              },
-              results = {
-                split = "below",
-                height = 10,
-                style = "minimal",
-              },
-              prompt = {
-                split = "above",
-                height = 1,
-                style = "minimal",
-              },
-            }
-
-            local function create_window(enter, opts)
-              local bufnr = vim.api.nvim_create_buf(false, true)
-              local winid = vim.api.nvim_open_win(bufnr, enter, opts)
-              vim.wo[winid].winhighlight = "Normal:Normal"
-
-              return Layout.Window({
-                bufnr = bufnr,
-                winid = winid,
-              })
-            end
-            local function destroy_window(window)
-              if window then
-                if vim.api.nvim_win_is_valid(window.winid) then
-                  vim.api.nvim_win_close(window.winid, true)
-                end
-                if vim.api.nvim_buf_is_valid(window.bufnr) then
-                  vim.api.nvim_buf_delete(window.bufnr, { force = true })
-                end
-              end
-            end
-
-            local layout = Layout({
-              picker = picker,
-              mount = function(self)
-                self.preview = create_window(false, config.preview)
-                config.results["win"] = self.preview.winid
-                self.results = create_window(false, config.results)
-                config.prompt["win"] = self.results.winid
-                self.prompt = create_window(true, config.prompt)
-              end,
-              unmount = function(self)
-                destroy_window(self.results)
-                destroy_window(self.preview)
-                destroy_window(self.prompt)
-              end,
-              update = function(self) end,
-            })
-
-            return layout
-          end,
-        },
-      }
-    end,
-  },
+  -- {
+  --   "nvim-telescope/telescope.nvim",
+  --   dependencies = {
+  --     import = "lazyvim.plugins.extras.editor.telescope",
+  --     enabled = function()
+  --       return LazyVim.pick.want() == "telescope"
+  --     end,
+  --   },
+  --   opts = function()
+  --     return {
+  --       defaults = {
+  --         sorting_strategy = "ascending",
+  --         create_layout = function(picker)
+  --           local Layout = require("telescope.pickers.layout")
+  --
+  --           local config = {
+  --             preview = {
+  --               win = 1000,
+  --               split = "right",
+  --               -- width = 0.5,
+  --               style = "minimal",
+  --             },
+  --             results = {
+  --               split = "below",
+  --               height = 10,
+  --               style = "minimal",
+  --             },
+  --             prompt = {
+  --               split = "above",
+  --               height = 1,
+  --               style = "minimal",
+  --             },
+  --           }
+  --
+  --           local function create_window(enter, opts)
+  --             local bufnr = vim.api.nvim_create_buf(false, true)
+  --             local winid = vim.api.nvim_open_win(bufnr, enter, opts)
+  --             vim.wo[winid].winhighlight = "Normal:Normal"
+  --
+  --             return Layout.Window({
+  --               bufnr = bufnr,
+  --               winid = winid,
+  --             })
+  --           end
+  --           local function destroy_window(window)
+  --             if window then
+  --               if vim.api.nvim_win_is_valid(window.winid) then
+  --                 vim.api.nvim_win_close(window.winid, true)
+  --               end
+  --               if vim.api.nvim_buf_is_valid(window.bufnr) then
+  --                 vim.api.nvim_buf_delete(window.bufnr, { force = true })
+  --               end
+  --             end
+  --           end
+  --
+  --           local layout = Layout({
+  --             picker = picker,
+  --             mount = function(self)
+  --               self.preview = create_window(false, config.preview)
+  --               config.results["win"] = self.preview.winid
+  --               self.results = create_window(false, config.results)
+  --               config.prompt["win"] = self.results.winid
+  --               self.prompt = create_window(true, config.prompt)
+  --             end,
+  --             unmount = function(self)
+  --               destroy_window(self.results)
+  --               destroy_window(self.preview)
+  --               destroy_window(self.prompt)
+  --             end,
+  --             update = function(self) end,
+  --           })
+  --
+  --           return layout
+  --         end,
+  --       },
+  --     }
+  --   end,
+  -- },
 
   -- {
   --   "nvim-telescope/telescope.nvim",
