@@ -7,9 +7,9 @@ return {
       "mason.nvim",
       { "williamboman/mason-lspconfig.nvim", config = function() end },
     },
-    ---@class PluginLspOpts
     opts = function()
-      return {
+      ---@class PluginLspOpts
+      local ret = {
         -- options for vim.diagnostic.config()
         ---@type vim.diagnostic.Opts
         diagnostics = {
@@ -74,7 +74,7 @@ return {
             -- mason = false, -- set to false if you don't want this server to be installed with mason
             -- Use this to add any additional keymaps
             -- for specific lsp servers
-            ---@type LazyKeysSpec[]
+            -- ---@type LazyKeysSpec[]
             -- keys = {},
             settings = {
               Lua = {
@@ -115,6 +115,7 @@ return {
           -- ["*"] = function(server, opts) end,
         },
       }
+      return ret
     end,
     ---@param opts PluginLspOpts
     config = function(_, opts)
@@ -142,36 +143,36 @@ return {
         end
       end
 
-      if vim.fn.has("nvim-0.10") == 1 then
-        -- inlay hints
-        if opts.inlay_hints.enabled then
-          LazyVim.lsp.on_supports_method("textDocument/inlayHint", function(client, buffer)
-            if
-              vim.api.nvim_buf_is_valid(buffer)
-              and vim.bo[buffer].buftype == ""
-              and not vim.tbl_contains(opts.inlay_hints.exclude, vim.bo[buffer].filetype)
-            then
-              LazyVim.toggle.inlay_hints(buffer, true)
-            end
-          end)
-        end
-
-        -- code lens
-        if opts.codelens.enabled and vim.lsp.codelens then
-          LazyVim.lsp.on_supports_method("textDocument/codeLens", function(client, buffer)
-            vim.lsp.codelens.refresh()
-            vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-              buffer = buffer,
-              callback = vim.lsp.codelens.refresh,
-            })
-          end)
-        end
-      end
-
+      -- if vim.fn.has("nvim-0.10") == 1 then
+      --   -- inlay hints
+      --   if opts.inlay_hints.enabled then
+      --     LazyVim.lsp.on_supports_method("textDocument/inlayHint", function(client, buffer)
+      --       if
+      --         vim.api.nvim_buf_is_valid(buffer)
+      --         and vim.bo[buffer].buftype == ""
+      --         and not vim.tbl_contains(opts.inlay_hints.exclude, vim.bo[buffer].filetype)
+      --       then
+      --         vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
+      --       end
+      --     end)
+      --   end
+      --
+      --   -- code lens
+      --   if opts.codelens.enabled and vim.lsp.codelens then
+      --     LazyVim.lsp.on_supports_method("textDocument/codeLens", function(client, buffer)
+      --       vim.lsp.codelens.refresh()
+      --       vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+      --         buffer = buffer,
+      --         callback = vim.lsp.codelens.refresh,
+      --       })
+      --     end)
+      --   end
+      -- end
+      --
       -- if type(opts.diagnostics.virtual_text) == "table" and opts.diagnostics.virtual_text.prefix == "icons" then
       --   opts.diagnostics.virtual_text.prefix = vim.fn.has("nvim-0.10.0") == 0 and "●"
       --     or function(diagnostic)
-      --       local icons = require("lazyvim.config").icons.diagnostics
+      --       local icons = LazyVim.config.icons.diagnostics
       --       for d, icon in pairs(icons) do
       --         if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
       --           return icon
@@ -196,6 +197,9 @@ return {
         local server_opts = vim.tbl_deep_extend("force", {
           capabilities = vim.deepcopy(capabilities),
         }, servers[server] or {})
+        if server_opts.enabled == false then
+          return
+        end
 
         if opts.setup[server] then
           if opts.setup[server](server, server_opts) then
@@ -245,8 +249,11 @@ return {
       if LazyVim.lsp.is_enabled("denols") and LazyVim.lsp.is_enabled("vtsls") then
         local is_deno = require("lspconfig.util").root_pattern("deno.json", "deno.jsonc")
         LazyVim.lsp.disable("vtsls", is_deno)
-        LazyVim.lsp.disable("denols", function(root_dir)
-          return not is_deno(root_dir)
+        LazyVim.lsp.disable("denols", function(root_dir, config)
+          if not is_deno(root_dir) then
+            config.settings.deno.enable = false
+          end
+          return false
         end)
       end
     end,

@@ -5,6 +5,12 @@ vim.g.maplocalleader = ";"
 -- Enable LazyVim auto format
 vim.g.autoformat = false
 
+-- LazyVim picker to use.
+-- Can be one of: telescope, fzf
+-- Leave it to "auto" to automatically use the picker
+-- enabled with `:LazyExtras`
+vim.g.lazyvim_picker = "auto"
+
 -- LazyVim root dir detection
 -- Each entry can be:
 -- * the name of a detector function like `lsp` or `cwd`
@@ -17,7 +23,13 @@ vim.g.root_spec = { "lsp", { ".git", "lua" }, "cwd" }
 --  * editorPreset to nvim-remote
 --  * enables nerd font icons
 -- Set to false to disable.
-vim.g.lazygit_config = true
+vim.g.lazygit_config = false
+
+-- Options for the LazyVim statuscolumn
+vim.g.lazyvim_statuscolumn = {
+  folds_open = false, -- show fold sign when fold is open
+  folds_githl = false, -- highlight fold sign with git sign color
+}
 
 -- Optionally setup the terminal to use
 -- This sets `vim.o.shell` and does some additional configuration for:
@@ -27,6 +39,12 @@ vim.g.lazygit_config = true
 
 -- Hide deprecation warnings
 vim.g.deprecation_warnings = false
+
+-- Set filetype to `bigfile` for files larger than 1.5 MB
+-- Only vim syntax will be enabled (with the correct filetype)
+-- LSP, treesitter and other ft plugins will be disabled.
+-- mini.animate will also be disabled.
+vim.g.bigfile_size = 1024 * 1024 * 1.5 -- 1.5 MB
 
 -- Show the current document symbols location from Trouble in lualine
 vim.g.trouble_lualine = false
@@ -44,7 +62,7 @@ opt.spelllang = { "en" }
 
 -- Timing
 opt.ttimeout = true
-opt.timeoutlen = 300
+opt.timeoutlen = vim.g.vscode and 1000 or 300 -- Lower than default (1000) to quickly trigger which-key
 opt.ttimeoutlen = 10 -- Time out on key codes
 opt.updatetime = 200 -- Save swap file and trigger CursorHold
 
@@ -128,7 +146,7 @@ opt.equalalways = true -- Resize windows on split or close
 
 -- opt.cursorline = true          -- Enable highlighting of the current line
 -- opt.cursorlineopt = { 'line' }
-opt.virtualedit = "none" -- Allow cursor to move where there is no text in visual block mode
+opt.virtualedit = "block" -- Allow cursor to move where there is no text in visual block mode
 opt.cmdheight = 1 -- more space in the neovim command line for displaying messages
 opt.cmdwinheight = 5 -- Command-line lines
 

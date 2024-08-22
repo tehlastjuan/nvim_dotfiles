@@ -1,38 +1,4 @@
 return {
-  -- Better `vim.notify()`
-  -- {
-  --   "rcarriga/nvim-notify",
-  --   keys = {
-  --     {
-  --       "<leader>un",
-  --       function()
-  --         require("notify").dismiss({ silent = true, pending = true })
-  --       end,
-  --       desc = "Dismiss All Notifications",
-  --     },
-  --   },
-  --   opts = {
-  --     stages = "static",
-  --     timeout = 3000,
-  --     max_height = function()
-  --       return math.floor(vim.o.lines * 0.75)
-  --     end,
-  --     max_width = function()
-  --       return math.floor(vim.o.columns * 0.75)
-  --     end,
-  --     on_open = function(win)
-  --       vim.api.nvim_win_set_config(win, { zindex = 100 })
-  --     end,
-  --   },
-  --   init = function()
-  --     -- when noice is not enabled, install notify on VeryLazy
-  --     if not LazyVim.has("noice.nvim") then
-  --       LazyVim.on_very_lazy(function()
-  --         vim.notify = require("notify")
-  --       end)
-  --     end
-  --   end,
-  -- },
 
   -- This is what powers LazyVim's fancy-looking
   -- tabs, which include filetype icons and close buttons.
@@ -69,12 +35,10 @@ return {
         show_tab_indicators = false,
         show_close_icon = false,
         color_icons = true,
-        close_command = function(n)
-          LazyVim.ui.bufremove(n)
-        end,
-        right_mouse_command = function(n)
-          LazyVim.ui.bufremove(n)
-        end,
+        -- stylua: ignore
+        close_command = function(n) LazyVim.ui.bufremove(n) end,
+        -- stylua: ignore
+        right_mouse_command = function(n) LazyVim.ui.bufremove(n) end,
         diagnostics = "nvim_lsp",
         diagnostics_indicator = function(_, _, diag)
           local icons = require("lazyvim.config").icons.diagnostics
@@ -82,9 +46,6 @@ return {
             .. (diag.warning and icons.Warn .. diag.warning or "")
           return vim.trim(ret)
         end,
-
-        -- stylua: ignore
-        -- stylua: ignore
         offsets = {
           {
             filetype = "neo-tree",
@@ -238,7 +199,9 @@ return {
           })
         table.insert(opts.sections.lualine_c, {
           symbols and symbols.get,
-          cond = symbols and symbols.has,
+          cond = function()
+            return vim.b.trouble_lualine ~= false and symbols.has()
+          end,
         })
       end
 
@@ -250,7 +213,18 @@ return {
   {
     "lukas-reineke/indent-blankline.nvim",
     event = "LazyFile",
-    opts = {
+    opts = function()
+      LazyVim.toggle.map("<leader>ug", {
+        name = "Indention Guides",
+        get = function()
+          return require("ibl.config").get_config(0).enabled
+        end,
+        set = function(state)
+          require("ibl").setup_buffer(0, { enabled = state })
+        end,
+      })
+
+      return {
       indent = {
         char = "┆",
         tab_char = "╎",
@@ -283,7 +257,8 @@ return {
           "lazyterm",
         },
       },
-    },
+    }
+    end,
     main = "ibl",
   },
 

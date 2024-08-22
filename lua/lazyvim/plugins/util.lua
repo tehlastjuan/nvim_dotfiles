@@ -102,35 +102,35 @@ return {
     end,
   },
 
-  {
-    "kevinhwang91/rnvimr",
-    -- cmd = { "RnvimrToggle" },
-    -- keys = { { "<leader>r", "" } },
-    init = function()
-      vim.g.rnvimr_draw_border = 1
-      vim.g.rnvimr_enable_bw = 1
-      vim.g.rnvimr_enable_picker = 1
-      local winwd = vim.fn.winwidth(0)
-      local winhg = vim.fn.winheight(0)
-      vim.g.rnvimr_layout = {
-        relative = "editor",
-        width = winwd * 0.900,
-        height = winhg * 0.900,
-        col = winwd * 0.050,
-        row = winhg * 0.050,
-        style = "minimal",
-      }
-      vim.g.rnvimr_ranger_cmd = {
-        "ranger",
-        "--cmd=set preview_directories true",
-        -- "--cmd=set column_ratios 2,5,0",
-        -- "--cmd=set preview_files false",
-        -- "--cmd=set preview_images truefalse",
-        -- "--cmd=set padding_right false",
-        -- "--cmd=set collapse_preview true",
-      }
-    end,
-  },
+  -- {
+  --   "kevinhwang91/rnvimr",
+  --   -- cmd = { "RnvimrToggle" },
+  --   -- keys = { { "<leader>r", "" } },
+  --   init = function()
+  --     vim.g.rnvimr_draw_border = 1
+  --     vim.g.rnvimr_enable_bw = 1
+  --     vim.g.rnvimr_enable_picker = 1
+  --     local winwd = vim.fn.winwidth(0)
+  --     local winhg = vim.fn.winheight(0)
+  --     vim.g.rnvimr_layout = {
+  --       relative = "editor",
+  --       width = winwd * 0.900,
+  --       height = winhg * 0.900,
+  --       col = winwd * 0.050,
+  --       row = winhg * 0.050,
+  --       style = "minimal",
+  --     }
+  --     vim.g.rnvimr_ranger_cmd = {
+  --       "ranger",
+  --       "--cmd=set preview_directories true",
+  --       -- "--cmd=set column_ratios 2,5,0",
+  --       -- "--cmd=set preview_files false",
+  --       -- "--cmd=set preview_images truefalse",
+  --       -- "--cmd=set padding_right false",
+  --       -- "--cmd=set collapse_preview true",
+  --     }
+  --   end,
+  -- },
 
   {
     "akinsho/toggleterm.nvim",

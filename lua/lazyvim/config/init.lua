@@ -21,47 +21,47 @@ local defaults = {
       octo = "",
     },
     dap = {
-      Stopped = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
-      Breakpoint = " ",
+      Stopped             = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
+      Breakpoint          = " ",
       BreakpointCondition = " ",
-      BreakpointRejected = { " ", "DiagnosticError" },
-      LogPoint = ".>",
+      BreakpointRejected  = { " ", "DiagnosticError" },
+      LogPoint            = ".>",
     },
     diagnostics = {
       Error = " ",
-      Warn = " ",
-      Hint = " ",
-      Info = " ",
+      Warn  = " ",
+      Hint  = " ",
+      Info  = " ",
     },
     git = {
-      added = " ",
+      added    = " ",
       modified = " ",
-      removed = " ",
+      removed  = " ",
     },
     kinds = {
-      Array = " ",
-      Boolean = "󰨙 ",
-      Class = " ",
-      Codeium = "󰘦 ",
-      Color = " ",
-      Control = " ",
-      Collapsed = " ",
-      Constant = "󰏿 ",
+      Array       = " ",
+      Boolean     = "󰨙 ",
+      Class       = " ",
+      Codeium     = "󰘦 ",
+      Color       = " ",
+      Control     = " ",
+      Collapsed   = " ",
+      Constant    = "󰏿 ",
       Constructor = " ",
-      Copilot = " ",
-      Enum = " ",
-      EnumMember = " ",
-      Event = " ",
-      Field = " ",
-      File = " ",
-      Folder = " ",
-      Function = "󰊕 ",
-      Interface = " ",
-      Key = " ",
-      Keyword = " ",
-      Method = "󰊕 ",
-      Module = " ",
-      Namespace = "󰦮 ",
+      Copilot     = " ",
+      Enum        = " ",
+      EnumMember  = " ",
+      Event       = " ",
+      Field       = " ",
+      File        = " ",
+      Folder      = " ",
+      Function    = "󰊕 ",
+      Interface   = " ",
+      Key         = " ",
+      Keyword     = " ",
+      Method      = "󰊕 ",
+      Module      = " ",
+      Namespace   = "󰦮 ",
       Null = " ",
       Number = "󰎠 ",
       Object = " ",
@@ -120,6 +120,7 @@ local defaults = {
 
 M.json = {
   version = 6,
+  path = vim.g.lazyvim_json or vim.fn.stdpath("config") .. "/lazyvim.json",
   data = {
     version = nil, ---@type string?
     news = {}, ---@type table<string, string>
@@ -145,6 +146,7 @@ end
 
 ---@type LazyVimOptions
 local options
+local lazy_clipboard
 
 ---@param opts? LazyVimOptions
 function M.setup(opts)
@@ -165,6 +167,9 @@ function M.setup(opts)
         M.load("autocmds")
       end
       M.load("keymaps")
+      -- if lazy_clipboard ~= nil then
+      --   vim.opt.clipboard = lazy_clipboard
+      -- end
 
       LazyVim.format.setup()
       LazyVim.root.setup()
@@ -187,21 +192,21 @@ function M.setup(opts)
     end,
   })
 
-  LazyVim.track("colorscheme")
-  LazyVim.try(function()
-    if type(M.colorscheme) == "function" then
-      M.colorscheme()
-    else
-      vim.cmd.colorscheme(M.colorscheme)
-    end
-  end, {
-    msg = "Could not load your colorscheme",
-    on_error = function(msg)
-      LazyVim.error(msg)
-      vim.cmd.colorscheme("habamax")
-    end,
-  })
-  LazyVim.track()
+  -- LazyVim.track("colorscheme")
+  -- LazyVim.try(function()
+  --   if type(M.colorscheme) == "function" then
+  --     M.colorscheme()
+  --   else
+  --     vim.cmd.colorscheme(M.colorscheme)
+  --   end
+  -- end, {
+  --   msg = "Could not load your colorscheme",
+  --   on_error = function(msg)
+  --     LazyVim.error(msg)
+  --     vim.cmd.colorscheme("habamax")
+  --   end,
+  -- })
+  -- LazyVim.track()
 end
 
 ---@param buf? number
@@ -231,16 +236,17 @@ function M.load(name)
       end, { msg = "Failed loading " .. mod })
     end
   end
+  local pattern = "LazyVim" .. name:sub(1, 1):upper() .. name:sub(2)
   -- always load lazyvim, then user file
   if M.defaults[name] or name == "options" then
     _load("lazyvim.config." .. name)
+    vim.api.nvim_exec_autocmds("User", { pattern = pattern .. "Defaults", modeline = false })
   end
   _load("config." .. name)
   if vim.bo.filetype == "lazy" then
     -- HACK: LazyVim may have overwritten options of the Lazy ui, so reset this here
     vim.cmd([[do VimResized]])
   end
-  local pattern = "LazyVim" .. name:sub(1, 1):upper() .. name:sub(2)
   vim.api.nvim_exec_autocmds("User", { pattern = pattern, modeline = false })
 end
 
@@ -269,6 +275,10 @@ function M.init()
   M.load("options")
   M.load("keymaps")
   M.load("autocmds")
+
+  -- defer built-in clipboard handling: "xsel" and "pbcopy" can be slow
+  -- lazy_clipboard = vim.opt.clipboard
+  -- vim.opt.clipboard = ""
 
   if vim.g.deprecation_warnings == false then
     vim.deprecate = function() end
