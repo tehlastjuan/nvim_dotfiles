@@ -40,10 +40,10 @@ map({ "n", "t" }, "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase
 -- buffers
 map("n", "<c-,>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 map("n", "<c-.>", "<cmd>bnext<cr>", { desc = "Next buffer" })
-map("n", "<leader>j", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
-map("n", "<leader>k", "<cmd>bnext<cr>", { desc = "Next buffer" })
-map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
-map("n", "<leader>`", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
+map("n", "<C-Tab>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
+map("n", "<Tab>", "<cmd>bnext<cr>", { desc = "Next buffer" })
+-- map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
+-- map("n", "<leader>`", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
 map("n", "<leader>bd", LazyVim.ui.bufremove, { desc = "Delete Buffer" })
 map("n", "<leader>bD", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window" })
 
@@ -79,14 +79,14 @@ map("v", "<", "<gv")
 map("v", ">", ">gv")
 
 -- commenting
-map("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Below" })
-map("n", "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Above" })
+-- map("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Below" })
+-- map("n", "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Above" })
 
 -- lazy
-map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
+-- map("n", "<leader>l", "<cmd>Lazy<cr>", { expr = true, silent = true, desc = "Lazy" })
 
 -- new file
-map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
+-- map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
 --
 -- map("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Location List" })
 -- map("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Quickfix List" })
@@ -108,8 +108,8 @@ local diagnostic_goto = function(next, severity)
   end
 end
 -- map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Line Diagnostics" })
-map("n", "<leader>nd", diagnostic_goto(true), { desc = "Next Diagnostic" })
-map("n", "<leader>pd", diagnostic_goto(false), { desc = "Prev Diagnostic" })
+-- map("n", "<leader>nd", diagnostic_goto(true), { desc = "Next Diagnostic" })
+-- map("n", "<leader>pd", diagnostic_goto(false), { desc = "Prev Diagnostic" })
 -- map("n", "]e", diagnostic_goto(true, "ERROR"), { desc = "Next Error" })
 -- map("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Prev Error" })
 -- map("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning" })

@@ -70,6 +70,50 @@ return {
         -- LSP Server Settings
         ---@type lspconfig.options
         servers = {
+          cssls = {},
+          -- tailwindcss = {
+          --   root_dir = function(...)
+          --     return require("lspconfig.util").root_pattern(".git")(...)
+          --   end,
+          -- },
+          tsserver = {
+            root_dir = function(...)
+              return require("lspconfig.util").root_pattern(".git")(...)
+            end,
+            single_file_support = false,
+            settings = {
+              typescript = {
+                inlayHints = {
+                  includeInlayParameterNameHints = "literal",
+                  includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                  includeInlayFunctionParameterTypeHints = true,
+                  includeInlayVariableTypeHints = false,
+                  includeInlayPropertyDeclarationTypeHints = true,
+                  includeInlayFunctionLikeReturnTypeHints = true,
+                  includeInlayEnumMemberValueHints = true,
+                },
+              },
+              javascript = {
+                inlayHints = {
+                  includeInlayParameterNameHints = "all",
+                  includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                  includeInlayFunctionParameterTypeHints = true,
+                  includeInlayVariableTypeHints = true,
+                  includeInlayPropertyDeclarationTypeHints = true,
+                  includeInlayFunctionLikeReturnTypeHints = true,
+                  includeInlayEnumMemberValueHints = true,
+                },
+              },
+            },
+          },
+          html = {},
+          yamlls = {
+            settings = {
+              yaml = {
+                keyOrdering = false,
+              },
+            },
+          },
           lua_ls = {
             -- mason = false, -- set to false if you don't want this server to be installed with mason
             -- Use this to add any additional keymaps
@@ -269,8 +313,13 @@ return {
     opts_extend = { "ensure_installed" },
     opts = {
       ensure_installed = {
-        "stylua",
+        "clang-format",
+        "css-lsp",
+        "shellcheck",
         "shfmt",
+        "stylua",
+        -- "tailwindcss-language-server",
+        "typescript-language-server",
       },
     },
     ---@param opts MasonSettings | {ensure_installed: string[]}
