@@ -192,6 +192,19 @@ opt.fillchars = {
 --   diff = "╱",
 --   eob = " ",
 -- }
+--
+-- Disable python/perl/ruby/node providers
+-- vim.g.loaded_python3_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+-- vim.g.loaded_node_provider = 0
+
+-- Fix markdown indentation settings
+vim.g.markdown_recommended_style = 0
+vim.g.yaml_indent_multiline_scalar = 1
+
+vim.g.no_gitrebase_maps = 1 -- See share/nvim/runtime/ftplugin/gitrebase.vim
+vim.g.no_man_maps = 1       -- See share/nvim/runtime/ftplugin/man.vim
 
 if vim.fn.has("nvim-0.10") == 1 then
   opt.smoothscroll = true

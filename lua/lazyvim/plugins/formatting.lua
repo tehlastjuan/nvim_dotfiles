@@ -41,7 +41,7 @@ return {
           priority = 100,
           primary = true,
           format = function(buf)
-            local opts = LazyVim.opts("conform.nvim")
+            require("conform").format({ bufnr = buf })
           end,
           sources = function(buf)
             local ret = require("conform").list_formatters(buf)
@@ -62,7 +62,7 @@ return {
           "Please refer to the docs at https://www.lazyvim.org/plugins/formatting",
         }, { title = "LazyVim" })
       end
-      ---@class ConformOpts
+      ---@type conform.setupOpts
       local opts = {
         default_format_opts = {
           timeout_ms = 3000,
@@ -72,25 +72,22 @@ return {
         },
         formatters_by_ft = {
           lua = { "stylua" },
-          fish = { "fish_indent" },
           sh = { "shfmt" },
-          ["javascript"] =      { "dprint", { "prettierd", "prettier" } },
-          ["typescript"] =      { "dprint", { "prettierd", "prettier" } },
-          -- ["javascriptreact"] = { "dprint" },
-          -- ["typescriptreact"] = { "dprint" },
-          ["vue"] =             { "prettier" },
-          ["css"] =             { "prettier" },
-          ["scss"] =            { "prettier" },
-          ["less"] =            { "prettier" },
-          ["html"] =            { "prettier" },
-          ["json"] =            { "prettier" },
-          ["jsonc"] =           { "prettier" },
-          ["yaml"] =            { "prettier" },
-          ["markdown"] =        { "prettier" },
-          ["markdown.mdx"] =    { "prettier" },
-          ["graphql"] =         { "prettier" },
-          ["handlebars"] =      { "prettier" },
-          ["lua"] =             { "stylua" },
+          javascript =      { "dprint", "prettier" },
+          typescript =      { "dprint", "prettier" },
+          -- javascriptreact = { "dprint" },
+          -- typescriptreact = { "dprint" },
+          vue =             { "prettier" },
+          css =             { "prettier" },
+          scss =            { "prettier" },
+          less =            { "prettier" },
+          html =            { "prettier" },
+          json =            { "prettier" },
+          jsonc =           { "prettier" },
+          yaml =            { "prettier" },
+          markdown =        { "prettier" },
+          graphql =         { "prettier" },
+          handlebars =      { "prettier" },
         },
         -- The options you set here will be merged with the builtin formatters.
         -- You can also define any custom formatters here.
@@ -98,11 +95,11 @@ return {
         formatters = {
           injected = { options = { ignore_errors = true } },
           -- # Example of using dprint only when a dprint.json file is present
-          dprint = {
-            condition = function(ctx)
-              return vim.fs.find({ "dprint.json" }, { path = ctx.filename, upward = true })[1]
-            end,
-          },
+          -- dprint = {
+          --   condition = function(ctx)
+          --     return vim.fs.find({ "dprint.json" }, { path = ctx.filename, upward = true })[1]
+          --   end,
+          -- },
           --
           -- # Example of using shfmt with extra args
           -- shfmt = {

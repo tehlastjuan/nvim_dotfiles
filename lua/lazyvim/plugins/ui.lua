@@ -150,24 +150,24 @@ return {
             },
           },
           lualine_y = {
-            -- stylua: ignore
-            {
-              function() return require("noice").api.status.command.get() end,
-              cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
-              color = LazyVim.ui.fg("Statement"),
-            },
-            -- stylua: ignore
-            {
-              function() return require("noice").api.status.mode.get() end,
-              cond = function() return package.loaded["noice"] and require("noice").api.status.mode.has() end,
-              color = LazyVim.ui.fg("Constant"),
-            },
-            -- stylua: ignore
-            {
-              function() return "  " .. require("dap").status() end,
-              cond = function () return package.loaded["dap"] and require("dap").status() ~= "" end,
-              color = LazyVim.ui.fg("Debug"),
-            },
+            -- -- stylua: ignore
+            -- {
+            --   function() return require("noice").api.status.command.get() end,
+            --   cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
+            --   color = LazyVim.ui.fg("Statement"),
+            -- },
+            -- -- stylua: ignore
+            -- {
+            --   function() return require("noice").api.status.mode.get() end,
+            --   cond = function() return package.loaded["noice"] and require("noice").api.status.mode.has() end,
+            --   color = LazyVim.ui.fg("Constant"),
+            -- },
+            -- -- stylua: ignore
+            -- {
+            --   function() return "  " .. require("dap").status() end,
+            --   cond = function () return package.loaded["dap"] and require("dap").status() ~= "" end,
+            --   color = LazyVim.ui.fg("Debug"),
+            -- },
             -- {
             --   require("lazy.status").updates,
             --   cond = require("lazy.status").has_updates,
@@ -244,17 +244,25 @@ return {
       },
       exclude = {
         filetypes = {
-          "help",
-          "alpha",
-          "dashboard",
-          "neo-tree",
-          "Trouble",
-          "trouble",
-          "lazy",
-          "mason",
-          "notify",
-          "toggleterm",
-          "lazyterm",
+          'alpha',
+          'checkhealth',
+          'dashboard',
+          'git',
+          'gitcommit',
+          'help',
+          'lazy',
+          'lazyterm',
+          'lspinfo',
+          'man',
+          'mason',
+          'neo-tree',
+          'notify',
+          'Outline',
+          'TelescopePrompt',
+          'TelescopeResults',
+          'terminal',
+          'toggleterm',
+          'Trouble',
         },
       },
     }
@@ -289,17 +297,4 @@ return {
   -- ui components
   { "MunifTanjim/nui.nvim", lazy = true },
 
-  {
-    "goolord/alpha-nvim",
-    optional = true,
-    enabled = function()
-      LazyVim.warn({
-        "`dashboard.nvim` is now the default LazyVim starter plugin.",
-        "",
-        "To keep using `alpha.nvim`, please enable the `lazyvim.plugins.extras.ui.alpha` extra.",
-        "Or to hide this message, remove the alpha spec from your config.",
-      })
-      return false
-    end,
-  },
 }
