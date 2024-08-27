@@ -4,12 +4,12 @@ return {
     "neovim/nvim-lspconfig",
     event = "LazyFile",
     dependencies = {
-      "williamboman/mason.nvim",
+      "mason.nvim",
       { "williamboman/mason-lspconfig.nvim", config = function() end },
     },
     opts = function()
       ---@class PluginLspOpts
-      local opts = {
+      local ret = {
         -- options for vim.diagnostic.config()
         ---@type vim.diagnostic.Opts
         diagnostics = {
@@ -70,7 +70,7 @@ return {
         -- LSP Server Settings
         ---@type lspconfig.options
         servers = {
-          cssls = {},
+          -- cssls = {},
           -- tailwindcss = {
           --   root_dir = function(...)
           --     return require("lspconfig.util").root_pattern(".git")(...)
@@ -159,7 +159,7 @@ return {
           -- ["*"] = function(server, opts) end,
         },
       }
-      return opts
+      return ret
     end,
     ---@param opts PluginLspOpts
     config = function(_, opts)
@@ -212,18 +212,18 @@ return {
           end)
         end
       end
-      --
-      -- if type(opts.diagnostics.virtual_text) == "table" and opts.diagnostics.virtual_text.prefix == "icons" then
-      --   opts.diagnostics.virtual_text.prefix = vim.fn.has("nvim-0.10.0") == 0 and "●"
-      --     or function(diagnostic)
-      --       local icons = LazyVim.config.icons.diagnostics
-      --       for d, icon in pairs(icons) do
-      --         if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
-      --           return icon
-      --         end
-      --       end
-      --     end
-      -- end
+
+      if type(opts.diagnostics.virtual_text) == "table" and opts.diagnostics.virtual_text.prefix == "icons" then
+        opts.diagnostics.virtual_text.prefix = vim.fn.has("nvim-0.10.0") == 0 and "●"
+          or function(diagnostic)
+            local icons = LazyVim.config.icons.diagnostics
+            for d, icon in pairs(icons) do
+              if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
+                return icon
+              end
+            end
+          end
+      end
 
       vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
 
@@ -241,9 +241,6 @@ return {
         local server_opts = vim.tbl_deep_extend("force", {
           capabilities = vim.deepcopy(capabilities),
         }, servers[server] or {})
-        if server_opts.enabled == false then
-          return
-        end
 
         if opts.setup[server] then
           if opts.setup[server](server, server_opts) then
@@ -314,7 +311,6 @@ return {
     opts = {
       ensure_installed = {
         "clang-format",
-        "css-lsp",
         "shellcheck",
         "shfmt",
         "stylua",

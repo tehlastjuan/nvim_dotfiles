@@ -21,6 +21,7 @@ return {
   {
     "stevearc/conform.nvim",
     dependencies = { "mason.nvim" },
+    lazy = true,
     cmd = { "ConformInfo" },
     keys = {
       {
@@ -33,6 +34,27 @@ return {
       },
     },
 
+    init = function()
+      -- Install the conform formatter on VeryLazy
+      LazyVim.on_very_lazy(function()
+        LazyVim.format.register({
+          name = "conform.nvim",
+          priority = 100,
+          primary = true,
+          format = function(buf)
+            local opts = LazyVim.opts("conform.nvim")
+            require("conform").format(LazyVim.merge({}, opts.format, { bufnr = buf }))
+          end,
+          sources = function(buf)
+            local ret = require("conform").list_formatters(buf)
+            ---@param v conform.FormatterInfo
+            return vim.tbl_map(function(v)
+              return v.name
+            end, ret)
+          end,
+        })
+      end)
+    end,
     opts = function()
       local plugin = require("lazy.core.config").plugins["conform.nvim"]
       if plugin.config ~= M.setup then
@@ -42,8 +64,6 @@ return {
           "Please refer to the docs at https://www.lazyvim.org/plugins/formatting",
         }, { title = "LazyVim" })
       end
-
-      local conform = require("conform")
       local prettier = { "prettierd", "prettier", stop_after_first = true }
       ---@type conform.setupOpts
       local opts = {
@@ -77,6 +97,7 @@ return {
         ---@type table<string, conform.FormatterConfigOverride|fun(bufnr: integer): nil|conform.FormatterConfigOverride>
         formatters = {
           injected = { options = { ignore_errors = true } },
+          -- added
           astyle = {
             command = "astyle",
             prepend_args = { "-s2", "-c", "-J", "-n", "-q", "-z2", "-xC80" },
@@ -96,14 +117,14 @@ return {
             command = "php-cs-fixer",
             prepend_args = { "fix", "--rules=@PSR12" },
           },
-          prettier = {
-            command = "prettier",
-            prepend_args = { "-w" },
-          },
-          prettierd = {
-            command = "prettierd",
-            prepend_args = { "-w" },
-          },
+          -- prettier = {
+          --   command = "prettier",
+          --   prepend_args = { "-w" },
+          -- },
+          -- prettierd = {
+          --   command = "prettierd",
+          --   prepend_args = { "-w" },
+          -- },
           shfmt = {
             command = "shfmt",
             prepend_args = { "-i", "0", "-sr", "-kp" },
