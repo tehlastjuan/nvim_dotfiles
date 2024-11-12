@@ -15,6 +15,8 @@ return {
       -- { "<S-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
       { "[b", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
       { "]b", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
+      { "[B", "<cmd>BufferLineMovePrev<cr>", desc = "Move buffer prev" },
+      { "]B", "<cmd>BufferLineMoveNext<cr>", desc = "Move buffer next" },
     },
     opts = {
       options = {
@@ -30,6 +32,7 @@ return {
           -- icon = "",
           style = "none",
         },
+        diagnostics = "nvim_lsp",
         always_show_bufferline = true,
         show_buffer_close_icons = false,
         show_tab_indicators = false,
@@ -39,9 +42,8 @@ return {
         close_command = function(n) LazyVim.ui.bufremove(n) end,
         -- stylua: ignore
         right_mouse_command = function(n) LazyVim.ui.bufremove(n) end,
-        diagnostics = "nvim_lsp",
         diagnostics_indicator = function(_, _, diag)
-          local icons = require("lazyvim.config").icons.diagnostics
+          local icons = LazyVim.config.icons.diagnostics
           local ret = (diag.error and icons.Error .. diag.error .. " " or "")
             .. (diag.warning and icons.Warn .. diag.warning or "")
           return vim.trim(ret)
@@ -150,29 +152,6 @@ return {
             },
           },
           lualine_y = {
-            -- -- stylua: ignore
-            -- {
-            --   function() return require("noice").api.status.command.get() end,
-            --   cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
-            --   color = LazyVim.ui.fg("Statement"),
-            -- },
-            -- -- stylua: ignore
-            -- {
-            --   function() return require("noice").api.status.mode.get() end,
-            --   cond = function() return package.loaded["noice"] and require("noice").api.status.mode.has() end,
-            --   color = LazyVim.ui.fg("Constant"),
-            -- },
-            -- -- stylua: ignore
-            -- {
-            --   function() return "  " .. require("dap").status() end,
-            --   cond = function () return package.loaded["dap"] and require("dap").status() ~= "" end,
-            --   color = LazyVim.ui.fg("Debug"),
-            -- },
-            -- {
-            --   require("lazy.status").updates,
-            --   cond = require("lazy.status").has_updates,
-            --   color = LazyVim.ui.fg("Special"),
-            -- },
             { "encoding", padding = { left = 1, right = 0 } },
             { "fileformat", padding = { left = 1, right = 1 } },
             { "filetype", padding = { left = 1, right = 2 } },
@@ -269,16 +248,6 @@ return {
     end,
     main = "ibl",
   },
-
-  -- Displays a popup with possible key bindings of the command you started typing
-  -- {
-  --   "folke/which-key.nvim",
-  --   opts = function(_, opts)
-  --     if LazyVim.has("noice.nvim") then
-  --       opts.defaults["<leader>sn"] = { name = "+noice" }
-  --     end
-  --   end,
-  -- },
 
   -- icons
   -- {

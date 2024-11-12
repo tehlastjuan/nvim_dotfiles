@@ -11,7 +11,7 @@ return {
 
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = { ensure_installed = { "vue" } },
+    opts = { ensure_installed = { "vue", "css" } },
   },
 
   -- Add LSP servers
@@ -22,7 +22,7 @@ return {
         volar = {
           init_options = {
             vue = {
-              hybridMode = false,
+              hybridMode = true,
             },
           },
         },

@@ -19,7 +19,12 @@ return {
     opts = {
       -- make sure mason installs the server
       servers = {
+        --- @deprecated -- tsserver renamed to ts_ls but not yet released, so keep this for now
+        --- the proper approach is to check the nvim-lspconfig release version when it's released to determine the server name dynamically
         tsserver = {
+          enabled = false,
+        },
+        ts_ls = {
           enabled = false,
         },
         vtsls = {
@@ -114,7 +119,13 @@ return {
         },
       },
       setup = {
+        --- @deprecated -- tsserver renamed to ts_ls but not yet released, so keep this for now
+        --- the proper approach is to check the nvim-lspconfig release version when it's released to determine the server name dynamically
         tsserver = function()
+          -- disable tsserver
+          return true
+        end,
+        ts_ls = function()
           -- disable tsserver
           return true
         end,
@@ -250,20 +261,20 @@ return {
   },
 
   -- Filetype icons
-  -- {
-  --   "echasnovski/mini.icons",
-  --   opts = {
-  --     file = {
-  --       [".eslintrc.js"] = { glyph = "󰱺", hl = "MiniIconsYellow" },
-  --       [".node-version"] = { glyph = "", hl = "MiniIconsGreen" },
-  --       [".prettierrc"] = { glyph = "", hl = "MiniIconsPurple" },
-  --       [".yarnrc.yml"] = { glyph = "", hl = "MiniIconsBlue" },
-  --       ["eslint.config.js"] = { glyph = "󰱺", hl = "MiniIconsYellow" },
-  --       ["package.json"] = { glyph = "", hl = "MiniIconsGreen" },
-  --       ["tsconfig.json"] = { glyph = "", hl = "MiniIconsAzure" },
-  --       ["tsconfig.build.json"] = { glyph = "", hl = "MiniIconsAzure" },
-  --       ["yarn.lock"] = { glyph = "", hl = "MiniIconsBlue" },
-  --     },
-  --   },
-  -- },
+  {
+    "echasnovski/mini.icons",
+    opts = {
+      file = {
+        [".eslintrc.js"] = { glyph = "󰱺", hl = "MiniIconsYellow" },
+        [".node-version"] = { glyph = "", hl = "MiniIconsGreen" },
+        [".prettierrc"] = { glyph = "", hl = "MiniIconsPurple" },
+        [".yarnrc.yml"] = { glyph = "", hl = "MiniIconsBlue" },
+        ["eslint.config.js"] = { glyph = "󰱺", hl = "MiniIconsYellow" },
+        ["package.json"] = { glyph = "", hl = "MiniIconsGreen" },
+        ["tsconfig.json"] = { glyph = "", hl = "MiniIconsAzure" },
+        ["tsconfig.build.json"] = { glyph = "", hl = "MiniIconsAzure" },
+        ["yarn.lock"] = { glyph = "", hl = "MiniIconsBlue" },
+      },
+    },
+  },
 }

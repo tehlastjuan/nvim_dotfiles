@@ -74,23 +74,23 @@ return {
           lsp_format = "fallback", -- not recommended to change
         },
         formatters_by_ft = {
-          c = { "clang-format" },
-          cmake = { "cmake-format" },
-          cpp = { "clang-format" },
-          css = prettier,
-          handlebars = prettier,
-          html = prettier,
-          javascript = { "eslint" },
-          jsonc = prettier,
-          json = prettier,
-          less = prettier,
+          -- c = { "clang-format" },
+          -- cmake = { "cmake-format" },
+          -- cpp = { "clang-format" },
+          -- css = prettier,
+          -- handlebars = prettier,
+          -- html = prettier,
+          -- javascript = { "eslint" },
+          -- jsonc = prettier,
+          -- json = prettier,
+          -- less = prettier,
           lua = { "stylua" },
-          php = { "php-cs-fixer" },
-          scss = prettier,
+          -- php = { "php-cs-fixer" },
+          -- scss = prettier,
           sh = { "shfmt" },
-          typescript = prettier,
-          vue = prettier,
-          yaml = prettier,
+          -- typescript = prettier,
+          -- vue = prettier,
+          -- yaml = prettier,
         },
         -- The options you set here will be merged with the builtin formatters.
         -- You can also define any custom formatters here.
@@ -98,25 +98,25 @@ return {
         formatters = {
           injected = { options = { ignore_errors = true } },
           -- added
-          astyle = {
-            command = "astyle",
-            prepend_args = { "-s2", "-c", "-J", "-n", "-q", "-z2", "-xC80" },
-          },
-          ["clang-format"] = {
-            command = "clang-format",
-            prepend_args = { "--style=file", "-i" },
-          },
-          ["cmake-format"] = {
-            command = "cmake-format",
-            prepend_args = { "-i" },
-          },
-          nix = {
-            command = "nixpkgs-fmt",
-          },
-          ["php-cs-fixer"] = {
-            command = "php-cs-fixer",
-            prepend_args = { "fix", "--rules=@PSR12" },
-          },
+          -- astyle = {
+          --   command = "astyle",
+          --   prepend_args = { "-s2", "-c", "-J", "-n", "-q", "-z2", "-xC80" },
+          -- },
+          -- ["clang-format"] = {
+          --   command = "clang-format",
+          --   prepend_args = { "--style=file", "-i" },
+          -- },
+          -- ["cmake-format"] = {
+          --   command = "cmake-format",
+          --   prepend_args = { "-i" },
+          -- },
+          -- nix = {
+          --   command = "nixpkgs-fmt",
+          -- },
+          -- ["php-cs-fixer"] = {
+          --   command = "php-cs-fixer",
+          --   prepend_args = { "fix", "--rules=@PSR12" },
+          -- },
           -- prettier = {
           --   command = "prettier",
           --   prepend_args = { "-w" },

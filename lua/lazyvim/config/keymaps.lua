@@ -1,15 +1,11 @@
 -- This file is automatically loaded by lazyvim.config.init
 local LazyVim = require("lazyvim.util")
 
--- DO NOT USE THIS IN YOU OWN CONFIG!!
--- use `vim.keymap.set` instead
--- local map = LazyVim.safe_keymap_set
 local map = vim.keymap.set
--- local map = LazyVim.safe_keymap_set
 
 -- Press jk fast to exit insert mode
-map("i", "jk", "<ESC>", { desc = "ESC" })
-map("i", "kj", "<ESC>", { desc = "ESC" })
+map("i", "jk", "<ESC>`^", { desc = "ESC" })
+map("i", "kj", "<ESC>`^", { desc = "ESC" })
 
 -- better up/down
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
@@ -48,7 +44,7 @@ map("n", "<leader>bd", LazyVim.ui.bufremove, { desc = "Delete Buffer" })
 map("n", "<leader>bD", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window" })
 
 -- Clear search with <esc>
-map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
+map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>`^", { desc = "Escape and clear hlsearch" })
 
 -- Clear search, diff update and redraw
 -- taken from runtime/lua/_editor.lua
@@ -110,8 +106,8 @@ end
 -- map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Line Diagnostics" })
 -- map("n", "<leader>nd", diagnostic_goto(true), { desc = "Next Diagnostic" })
 -- map("n", "<leader>pd", diagnostic_goto(false), { desc = "Prev Diagnostic" })
--- map("n", "]e", diagnostic_goto(true, "ERROR"), { desc = "Next Error" })
--- map("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Prev Error" })
+map("n", "]e", diagnostic_goto(true, "ERROR"), { desc = "Next Error" })
+map("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Prev Error" })
 -- map("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning" })
 -- map("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
 
@@ -218,6 +214,9 @@ map({ "n", "i", "x", "v", "x", "o" }, "<Up>", "<Nop>", { desc = "no up for you" 
 map({ "n", "i", "x", "v", "x", "o" }, "<Left>", "<Nop>", { desc = "no up for you" })
 map({ "n", "i", "x", "v", "x", "o" }, "<Right>", "<Nop>", { desc = "no up for you" })
 map({ "n", "i", "x", "v", "x", "o" }, "<Down>", "<Nop>", { desc = "no up for you" })
+
+-- web-tools
+map("n", "<leader>cb", "<cmd>BrowserOpen<cr>", { desc = "Browser Preview", remap = true })
 
 -- window debug
 map("n", "<leader>ux", function() print (vim.inspect(vim.api.nvim_get_current_win())) end, { desc = "Get current window" })

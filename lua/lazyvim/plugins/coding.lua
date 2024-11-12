@@ -23,6 +23,7 @@ return {
       vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
       local cmp = require("cmp")
       local defaults = require("cmp.config.default")()
+      local auto_select = true
       return {
         auto_brackets = {}, -- configure any filetype to auto add brackets
         completion = {
@@ -80,37 +81,38 @@ return {
     end,
     main = "lazyvim.util.cmp",
 
-    ---@param opts cmp.ConfigSchema | {auto_brackets?: string[]}
-    config = function(_, opts)
-      for _, source in ipairs(opts.sources) do
-        source.group_index = source.group_index or 1
-      end
-
-      local parse = require("cmp.utils.snippet").parse
-      require("cmp.utils.snippet").parse = function(input)
-        local ok, ret = pcall(parse, input)
-        if ok then
-          return ret
-        end
-        return LazyVim.cmp.snippet_preview(input)
-      end
-
-      local cmp = require("cmp")
-      cmp.setup(opts)
-      cmp.event:on("confirm_done", function(event)
-        if vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then
-          LazyVim.cmp.auto_brackets(event.entry)
-        end
-      end)
-      cmp.event:on("menu_opened", function(event)
-        LazyVim.cmp.add_missing_snippet_docs(event.window)
-      end)
-    end,
+    ------@param opts cmp.ConfigSchema | {auto_brackets?: string[]}
+    ---config = function(_, opts)
+    ---  for _, source in ipairs(opts.sources) do
+    ---    source.group_index = source.group_index or 1
+    ---  end
+    ---
+    ---  local parse = require("cmp.utils.snippet").parse
+    ---  require("cmp.utils.snippet").parse = function(input)
+    ---    local ok, ret = pcall(parse, input)
+    ---    if ok then
+    ---      return ret
+    ---    end
+    ---    return LazyVim.cmp.snippet_preview(input)
+    ---  end
+    ---
+    ---  local cmp = require("cmp")
+    ---  cmp.setup(opts)
+    ---  cmp.event:on("confirm_done", function(event)
+    ---    if vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then
+    ---      LazyVim.cmp.auto_brackets(event.entry)
+    ---    end
+    ---  end)
+    ---  cmp.event:on("menu_opened", function(event)
+    ---    LazyVim.cmp.add_missing_snippet_docs(event.window)
+    ---  end)
+    ---end,
   },
 
   -- snippets
   {
     "nvim-cmp",
+    optional = true,
     dependencies = {
       {
         "garymjr/nvim-snippets",
@@ -130,26 +132,17 @@ return {
         table.insert(opts.sources, { name = "snippets" })
       end
     end,
-    keys = {
-      {
-        "<Tab>",
-        function()
+    init = function()
+      -- Neovim enabled snippet navigation mappings by default in v0.11
+      if vim.fn.has("nvim-0.11") == 0 then
+        vim.keymap.set({ "i", "s" }, "<Tab>", function()
           return vim.snippet.active({ direction = 1 }) and "<cmd>lua vim.snippet.jump(1)<cr>" or "<Tab>"
-        end,
-        expr = true,
-        silent = true,
-        mode = { "i", "s" },
-      },
-      {
-        "<S-Tab>",
-        function()
+        end, { expr = true, silent = true })
+        vim.keymap.set({ "i", "s" }, "<S-Tab>", function()
           return vim.snippet.active({ direction = -1 }) and "<cmd>lua vim.snippet.jump(-1)<cr>" or "<S-Tab>"
-        end,
-        expr = true,
-        silent = true,
-        mode = { "i", "s" },
-      },
-    },
+        end, { expr = true, silent = true })
+      end
+    end,
   },
 
   -- auto pairs
