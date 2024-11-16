@@ -53,15 +53,15 @@ return {
       })
     end,
   },
-  {
-    "mfussenegger/nvim-lint",
-    optional = true,
-    opts = {
-      linters_by_ft = {
-        markdown = { "markdownlint-cli2" },
-      },
-    },
-  },
+  -- {
+  --   "mfussenegger/nvim-lint",
+  --   optional = true,
+  --   opts = {
+  --     linters_by_ft = {
+  --       markdown = { "markdownlint-cli2" },
+  --     },
+  --   },
+  -- },
   {
     "neovim/nvim-lspconfig",
     opts = {
@@ -92,36 +92,36 @@ return {
     end,
   },
 
-  {
-    "MeanderingProgrammer/render-markdown.nvim",
-    opts = {
-      code = {
-        sign = false,
-        width = "block",
-        right_pad = 1,
-      },
-      heading = {
-        sign = false,
-        icons = {},
-      },
-    },
-    ft = { "markdown", "norg", "rmd", "org" },
-    config = function(_, opts)
-      require("render-markdown").setup(opts)
-      Snacks.toggle({
-        name = "Render Markdown",
-        get = function()
-          return require("render-markdown.state").enabled
-        end,
-        set = function(enabled)
-          local m = require("render-markdown")
-          if enabled then
-            m.enable()
-          else
-            m.disable()
-          end
-        end,
-      }):map("<leader>um")
-    end,
-  },
+  -- {
+  --   "MeanderingProgrammer/render-markdown.nvim",
+  --   opts = {
+  --     code = {
+  --       sign = false,
+  --       width = "block",
+  --       right_pad = 1,
+  --     },
+  --     heading = {
+  --       sign = false,
+  --       icons = {},
+  --     },
+  --   },
+  --   ft = { "markdown", "norg", "rmd", "org" },
+  --   config = function(_, opts)
+  --     require("render-markdown").setup(opts)
+  --     Snacks.toggle({
+  --       name = "Render Markdown",
+  --       get = function()
+  --         return require("render-markdown.state").enabled
+  --       end,
+  --       set = function(enabled)
+  --         local m = require("render-markdown")
+  --         if enabled then
+  --           m.enable()
+  --         else
+  --           m.disable()
+  --         end
+  --       end,
+  --     }):map("<leader>um")
+  --   end,
+  -- },
 }
