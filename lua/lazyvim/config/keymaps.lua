@@ -4,8 +4,8 @@ local LazyVim = require("lazyvim.util")
 local map = vim.keymap.set
 
 -- Press jk fast to exit insert mode
-map("i", "jk", "<ESC>`^", { desc = "ESC" })
-map("i", "kj", "<ESC>`^", { desc = "ESC" })
+map("i", "jk", "<ESC>", { desc = "ESC" })
+map("i", "kj", "<ESC>", { desc = "ESC" })
 
 -- better up/down
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
@@ -44,7 +44,7 @@ map("n", "<leader>bd", LazyVim.ui.bufremove, { desc = "Delete Buffer" })
 map("n", "<leader>bD", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window" })
 
 -- Clear search with <esc>
-map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>`^", { desc = "Escape and clear hlsearch" })
+map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
 
 -- Clear search, diff update and redraw
 -- taken from runtime/lua/_editor.lua
