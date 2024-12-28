@@ -43,6 +43,9 @@ return {
             cmp.abort()
             fallback()
           end,
+          ["<tab>"] = function(fallback)
+            return LazyVim.cmp.map({ "snippet_forward", "ai_accept" }, fallback)()
+          end,
         }),
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
@@ -72,9 +75,10 @@ return {
           end,
         },
         experimental = {
-          ghost_text = {
+          -- only show ghost text when we show ai completions
+          ghost_text = vim.g.ai_cmp and {
             hl_group = "CmpGhostText",
-          },
+          } or false,
         },
         sorting = defaults.sorting,
       }
