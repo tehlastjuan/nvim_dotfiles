@@ -33,7 +33,6 @@ return {
         desc = "Format Injected Langs",
       },
     },
-
     init = function()
       -- Install the conform formatter on VeryLazy
       LazyVim.on_very_lazy(function()
@@ -42,8 +41,9 @@ return {
           priority = 100,
           primary = true,
           format = function(buf)
-            local opts = LazyVim.opts("conform.nvim")
-            require("conform").format(LazyVim.merge({}, opts.format, { bufnr = buf }))
+            require("conform").format({ bufnr = buf })
+            --local opts = LazyVim.opts("conform.nvim")
+            --require("conform").format(LazyVim.merge({}, opts.format, { bufnr = buf }))
           end,
           sources = function(buf)
             local ret = require("conform").list_formatters(buf)
