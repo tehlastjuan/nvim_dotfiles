@@ -5,13 +5,13 @@ return {
     "nvim-neo-tree/neo-tree.nvim",
     cmd = "Neotree",
     keys = {
-      {
-        "<leader>fe",
-        function()
-          require("neo-tree.command").execute({ toggle = true, dir = LazyVim.root() })
-        end,
-        desc = "Explorer NeoTree (Root Dir)",
-      },
+      --{
+      --  "<leader>fe",
+      --  function()
+      --    require("neo-tree.command").execute({ toggle = true, dir = vim.api.root() })
+      --  end,
+      --  desc = "Explorer NeoTree (Root Dir)",
+      --},
       {
         "<leader>fE",
         function()
@@ -19,8 +19,8 @@ return {
         end,
         desc = "Explorer NeoTree (cwd)",
       },
-      { "<leader>e", "<leader>fe", desc = "Explorer NeoTree (Root Dir)", remap = true },
-      { "<leader>E", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
+      --{ "<leader>e", "<leader>fe", desc = "Explorer NeoTree (Root Dir)", remap = true },
+      { "<leader>e", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
       {
         "<leader>ge",
         function()
@@ -575,7 +575,7 @@ return {
   {
     "folke/todo-comments.nvim",
     cmd = { "TodoTrouble", "TodoTelescope" },
-    event = "LazyFile",
+    event = "BufReadPre",
     config = true,
     -- stylua: ignore
     keys = {

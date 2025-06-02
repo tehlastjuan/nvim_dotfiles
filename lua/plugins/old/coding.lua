@@ -36,15 +36,15 @@ return {
           ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
           ["<C-m>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
           ["<C-Space>"] = cmp.mapping.complete(),
-          ["<CR>"] = LazyVim.cmp.confirm({ select = auto_select }),
-          ["<C-y>"] = LazyVim.cmp.confirm({ select = true }),
-          ["<S-CR>"] = LazyVim.cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+          -- ["<CR>"] = LazyVim.cmp.confirm({ select = auto_select }),
+          -- ["<C-y>"] = LazyVim.cmp.confirm({ select = true }),
+          -- ["<S-CR>"] = LazyVim.cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
           ["<C-CR>"] = function(fallback)
             cmp.abort()
             fallback()
           end,
           ["<tab>"] = function(fallback)
-            return LazyVim.cmp.map({ "snippet_forward", "ai_accept" }, fallback)()
+            return cmp.map({ "snippet_forward", "ai_accept" }, fallback)()
           end,
         }),
         sources = cmp.config.sources({
@@ -55,7 +55,7 @@ return {
         }),
         formatting = {
           format = function(entry, item)
-            local icons = LazyVim.config.icons.kinds
+            local icons = require("icons").kinds
             if icons[item.kind] then
               item.kind = icons[item.kind] .. item.kind
             end
@@ -128,13 +128,13 @@ return {
     },
     opts = function(_, opts)
       opts.snippet = {
-        expand = function(item)
-          return LazyVim.cmp.expand(item.body)
-        end,
+        -- expand = function(item)
+        --   return LazyVim.cmp.expand(item.body)
+        -- end,
       }
-      if LazyVim.has("nvim-snippets") then
-        table.insert(opts.sources, { name = "snippets" })
-      end
+      --if LazyVim.has("nvim-snippets") then
+      --  table.insert(opts.sources, { name = "snippets" })
+      --end
     end,
     init = function()
       -- Neovim enabled snippet navigation mappings by default in v0.11
@@ -163,11 +163,11 @@ return {
         "<leader>up",
         function()
           vim.g.minipairs_disable = not vim.g.minipairs_disable
-          if vim.g.minipairs_disable then
-            LazyVim.warn("Disabled auto pairs", { title = "Option" })
-          else
-            LazyVim.info("Enabled auto pairs", { title = "Option" })
-          end
+          --if vim.g.minipairs_disable then
+          --  LazyVim.warn("Disabled auto pairs", { title = "Option" })
+          --else
+          --  LazyVim.info("Enabled auto pairs", { title = "Option" })
+          --end
         end,
         desc = "Toggle Auto Pairs",
       },
@@ -184,7 +184,7 @@ return {
   -- Better text-objects
   {
     "echasnovski/mini.ai",
-    event = "VeryLazy",
+    event = "BufReadPre",
     opts = function()
       local ai = require("mini.ai")
       return {
@@ -202,35 +202,25 @@ return {
             { "%u[%l%d]+%f[^%l%d]", "%f[%S][%l%d]+%f[^%l%d]", "%f[%P][%l%d]+%f[^%l%d]", "^[%l%d]+%f[^%l%d]" },
             "^().*()$",
           },
-          i = LazyVim.mini.ai_indent, -- indent
-          g = LazyVim.mini.ai_buffer, -- buffer
           u = ai.gen_spec.function_call(), -- u for "Usage"
           U = ai.gen_spec.function_call({ name_pattern = "[%w_]" }), -- without dot in function name
         },
       }
     end,
-    config = function(_, opts)
-      require("mini.ai").setup(opts)
-      LazyVim.on_load("which-key.nvim", function()
-        vim.schedule(function()
-          LazyVim.mini.ai_whichkey(opts)
-        end)
-      end)
-    end,
   },
 
-  {
-    "folke/lazydev.nvim",
-    ft = "lua",
-    cmd = "LazyDev",
-    opts = {
-      library = {
-        { path = "luvit-meta/library", words = { "vim%.uv" } },
-        { path = "LazyVim", words = { "LazyVim" } },
-        { path = "lazy.nvim", words = { "LazyVim" } },
-      },
-    },
-  },
+  --{
+  --  "folke/lazydev.nvim",
+  --  ft = "lua",
+  --  cmd = "LazyDev",
+  --  opts = {
+  --    library = {
+  --      { path = "luvit-meta/library", words = { "vim%.uv" } },
+  --      { path = "LazyVim", words = { "LazyVim" } },
+  --      { path = "lazy.nvim", words = { "LazyVim" } },
+  --    },
+  --  },
+  --},
   -- Manage libuv types with lazy. Plugin will never be loaded
   { "Bilal2453/luvit-meta", lazy = true },
 

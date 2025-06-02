@@ -7,7 +7,7 @@ return {
 	-- Git signs written in pure lua
 	{
 		'lewis6991/gitsigns.nvim',
-		event = 'LazyFile',
+		event = 'VeryLazy',
 		-- See: https://github.com/lewis6991/gitsigns.nvim#usage
 		-- stylua: ignore
 		opts = {
