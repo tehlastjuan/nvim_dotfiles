@@ -8,9 +8,9 @@
     "library": [
       // Runtime and builtin libraries.
       "$VIMRUNTIME/lua",
-      "${3rd}/luv/library",
+      //"${3rd}/luv/library",
       // Extra configuration helpers.
-      "lua/float_term.lua",
+      //"lua/float_term.lua",
       "lua/icons.lua",
       // Include some plugins for API completion.
       "$XDG_DATA_HOME/nvim/lazy/LuaSnip/lua",

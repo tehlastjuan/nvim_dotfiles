@@ -46,7 +46,7 @@ vim.keymap.set({ "i", "s", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape
 vim.keymap.set("n", "<leader>K", "<cmd>norm! K<cr>", { desc = "Keywordprg" })
 
 -- Plugin manager
-vim.keymap.set("n", "<leader>l", "<cmd>Lazy<cr>", { expr = true, silent = true, desc = "Lazy" })
+vim.keymap.set("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
 
 -- Formatting
 vim.keymap.set({ "n", "v" }, "<leader>cf", "mzgggqG`z<cmd>delmarks z<cr>zz", { desc = "Format" })
