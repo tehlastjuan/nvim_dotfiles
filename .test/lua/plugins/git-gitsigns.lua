@@ -4,7 +4,7 @@ return {
   -- https://github.com/rafi/vim-config
 	{
 		'lewis6991/gitsigns.nvim',
-		event = 'VeryLazy',
+		event = 'LazyFile',
 		-- See: https://github.com/lewis6991/gitsigns.nvim#usage
 		-- stylua: ignore
 		opts = {

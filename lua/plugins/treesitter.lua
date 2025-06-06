@@ -14,9 +14,40 @@ return {
   -- syntax highlighting.
   {
     "nvim-treesitter/nvim-treesitter",
+    dependencies = {
+      {
+        'nvim-treesitter/nvim-treesitter-context',
+        opts = {
+          -- Avoid the sticky context from growing a lot.
+          max_lines = 3,
+          -- Match the context lines to the source code.
+          multiline_threshold = 1,
+          -- Disable it when the window is too small.
+          min_window_height = 20,
+        },
+        keys = {
+          {
+            '[c',
+            function()
+              -- Jump to previous change when in diffview.
+              if vim.wo.diff then
+                return '[c'
+              else
+                vim.schedule(function()
+                  require('treesitter-context').go_to_context()
+                end)
+                return '<Ignore>'
+              end
+            end,
+            desc = 'Jump to upper context',
+            expr = true,
+          },
+        },
+      },
+    },
     version = false, -- last release is way too old and doesn't work on Windows
     build = ":TSUpdate",
-    event = { "LazyFile", "VeryLazy" },
+    event = "VeryLazy",
     lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
     init = function(plugin)
       -- PERF: add nvim-treesitter queries to the rtp and it's custom query predicates early
@@ -82,63 +113,79 @@ return {
           node_decremental = "<bs>",
         },
       },
-      textobjects = {
-        move = {
-          enable = true,
-          goto_next_start = { ["]f"] = "@function.outer", ["]c"] = "@class.outer", ["]a"] = "@parameter.inner" },
-          goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer", ["]A"] = "@parameter.inner" },
-          goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer", ["[a"] = "@parameter.inner" },
-          goto_previous_end = { ["[F"] = "@function.outer", ["[C"] = "@class.outer", ["[A"] = "@parameter.inner" },
-        },
-      },
+      --textobjects = {
+      --  move = {
+      --    enable = true,
+      --    goto_next_start = { ["]f"] = "@function.outer", ["]c"] = "@class.outer", ["]a"] = "@parameter.inner" },
+      --    goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer", ["]A"] = "@parameter.inner" },
+      --    goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer", ["[a"] = "@parameter.inner" },
+      --    goto_previous_end = { ["[F"] = "@function.outer", ["[C"] = "@class.outer", ["[A"] = "@parameter.inner" },
+      --  },
+      --},
     },
-    ---@param opts TSConfig
     config = function(_, opts)
-      if type(opts.ensure_installed) == "table" then
-        opts.ensure_installed = LazyVim.dedup(opts.ensure_installed)
-      end
-      require("nvim-treesitter.configs").setup(opts)
+      local toggle_inc_selection_group =
+      vim.api.nvim_create_augroup('mariasolos/toggle_inc_selection', { clear = true })
+      vim.api.nvim_create_autocmd('CmdwinEnter', {
+        desc = 'Disable incremental selection when entering the cmdline window',
+        group = toggle_inc_selection_group,
+        command = 'TSBufDisable incremental_selection',
+      })
+      vim.api.nvim_create_autocmd('CmdwinLeave', {
+        desc = 'Enable incremental selection when leaving the cmdline window',
+        group = toggle_inc_selection_group,
+        command = 'TSBufEnable incremental_selection',
+      })
+
+      require('nvim-treesitter.configs').setup(opts)
     end,
+    -- ---@param opts TSConfig
+    -- config = function(_, opts)
+    --   if type(opts.ensure_installed) == "table" then
+    --     opts.ensure_installed = LazyVim.dedup(opts.ensure_installed)
+    --   end
+    --   require("nvim-treesitter.configs").setup(opts)
+    -- end,
   },
 
-  {
-    "nvim-treesitter/nvim-treesitter-textobjects",
-    event = "VeryLazy",
-    enabled = true,
-    config = function()
-      -- If treesitter is already loaded, we need to run config again for textobjects
-      if LazyVim.is_loaded("nvim-treesitter") then
-        local opts = LazyVim.opts("nvim-treesitter")
-        require("nvim-treesitter.configs").setup({ textobjects = opts.textobjects })
-      end
+  --{
+  --  "nvim-treesitter/nvim-treesitter-textobjects",
+  --  event = "VeryLazy",
+  --  enabled = true,
+  --  config = function()
+  --    -- If treesitter is already loaded, we need to run config again for textobjects
+  --    if LazyVim.is_loaded("nvim-treesitter") then
+  --      local opts = LazyVim.opts("nvim-treesitter")
+  --      require("nvim-treesitter.configs").setup({ textobjects = opts.textobjects })
+  --    end
 
-      -- When in diff mode, we want to use the default
-      -- vim text objects c & C instead of the treesitter ones.
-      local move = require("nvim-treesitter.textobjects.move") ---@type table<string,fun(...)>
-      local configs = require("nvim-treesitter.configs")
-      for name, fn in pairs(move) do
-        if name:find("goto") == 1 then
-          move[name] = function(q, ...)
-            if vim.wo.diff then
-              local config = configs.get_module("textobjects.move")[name] ---@type table<string,string>
-              for key, query in pairs(config or {}) do
-                if q == query and key:find("[%]%[][cC]") then
-                  vim.cmd("normal! " .. key)
-                  return
-                end
-              end
-            end
-            return fn(q, ...)
-          end
-        end
-      end
-    end,
-  },
+  --    -- When in diff mode, we want to use the default
+  --    -- vim text objects c & C instead of the treesitter ones.
+  --    local move = require("nvim-treesitter.textobjects.move") ---@type table<string,fun(...)>
+  --    local configs = require("nvim-treesitter.configs")
+  --    for name, fn in pairs(move) do
+  --      if name:find("goto") == 1 then
+  --        move[name] = function(q, ...)
+  --          if vim.wo.diff then
+  --            local config = configs.get_module("textobjects.move")[name] ---@type table<string,string>
+  --            for key, query in pairs(config or {}) do
+  --              if q == query and key:find("[%]%[][cC]") then
+  --                vim.cmd("normal! " .. key)
+  --                return
+  --              end
+  --            end
+  --          end
+  --          return fn(q, ...)
+  --        end
+  --      end
+  --    end
+  --  end,
+  --},
 
   -- Automatically add closing tags for HTML and JSX
   {
     "windwp/nvim-ts-autotag",
-    event = "LazyFile",
+    event = "VeryLazy",
     opts = {},
   },
 
