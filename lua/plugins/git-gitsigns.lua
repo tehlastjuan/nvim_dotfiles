@@ -1,10 +1,10 @@
 return {
 
 	-- Git signs written in pure lua
-  -- https://github.com/rafi/vim-config
+	-- https://github.com/rafi/vim-config
 	{
-		'lewis6991/gitsigns.nvim',
-		event = 'VeryLazy',
+		"lewis6991/gitsigns.nvim",
+		event = { "BufReadPre", "BufNewFile" },
 		-- See: https://github.com/lewis6991/gitsigns.nvim#usage
 		-- stylua: ignore
 		opts = {
@@ -113,5 +113,4 @@ return {
 			end,
 		},
 	},
-
 }

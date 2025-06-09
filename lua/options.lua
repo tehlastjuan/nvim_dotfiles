@@ -3,14 +3,13 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = ";"
 
--- Enable LazyVim auto format
+-- Disable auto format
 vim.g.autoformat = false
 
--- LazyVim picker to use. Can be one of: telescope, fzf
--- Leave it to "auto" to automatically use the picker enabled with `:LazyExtras`
+-- Picker to use.
 vim.g.lazyvim_picker = "telescope"
 
--- LazyVim root dir detection. Each entry can be:
+-- Root dir detection. Each entry can be:
 -- * the name of a detector function like `lsp` or `cwd`
 -- * a pattern or array of patterns like `.git` or `lua`.
 -- * a function with signature `function(buf) -> string|string[]`
@@ -23,17 +22,8 @@ vim.g.root_spec = { "lsp", { ".git", "lua" }, "cwd" }
 -- Set to false to disable.
 vim.g.lazygit_config = false
 
--- Options for the LazyVim statuscolumn
-vim.g.lazyvim_statuscolumn = {
-  folds_open = false, -- show fold sign when fold is open
-  folds_githl = false, -- highlight fold sign with git sign color
-}
-
--- Optionally setup the terminal to use
--- This sets `vim.opt.shell` and does some additional configuration for:
--- * pwsh
--- * powershell
--- LazyVim.terminal.setup("pwsh")
+-- Setup the terminal to use * pwsh, * powershell
+-- vim.opt.shell("pwsh")
 
 -- Hide deprecation warnings
 vim.g.deprecation_warnings = false
@@ -62,17 +52,6 @@ vim.g.no_gitrebase_maps = 1
 
 -- See share/nvim/runtime/ftplugin/man.vim
 vim.g.no_man_maps = 1
-
-if vim.fn.has("nvim-0.10") == 1 then
-  vim.opt.smoothscroll = true
-  vim.opt.foldexpr = "v:lua.require'lazyvim.util'.ui.foldexpr()"
-  vim.opt.foldmethod = "expr"
-  vim.opt.foldtext = ""
-else
-  vim.opt.foldmethod = "indent"
-  vim.opt.foldtext = "v:lua.require'lazyvim.util'.ui.foldtext()"
-end
-
 
 ----- General -----
 
@@ -116,6 +95,11 @@ vim.opt.autowrite = true
 -- (or was written to file while editing with another program)
 vim.opt.writebackup = false
 
+-- What to save for views and sessions
+vim.opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" }
+vim.opt.sessionoptions:remove({ 'blank', 'buffers', 'terminal' })
+vim.opt.sessionoptions:append({ 'globals', 'skiprtp' })
+
 
 ----- Timing -----
 
@@ -125,7 +109,7 @@ vim.opt.ttimeout = true
 vim.opt.updatetime = 200
 
 -- Lower than default (1000) to quickly trigger which-key
-vim.opt.timeoutlen = 500
+vim.opt.timeoutlen = 300
 
 -- Time out on key codes
 vim.opt.ttimeoutlen = 10
@@ -189,7 +173,6 @@ vim.opt.splitright = true
 -- Default splitting will cause your main splits to jump when opening an edgebar.
 vim.opt.splitkeep = "screen"
 vim.opt.breakindentopt = { shift = 2, min = 20 }
-vim.opt.formatexpr = "v:lua.require'lazyvim.util'.format.formatexpr()"
 vim.opt.formatoptions = vim.opt.formatoptions
   - "a" -- Auto formatting is BAD.
   - "t" -- Don't auto format my code. I got linters for that.
@@ -198,11 +181,8 @@ vim.opt.formatoptions = vim.opt.formatoptions
   - "o" -- O and o, don't continue comments
   + "r" -- But do continue when pressing enter.
   + "n" -- Indent past the formatlistpat, not underneath it.
-  + "j" -- Auto-remove comments if possible.
+  + "j" -- Auto-remove comments when joining lines, if possible.
   - "2" -- I'm not in gradeschool anymore
-
--- Session
-vim.opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" }
 
 -- Completion
 vim.opt.completeopt = "menu,menuone,noselect"
@@ -250,14 +230,13 @@ vim.opt.ruler = false
 -- Show some invisible characters (tabs...
 vim.opt.list = true
 
-vim.opt.shortmess:append {
-  -- w = true,
-  -- s = true,
+vim.opt.shortmess:append({
   W = true,
   I = true,
   c = true,
-  C = true
-}
+  --w = true,
+  s = true,
+})
 
 -- always show tabs
 vim.opt.showtabline = 0
@@ -331,3 +310,21 @@ vim.opt.fillchars = {
   -- vertright = '┣',
   -- verthoriz = '╋',
 }
+
+-- If sudo, disable vim swap/backup/undo/shada writing
+local USER = vim.env.USER or ''
+local SUDO_USER = vim.env.SUDO_USER or ''
+if
+	SUDO_USER ~= '' and USER ~= SUDO_USER
+	and vim.env.HOME ~= vim.fn.expand('~' .. USER, true)
+	and vim.env.HOME == vim.fn.expand('~' .. SUDO_USER, true)
+then
+	vim.opt_global.modeline = false
+	vim.opt_global.undofile = false
+	vim.opt_global.swapfile = false
+	vim.opt_global.backup = false
+	vim.opt_global.writebackup = false
+	vim.opt_global.shadafile = 'NONE'
+end
+
+-- vim: set ts=2 sw=0 tw=80 noet :

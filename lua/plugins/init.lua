@@ -8,6 +8,9 @@ return {
   -- ui components
   { "MunifTanjim/nui.nvim", lazy = true },
 
+  -- JSON/YAML schemas.
+  { 'b0o/SchemaStore.nvim', lazy = true },
+
   --
   -- {
   --   "echasnovski/mini.icons",

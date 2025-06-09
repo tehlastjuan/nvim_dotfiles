@@ -12,7 +12,7 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   end,
 })
 
--- Highlight on yank
+-- Highlight on yank.
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = augroup("highlight_yank"),
   callback = function()
@@ -20,8 +20,8 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
--- resize splits if window got resized
-vim.api.nvim_create_autocmd({ "VimResized" }, {
+-- Resize splits if window got resized.
+vim.api.nvim_create_autocmd( "VimResized", {
   group = augroup("resize_splits"),
   callback = function()
     local current_tab = vim.fn.tabpagenr()
@@ -30,25 +30,24 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
   end,
 })
 
--- go to last loc when opening a buffer
+-- Go to last loc when opening a buffer.
 vim.api.nvim_create_autocmd("BufReadPost", {
   group = augroup("last_loc"),
-  callback = function(event)
+  callback = function(args)
     local exclude = { "gitcommit" }
-    local buf = event.buf
-    if vim.tbl_contains(exclude, vim.bo[buf].filetype) or vim.b[buf].lazyvim_last_loc then
+    local buf = args.buf
+    if vim.tbl_contains(exclude, vim.bo[buf].filetype) then
       return
     end
-    vim.b[buf].lazyvim_last_loc = true
     local mark = vim.api.nvim_buf_get_mark(buf, '"')
     local lcount = vim.api.nvim_buf_line_count(buf)
     if mark[1] > 0 and mark[1] <= lcount then
-      pcall(vim.api.nvim_win_set_cursor, 0, mark)
+      vim.cmd 'normal! g`"zz'
     end
   end,
 })
 
--- close some filetypes with <q>
+-- Close some filetypes with <q>.
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("close_with_q"),
   pattern = {
@@ -59,6 +58,7 @@ vim.api.nvim_create_autocmd("FileType", {
     "grug-far",
     "help",
     "lspinfo",
+    "man",
     "neotest-output",
     "neotest-output-panel",
     "neotest-summary",
@@ -68,44 +68,47 @@ vim.api.nvim_create_autocmd("FileType", {
     "startuptime",
     "tsplayground",
   },
-  callback = function(event)
-    vim.bo[event.buf].buflisted = false
-    vim.schedule(function()
-      vim.keymap.set("n", "q", function()
-        vim.cmd("close")
-        pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
-      end, {
-        buffer = event.buf,
-        silent = true,
-        desc = "Quit buffer",
-      })
-    end)
+  callback = function(args)
+      vim.keymap.set('n', 'q', '<cmd>quit<cr>', { buffer = args.buf })
   end,
+  --callback = function(args)
+  --  vim.bo[args.buf].buflisted = false
+  --  vim.schedule(function()
+  --    vim.keymap.set("n", "q", function()
+  --      vim.cmd("close")
+  --      pcall(vim.api.nvim_buf_delete, args.buf, { force = true })
+  --    end, {
+  --      buffer = args.buf,
+  --      silent = true,
+  --      desc = "Quit buffer",
+  --    })
+  --  end)
+  --end,
 })
 
 -- make it easier to close man-files when opened inline
-vim.api.nvim_create_autocmd("FileType", {
-  group = augroup("man_unlisted"),
-  pattern = { "man" },
-  callback = function(event)
-    vim.bo[event.buf].buflisted = false
-  end,
-})
+--vim.api.nvim_create_autocmd("FileType", {
+--  group = augroup("man_unlisted"),
+--  pattern = { "man" },
+--  callback = function(args)
+--    vim.bo[args.buf].buflisted = false
+--  end,
+--})
 
 -- close some filetypes with <q>
-vim.api.nvim_create_autocmd("FileType", {
-  group = augroup("close_man_with_q"),
-  pattern = { "man" },
-  callback = function(event)
-    vim.keymap.set("n", "q", ":q<cr>", {
-      buffer = event.buf,
-      silent = true,
-      desc = "Quit buffer",
-    })
-  end,
-})
+--vim.api.nvim_create_autocmd("FileType", {
+--  group = augroup("close_man_with_q"),
+--  pattern = { "man" },
+--  callback = function(args)
+--    vim.keymap.set("n", "q", ":q<cr>", {
+--      buffer = args.buf,
+--      silent = true,
+--      desc = "Quit buffer",
+--    })
+--  end,
+--})
 
--- wrap and check for spell in text filetypes
+-- Wrap and check for spell in text filetypes
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("wrap_spell"),
   pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
@@ -116,7 +119,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Fix conceallevel for json files
-vim.api.nvim_create_autocmd({ "FileType" }, {
+vim.api.nvim_create_autocmd("FileType", {
   group = augroup("json_conceal"),
   pattern = { "json", "jsonc", "json5" },
   callback = function()
@@ -125,13 +128,13 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 })
 
 -- Auto create dir when saving a file, in case some intermediate directory does not exist
-vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+vim.api.nvim_create_autocmd("BufWritePre", {
   group = augroup("auto_create_dir"),
-  callback = function(event)
-    if event.match:match("^%w%w+:[\\/][\\/]") then
+  callback = function(args)
+    if args.match:match("^%w%w+:[\\/][\\/]") then
       return
     end
-    local file = vim.uv.fs_realpath(event.match) or event.match
+    local file = vim.uv.fs_realpath(args.match) or args.match
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
 })
@@ -151,7 +154,7 @@ vim.filetype.add({
   },
 })
 
-vim.api.nvim_create_autocmd({ "FileType" }, {
+vim.api.nvim_create_autocmd("FileType", {
   group = augroup("bigfile"),
   pattern = "bigfile",
   callback = function(ev)
@@ -172,11 +175,6 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
     end
   end,
 })
-
--- LazyExtras access
-vim.api.nvim_create_user_command("LazyExtras", function()
-  require("util").extras.show()
-end, { desc = "Manage LazyVim extras" })
 
 -- Write to ShaDa when deleting/wiping out buffers
 vim.api.nvim_create_autocmd({ "BufDelete", "BufWipeout" }, {
