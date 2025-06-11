@@ -1,5 +1,9 @@
+---@class util.lsp
 local M = {}
 
+---@alias lsp.Client.filter {id?: number, bufnr?: number, name?: string, method?: string, filter?:fun(client: lsp.Client):boolean}
+
+---@param opts? lsp.Client.filter
 function M.get_clients(opts)
   local ret = {} ---@type vim.lsp.Client[]
   if vim.lsp.get_clients then
@@ -114,67 +118,19 @@ function M.on_supports_method(method, fn)
   })
 end
 
-function M.rename_file()
-  local buf = vim.api.nvim_get_current_buf()
-  local old = assert(LazyVim.root.realpath(vim.api.nvim_buf_get_name(buf)))
-  local root = assert(LazyVim.root.realpath(LazyVim.root.get({ normalize = true })))
-  assert(old:find(root, 1, true) == 1, "File not in project root")
-
-  local extra = old:sub(#root + 2)
-
-  vim.ui.input({
-    prompt = "New File Name: ",
-    default = extra,
-    completion = "file",
-  }, function(new)
-    if not new or new == "" or new == extra then
-      return
-    end
-    new = LazyVim.norm(root .. "/" .. new)
-    vim.fn.mkdir(vim.fs.dirname(new), "p")
-    M.on_rename(old, new, function()
-      vim.fn.rename(old, new)
-      vim.cmd.edit(new)
-      vim.api.nvim_buf_delete(buf, { force = true })
-      vim.fn.delete(old)
-    end)
-  end)
-end
-
----@param from string
----@param to string
----@param rename? fun()
-function M.on_rename(from, to, rename)
-  local changes = { files = { {
-    oldUri = vim.uri_from_fname(from),
-    newUri = vim.uri_from_fname(to),
-  } } }
-
-  local clients = M.get_clients()
-  for _, client in ipairs(clients) do
-    if client.supports_method("workspace/willRenameFiles") then
-      local resp = client.request_sync("workspace/willRenameFiles", changes, 1000, 0)
-      if resp and resp.result ~= nil then
-        vim.lsp.util.apply_workspace_edit(resp.result, client.offset_encoding)
-      end
-    end
-  end
-
-  if rename then
-    rename()
-  end
-
-  for _, client in ipairs(clients) do
-    if client.supports_method("workspace/didRenameFiles") then
-      client.notify("workspace/didRenameFiles", changes)
-    end
-  end
-end
-
 ---@return _.lspconfig.options
 function M.get_config(server)
   local configs = require("lspconfig.configs")
   return rawget(configs, server)
+end
+
+---@return {default_config:lspconfig.Config}
+function M.get_raw_config(server)
+  local ok, ret = pcall(require, "lspconfig.configs." .. server)
+  if ok then
+    return ret
+  end
+  return require("lspconfig.server_configurations." .. server)
 end
 
 function M.is_enabled(server)
@@ -246,6 +202,44 @@ function M.format(opts)
     vim.lsp.buf.format(opts)
   end
 end
+
+M.action = setmetatable({}, {
+  __index = function(_, action)
+    return function()
+      vim.lsp.buf.code_action({
+        apply = true,
+        context = {
+          only = { action },
+          diagnostics = {},
+        },
+      })
+    end
+  end,
+})
+
+---@class LspCommand: lsp.ExecuteCommandParams
+---@field open? boolean
+---@field handler? lsp.Handler
+
+---@param opts LspCommand
+function M.execute(opts)
+  local params = {
+    command = opts.command,
+    arguments = opts.arguments,
+  }
+  if opts.open then
+    require("trouble").open({
+      mode = "lsp_command",
+      params = params,
+    })
+  else
+    return vim.lsp.buf_request(0, "workspace/executeCommand", params, opts.handler)
+  end
+end
+
+
+-----
+
 
 ---@alias LspWord {from:{[1]:number, [2]:number}, to:{[1]:number, [2]:number}} 1-0 indexed
 M.words = {}
@@ -323,37 +317,62 @@ function M.words.jump(count, cycle)
   end
 end
 
-M.action = setmetatable({}, {
-  __index = function(_, action)
-    return function()
-      vim.lsp.buf.code_action({
-        apply = true,
-        context = {
-          only = { action },
-          diagnostics = {},
-        },
-      })
+------
+
+function M.rename_file()
+  local buf = vim.api.nvim_get_current_buf()
+  local old = assert(LazyVim.root.realpath(vim.api.nvim_buf_get_name(buf)))
+  local root = assert(LazyVim.root.realpath(LazyVim.root.get({ normalize = true })))
+  assert(old:find(root, 1, true) == 1, "File not in project root")
+
+  local extra = old:sub(#root + 2)
+
+  vim.ui.input({
+    prompt = "New File Name: ",
+    default = extra,
+    completion = "file",
+  }, function(new)
+    if not new or new == "" or new == extra then
+      return
     end
-  end,
-})
+    new = LazyVim.norm(root .. "/" .. new)
+    vim.fn.mkdir(vim.fs.dirname(new), "p")
+    M.on_rename(old, new, function()
+      vim.fn.rename(old, new)
+      vim.cmd.edit(new)
+      vim.api.nvim_buf_delete(buf, { force = true })
+      vim.fn.delete(old)
+    end)
+  end)
+end
 
----@class LspCommand: lsp.ExecuteCommandParams
----@field open? boolean
----@field handler? lsp.Handler
+---@param from string
+---@param to string
+---@param rename? fun()
+function M.on_rename(from, to, rename)
+  local changes = { files = { {
+    oldUri = vim.uri_from_fname(from),
+    newUri = vim.uri_from_fname(to),
+  } } }
 
----@param opts LspCommand
-function M.execute(opts)
-  local params = {
-    command = opts.command,
-    arguments = opts.arguments,
-  }
-  if opts.open then
-    require("trouble").open({
-      mode = "lsp_command",
-      params = params,
-    })
-  else
-    return vim.lsp.buf_request(0, "workspace/executeCommand", params, opts.handler)
+  local clients = M.get_clients()
+  for _, client in ipairs(clients) do
+    if client.supports_method("workspace/willRenameFiles") then
+      local resp = client.request_sync("workspace/willRenameFiles", changes, 1000, 0)
+      if resp and resp.result ~= nil then
+        vim.lsp.util.apply_workspace_edit(resp.result, client.offset_encoding)
+      end
+    end
+  end
+
+  if rename then
+    rename()
+  end
+
+  for _, client in ipairs(clients) do
+    if client.supports_method("workspace/didRenameFiles") then
+      client.notify("workspace/didRenameFiles", changes)
+    end
   end
 end
 

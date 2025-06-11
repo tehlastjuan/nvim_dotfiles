@@ -1,6 +1,48 @@
-local icons = require("icons")
-
+---@class util: UtilCore
+---@field cmp util.cmp
+---@field lsp util.lsp
 local M = {}
+
+M.icons = require("icons")
+
+--- Override the default title for notifications.
+for _, level in ipairs({ "info", "warn", "error" }) do
+  M[level] = function(msg, opts)
+    opts = opts or {}
+    opts.title = opts.title or "Neovim"
+    return M[level](msg, opts)
+  end
+end
+
+---@return boolean
+function M.has_plugins()
+  return vim.g.noplugins
+end
+
+--- Check if an executable exists
+--- @param name string An executable name/path
+--- @return boolean
+function M.executable(name)
+  return vim.fn.executable(name) > 0
+end
+
+---@param name string
+function M.get_plugin(name)
+  return require("lazy.core.config").spec.plugins[name]
+end
+
+---@param name string
+---@param path string?
+function M.get_plugin_path(name, path)
+  local plugin = M.get_plugin(name)
+  path = path and "/" .. path or ""
+  return plugin and (plugin.dir .. path)
+end
+
+---@param plugin string
+function M.has(plugin)
+  return M.get_plugin(plugin) ~= nil
+end
 
 ---@param msg string
 function M.print_msg(msg)
@@ -103,18 +145,18 @@ end
 function M.get_kind_filter(buf)
   buf = (buf == nil or buf == 0) and vim.api.nvim_get_current_buf() or buf
   local ft = vim.bo[buf].filetype
-  if icons.kind_filter == false then
+  if M.icons.kind_filter == false then
     return
   end
-  if icons.kind_filter[ft] == false then
+  if M.icons.kind_filter[ft] == false then
     return
   end
-  if type(icons.kind_filter[ft]) == "table" then
+  if type(M.icons.kind_filter[ft]) == "table" then
     ---@diagnostic disable-next-line: return-type-mismatch
-    return icons.kind_filter[ft]
+    return M.icons.kind_filter[ft]
   end
   ---@diagnostic disable-next-line: return-type-mismatch
-  return type(icons.kind_filter) == "table" and type(icons.kind_filter.default) == "table" and icons.kind_filter.default or nil
+  return type(M.icons.kind_filter) == "table" and type(M.icons.kind_filter.default) == "table" and M.icons.kind_filter.default or nil
 end
 
 return M

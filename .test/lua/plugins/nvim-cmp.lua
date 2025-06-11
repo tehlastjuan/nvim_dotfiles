@@ -51,7 +51,6 @@ return {
           { name = "lazydev" },
           { name = "nvim_lsp" },
           { name = "path" },
-        }, {
           { name = "buffer" },
         }),
         formatting = {

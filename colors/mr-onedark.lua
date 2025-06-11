@@ -75,9 +75,9 @@ local colors = {
 	bg1              = "#2d3343",
 	bg2              = "#343e4f",
 	bg3              = "#363c51",
-	fg               = "#a5b0c5",
 	grey             = "#546178",
 	light_grey       = "#7d899f",
+	fg               = "#a5b0c5",
 	-- cyan
 	bright_cyan      = "#7adcd7",
 	cyan             = "#4dbdcb",
@@ -175,12 +175,12 @@ hl.common = {
 	Added = { fg = colors.green },
 	Changed = { fg = colors.blue },
 	ColorColumn = { bg = colors.bg1 },
-	Conceal = { fg = colors.grey, bg = colors.bg1 },
+	Conceal = { fg = colors.light_grey, bg = colors.bg0 },
 	CurSearch = { fg = colors.bg, bg = colors.orange },
 	Cursor = { fmt = "reverse" },
-	CursorColumn = { bg = colors.bg1 },
+	CursorColumn = { bg = colors.bg0 },
 	CursorIM = { fmt = "reverse" },
-	CursorLine = { bg = colors.bg1 },
+	CursorLine = { bg = colors.bg0 },
 	CursorLineNr = { fg = colors.fg },
 	Debug = { fg = colors.yellow },
 	DiffAdd = { fg = colors.none, bg = colors.dark_green },
@@ -196,14 +196,14 @@ hl.common = {
 	Directory = { fg = colors.blue },
 	EndOfBuffer = { fg = colors.bg, bg = colors.bg },
 	ErrorMsg = { fg = colors.bright_red, fmt = "bold" },
-	FloatBorder = { fg = colors.bg3, bg = colors.bg },
+	FloatBorder = { fg = colors.bg1, bg = colors.bg1 },
 	FoldColumn = { fg = colors.bg2, bg = colors.bg },
 	Folded = { fg = colors.fg, bg = colors.bg },
 	IncSearch = { fg = colors.bg, bg = colors.orange },
 	LineNr = { fg = colors.grey },
 	MatchParen = { fg = colors.none, bg = colors.grey },
 	MoreMsg = { fg = colors.blue, fmt = "bold" },
-	NonText = { fg = colors.grey },
+	NonText = { fg = colors.bg3 },
 	Normal = { fg = colors.fg, bg = colors.bg },
 	NormalFloat = { fg = colors.fg, bg = colors.bg1 },
 	Pmenu = { fg = colors.fg, bg = colors.bg1 },
@@ -234,7 +234,7 @@ hl.common = {
 	Visual = { bg = colors.bg3 },
 	VisualNOS = { fg = colors.none, bg = colors.bg2, fmt = "underline" },
 	WarningMsg = { fg = colors.yellow, fmt = "bold" },
-	Whitespace = { fg = colors.grey },
+	Whitespace = { fg = colors.bg1 },
 	WildMenu = { fg = colors.bg, bg = colors.blue },
 	WinSeparator = { fg = colors.bg3 },
 	WinBar = { fg = colors.light_grey, bg = colors.bg, fmt = "none" },
@@ -653,14 +653,16 @@ hl.plugins.nvim_tree = {
 }
 
 hl.plugins.telescope = {
-	TelescopeBorder = { fg = colors.red },
-	TelescopePromptBorder = { fg = colors.cyan },
-	TelescopeResultsBorder = { fg = colors.cyan },
-	TelescopePreviewBorder = { fg = colors.cyan },
+	TelescopeBorder = { fg = colors.bright_red },
+	TelescopeNormal = { bg = colors.bg },
 	TelescopeMatching = { fg = colors.orange, fmt = "bold" },
+	TelescopePromptBorder = { fg = colors.grey, bg = colors.bg },
+	TelescopePromptNormal = { fg = colors.fg, bg = colors.bg },
 	TelescopePromptPrefix = { fg = colors.green },
-	TelescopeSelection = { bg = colors.bg2 },
-	TelescopeSelectionCaret = { fg = colors.yellow },
+	TelescopePreviewBorder = { fg = colors.grey },
+	TelescopeResultsBorder = { fg = colors.grey },
+	TelescopeSelection = { bg = colors.bg1 },
+	TelescopeSelectionCaret = { fg = colors.yellow, bg = colors.bg1 },
 }
 
 hl.plugins.fzf_lua = {
@@ -919,11 +921,12 @@ hl.plugins.trouble = {
 
 hl.plugins.misc = {
 	--BufferLineOffsetSeparator = { fg = colors.bg3, bg = colors.bg },
-	LazyNormal = { bg = colors.bg1 },
-	MasonNormal = { bg = colors.bg1 },
+	LazyNormal = { bg = colors.bg0 },
+  LazyProp = { fg = colors.light_grey, bg = colors.bg0 },
+	MasonNormal = { bg = colors.bg0 },
 	SnippetTabstop = { bg = colors.bg },
-	TelescopePromptNormal = { bg = colors.bg1 },
-	WhichKeyFloat = { bg = colors.bg1 },
+	TelescopePromptNormal = { bg = colors.bg0 },
+	WhichKeyFloat = { bg = colors.bg0 },
 }
 
 --hl.plugins.snacks = {

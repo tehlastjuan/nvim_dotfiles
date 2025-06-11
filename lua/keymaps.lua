@@ -2,7 +2,7 @@ local utils = require("utils")
 
 -- Source current config
 vim.keymap.set("n", "<leader>cs", function()
-  vim.cmd(":source " .. utils.config_files() .. "/init.lua")
+	vim.cmd(":source " .. utils.config_files() .. "/init.lua")
 end, { desc = "Source current config" })
 
 -- Exit insert mode
@@ -57,7 +57,7 @@ vim.keymap.set("n", "<c-,>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 vim.keymap.set("n", "<c-.>", "<cmd>bnext<cr>", { desc = "Next buffer" })
 vim.keymap.set("n", "<c-tab>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 vim.keymap.set("n", "<c-s-tab>", "<cmd>bnext<cr>", { desc = "Next buffer" })
---vim.keymap.set("n", "<leader>bd", "<cmd>:bdelete<cr>", { desc = "Delete Buffer" })
+vim.keymap.set("n", "<leader>bd", "<cmd>:bdelete<cr>", { desc = "Delete Buffer" })
 
 --  Tabs
 vim.keymap.set("n", "<c-s-,>", "<cmd>tabprevious<cr>", { desc = "Prev tab" })
@@ -79,28 +79,16 @@ vim.keymap.set("n", "N", "'nN'[v:searchforward].'zv'", { expr = true, desc = "Pr
 vim.keymap.set("x", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
 vim.keymap.set("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
 
--- Clear tool windows with S + <esc>
-vim.keymap.set({ "i", "n" }, "<s-esc>", function()
-	-- close any trouble windows
-	if require("trouble").is_open() then
-		require("trouble").close()
-	end
-	-- clear hl search
-	vim.cmd(":noh")
-	-- clears prompt
-	vim.print("")
-end, { desc = "Clear work area" })
+-- stylua: ignore
+-- https://stackoverflow.com/questions/3249275/multiple-commands-on-same-line
+vim.keymap.set("n", "<esc>", ':noh<cr>:lua print("")<esc>', { silent = true, desc = "Escape and clear hlsearch" })
 
 -- Clear search
 vim.keymap.set({ "n", "v" }, "<leader>ch", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
 
 -- Clear search, diff update and redraw, taken from runtime/lua/_editor.lua
-vim.keymap.set(
-	"n",
-	"<leader>ur",
-	"<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><CR>",
-	{ desc = "Redraw / clear hlsearch / diff update" }
-)
+-- stylua: ignore
+vim.keymap.set("n", "<leader>ur", "<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><CR>", { desc = "Redraw / clear hlsearch / diff update" })
 
 -- Close all buffers and quit
 vim.keymap.set({ "n", "v" }, "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
@@ -115,7 +103,32 @@ vim.keymap.set({ "n", "i", "x", "v", "x", "o" }, "<Left>", "<Nop>", { desc = "NO
 vim.keymap.set({ "n", "i", "x", "v", "x", "o" }, "<Right>", "<Nop>", { desc = "NOP" })
 vim.keymap.set({ "n", "i", "x", "v", "x", "o" }, "<Down>", "<Nop>", { desc = "NOP" })
 
+vim.keymap.del("n", "grn")   -- mapped Normal mode to |vim.lsp.buf.rename()|
+vim.keymap.del("n", "gra")   -- mapped Normal and Visual mode to |vim.lsp.buf.code_action()|
+vim.keymap.del("n", "grr")   -- mapped Normal mode to |vim.lsp.buf.references()|
+vim.keymap.del("n", "gri")   -- mapped Normal mode to |vim.lsp.buf.implementation()|
+vim.keymap.del("n", "gO" )   -- mapped in Normal mode to |vim.lsp.buf.document_symbol()|
+vim.keymap.del("i", "<c-s>") -- mapped in Insert mode to |vim.lsp.buf.signature_help()|
+
+
 ----- Plugins -----
+
+-- Powerful Escape
+local power_esc = function()
+  if vim.g.noplugins == false then
+    -- close any trouble windows
+    if require("trouble").is_open() then
+      require("trouble").close()
+    end
+  end
+  -- clear hl search
+  vim.cmd(":noh")
+  -- clears prompt
+  print("")
+end
+
+-- stylua: ignore
+vim.keymap.set("n", "<esc>", function() power_esc() end, { desc = "Escape and clear hlsearch" })
 
 -- Plugin manager
 vim.keymap.set("n", "<leader>l", "<cmd>Lazy<cr>", { silent = true, desc = "Lazy" })
@@ -126,74 +139,84 @@ vim.keymap.set("n", "<leader>m", "<cmd>Mason<cr>", { silent = true, desc = "Maso
 -- Web-tools
 vim.keymap.set("n", "<leader>cb", "<cmd>BrowserOpen<cr>", { desc = "Browser Preview", remap = true })
 
+--vim.keymap.set("n", "<leader>e", function()
+--	local bufname = vim.api.nvim_buf_get_name(0)
+--	local path = vim.fn.fnamemodify(bufname, ":p")
+--
+--	-- Noop if the buffer isn't valid.
+--	if path and vim.uv.fs_stat(path) then
+--		require("lir").float.toggle(path)
+--	end
+--end, { desc = "File explorer" })
+
 -- Toggleterm
 vim.keymap.set("n", "<C-/>", "<cmd>ToggleTerm size=15 direction=horizontal<cr>", { desc = "Toggleterm h-split" })
 vim.keymap.set("n", "<leader>tv", "<cmd>ToggleTerm<cr>", { desc = "Toggleterm v-split" })
 vim.keymap.set("n", "<leader>tf", "<cmd>ToggleTerm direction=float<cr>", { desc = "Toggleterm float" })
 
 vim.keymap.set("n", "<leader>tl", function()
-	require("toggleterm").send_lines_to_terminal("single_line", true, { args = vim.v.count })
+  require("toggleterm").send_lines_to_terminal("single_line", true, { args = vim.v.count })
 end, { desc = "Send selection to Terminal" })
 
 vim.keymap.set("v", "<leader>tv", function()
-	require("toggleterm").send_lines_to_terminal("visual_lines", true, { args = vim.v.count })
+  require("toggleterm").send_lines_to_terminal("visual_lines", true, { args = vim.v.count })
 end, { desc = "Send visual lines to Terminal" })
 
 vim.keymap.set("v", "<leader>ts", function()
-	require("toggleterm").send_lines_to_terminal("visual_selection", true, { args = vim.v.count })
+  require("toggleterm").send_lines_to_terminal("visual_selection", true, { args = vim.v.count })
 end, { desc = "Send visual selection to Terminal" })
 
 -- Formatting
 vim.keymap.set({ "n", "v" }, "<leader>cf", function()
-	require("conform").format({ async = true })
+  require("conform").format({ async = true })
 end, { desc = "Format" })
 
 vim.keymap.set({ "n", "v" }, "<leader>cF", function()
-	require("conform").format({ formatters = { "injected" }, timeout_ms = 3000 })
+  require("conform").format({ formatters = { "injected" }, timeout_ms = 3000 })
 end, { desc = "Format Injected Langs" })
 
 -- Trouble
 vim.keymap.set("n", "<leader>xx", function()
-	require("trouble").open("diagnostics")
+  require("trouble").open("diagnostics")
 end, { desc = "Diagnostics (Trouble)" })
 
-vim.keymap.set("n", "<leader>.", function()
-	--vim.cmd('Telescope buffers sort_mru=true sort_lastused=true')
-	--require("telescope.builtin").buffers()
-
-	vim.cmd(":enew | !ls")
-	local wins = utils.fetch_ft_windows("")
-	local buf = vim.api.nvim_win_get_buf(wins[1])
-	print(vim.inspect(buf))
-	require("trouble.sources.telescope").open(buf)
-	--vim.defer_fn(function()
-	--  require("trouble.sources.telescope").open(buf)
-	--end, 50)
-
-	--require("trouble").open("telescope_files")
-	--require("trouble.sources.telescope").open(buf)
-end, { desc = "Switch Buffer (Trouble)" })
+-- vim.keymap.set("n", "<leader>.", function()
+-- 	--vim.cmd('Telescope buffers sort_mru=true sort_lastused=true')
+-- 	--require("telescope.builtin").buffers()
+--
+-- 	vim.cmd(":enew | !ls")
+-- 	local wins = utils.fetch_ft_windows("")
+-- 	local buf = vim.api.nvim_win_get_buf(wins[1])
+-- 	print(vim.inspect(buf))
+-- 	require("trouble.sources.telescope").open(buf)
+-- 	--vim.defer_fn(function()
+-- 	--  require("trouble.sources.telescope").open(buf)
+-- 	--end, 50)
+--
+-- 	--require("trouble").open("telescope_files")
+-- 	--require("trouble.sources.telescope").open(buf)
+-- end, { desc = "Switch Buffer (Trouble)" })
 
 --vim.keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Diagnostics (Trouble)" })
 --vim.keymap.set("n", "<leader>xl", "<cmd>Trouble loclist toggle<cr>", { desc = "Location List (Trouble)" })
 --vim.keymap.set("n", "<leader>xq", "<cmd>Trouble qflist toggle<cr>", { desc = "Quickfix List (Trouble)" })
 
 vim.keymap.set("n", "<c-'>", function()
-	if require("trouble").is_open() == false then
-		require("trouble").open("diagnostics")
-	else
-		---@diagnostic disable-next-line: missing-parameter, missing-fields
-		require("trouble").prev({ skip_groups = true, jump = true })
-	end
+  if require("trouble").is_open() == false then
+    require("trouble").open("diagnostics")
+  else
+    ---@diagnostic disable-next-line: missing-parameter, missing-fields
+    require("trouble").prev({ skip_groups = true, jump = true })
+  end
 end, { desc = "Previous Trouble Item" })
 
 vim.keymap.set("n", "<c-`>", function()
-	if require("trouble").is_open() == false then
-		require("trouble").open("diagnostics")
-	else
-		---@diagnostic disable-next-line: missing-parameter, missing-fields
-		require("trouble").next({ skip_groups = true, jump = true })
-	end
+  if require("trouble").is_open() == false then
+    require("trouble").open("diagnostics")
+  else
+    ---@diagnostic disable-next-line: missing-parameter, missing-fields
+    require("trouble").next({ skip_groups = true, jump = true })
+  end
 end, { desc = "Next Trouble Item" })
 
 -- Lazygit

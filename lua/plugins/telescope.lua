@@ -1,5 +1,5 @@
 local utils = require("utils")
-local icons = require("icons").icons
+local icons = require("icons")
 --local builtin = require("telescope.builtin")
 
 local build_cmd ---@type string?
@@ -92,8 +92,8 @@ return {
 				end,
 			},
 			"nvim-telescope/telescope-ui-select.nvim",
-			-- Telescope extension for Zoxide
 			"jvgrootveld/telescope-zoxide",
+			"nvim-lua/plenary.nvim",
 		},
 		keys = {
 			{ "<leader><space>", "<cmd>Telescope find_files<cr>", desc = "Find Files (Root Dir)" },
@@ -116,11 +116,13 @@ return {
 				desc = "Find Config Files",
 			},
 
-			{ "<leader>fF",
+			{
+				"<leader>fF",
 				function()
 					require("telescope.builtin").find_files({ cwd = utils.get() })
 				end,
-      desc = "Find Files (cwd)" },
+				desc = "Find Files (cwd)",
+			},
 
 			{ "<leader>fg", "<cmd>Telescope git_files<cr>", desc = "Find Files (git-files)" },
 			{ "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent" },
@@ -149,22 +151,22 @@ return {
 			{ "<leader>sR", "<cmd>Telescope resume<cr>", desc = "Resume" },
 			{ "<leader>sq", "<cmd>Telescope quickfix<cr>", desc = "Quickfix List" },
 			{
-			  "<leader>ss",
-			  function()
-			    require("telescope.builtin").lsp_document_symbols({
-			      symbols = utils.get_kind_filter()
-			    })
-			  end,
-			  desc = "Goto Symbol",
+				"<leader>ss",
+				function()
+					require("telescope.builtin").lsp_document_symbols({
+						symbols = utils.get_kind_filter(),
+					})
+				end,
+				desc = "Goto Symbol",
 			},
 			{
-			  "<leader>sS",
-			  function()
-			    require("telescope.builtin").lsp_dynamic_workspace_symbols({
-			      symbols = utils.get_kind_filter()
-			    })
-			  end,
-			  desc = "Goto Symbol (Workspace)",
+				"<leader>sS",
+				function()
+					require("telescope.builtin").lsp_dynamic_workspace_symbols({
+						symbols = utils.get_kind_filter(),
+					})
+				end,
+				desc = "Goto Symbol (Workspace)",
 			},
 		},
 		opts = function()
@@ -273,5 +275,4 @@ return {
 			}
 		end,
 	},
-
 }

@@ -1,4 +1,4 @@
-local icons = require("icons").icons
+local icons = require("icons")
 
 local M = {}
 

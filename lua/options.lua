@@ -1,61 +1,8 @@
------ Globals -----
+----- Options -----
 
-vim.g.mapleader = " "
-vim.g.maplocalleader = ";"
+-- security
+--vim.opt.modelines = 0
 
--- Disable auto format
-vim.g.autoformat = false
-
--- Picker to use.
-vim.g.lazyvim_picker = "telescope"
-
--- Root dir detection. Each entry can be:
--- * the name of a detector function like `lsp` or `cwd`
--- * a pattern or array of patterns like `.git` or `lua`.
--- * a function with signature `function(buf) -> string|string[]`
-vim.g.root_spec = { "lsp", { ".git", "lua" }, "cwd" }
-
--- LazyVim automatically configures lazygit:
---  * theme, based on the active colorscheme.
---  * editorPreset to nvim-remote
---  * enables nerd font icons
--- Set to false to disable.
-vim.g.lazygit_config = false
-
--- Setup the terminal to use * pwsh, * powershell
--- vim.opt.shell("pwsh")
-
--- Hide deprecation warnings
-vim.g.deprecation_warnings = false
-
--- Set filetype to `bigfile` for files larger than 1.5 MB
--- Only vim syntax will be enabled (with the correct filetype)
--- LSP, treesitter and other ft plugins will be disabled.
--- mini.animate will also be disabled.
-vim.g.bigfile_size = 1024 * 1024 * 1.5 -- 1.5 MB
-
--- Show the current document symbols location from Trouble in lualine
-vim.g.trouble_lualine = false
-
--- Disable health checks for python/perl/ruby/node providers
-vim.g.loaded_python3_provider = 0
-vim.g.loaded_perl_provider = 0
-vim.g.loaded_ruby_provider = 0
-vim.g.loaded_node_provider = 0
-
--- Fix markdown indentation settings
-vim.g.markdown_recommended_style = 0
-vim.g.yaml_indent_multiline_scalar = 1
-
--- See share/nvim/runtime/ftplugin/gitrebase.vim
-vim.g.no_gitrebase_maps = 1
-
--- See share/nvim/runtime/ftplugin/man.vim
-vim.g.no_man_maps = 1
-
------ General -----
-
--- the encoding written to a file
 vim.opt.fileencoding = "utf-8"
 
 -- Sync with system clipboard
@@ -144,6 +91,9 @@ vim.opt.ignorecase = true
 -- Don't ignore case with capitals
 vim.opt.smartcase = true
 
+-- Adjust match case
+vim.opt.infercase = true
+
 -- preview incremental substitute
 vim.opt.inccommand = "nosplit"
 vim.opt.grepformat = "%f:%l:%c:%m"
@@ -184,17 +134,34 @@ vim.opt.formatoptions = vim.opt.formatoptions
   + "j" -- Auto-remove comments when joining lines, if possible.
   - "2" -- I'm not in gradeschool anymore
 
+-- Fuzzy find.
+vim.opt.path:append("**")
+
+-- Ignore files vim doesn't use.
+vim.opt.wildignore:append(".git,.hg,.svn")
+vim.opt.wildignore:append(".aux,*.out,*.toc")
+vim.opt.wildignore:append(".o,*.obj,*.exe,*.dll,*.manifest,*.rbc,*.class")
+vim.opt.wildignore:append(".ai,*.bmp,*.gif,*.ico,*.jpg,*.jpeg,*.png,*.psd,*.webp")
+vim.opt.wildignore:append(".avi,*.divx,*.mp4,*.webm,*.mov,*.m2ts,*.mkv,*.vob,*.mpg,*.mpeg")
+vim.opt.wildignore:append(".mp3,*.oga,*.ogg,*.wav,*.flac")
+vim.opt.wildignore:append(".eot,*.otf,*.ttf,*.woff")
+vim.opt.wildignore:append(".doc,*.pdf,*.cbr,*.cbz")
+vim.opt.wildignore:append(".zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz,*.kgb")
+vim.opt.wildignore:append(".swp,.lock,.DS_Store,._*")
+vim.opt.wildignore:append(".,..")
+
 -- Completion
 vim.opt.completeopt = "menu,menuone,noselect"
-vim.opt.wildignore:append { ".DS_store" }
 
 -- Command-line completion mode
 vim.opt.wildmode = "longest:full,full"
+vim.opt.wildmenu = true
+vim.opt.wildignorecase = true
 
 
 ----- UI -----
 
--- True color support
+-- True color support.
 vim.opt.termguicolors = true
 
 -- Always show the signcolumn, otherwise it would shift the text each time
@@ -230,6 +197,7 @@ vim.opt.ruler = false
 -- Show some invisible characters (tabs...
 vim.opt.list = true
 
+-- Message opts
 vim.opt.shortmess:append({
   W = true,
   I = true,
@@ -284,47 +252,51 @@ vim.opt.foldlevelstart = 99
 vim.opt.foldenable = true
 vim.wo.foldtext = ""
 
+-- Whitespace
+vim.opt.showbreak = "↳ "
+
 -- UI icons:  ▏│ ¦ ╎ ┆ ⋮ ⦙ ┊ 
-vim.opt.showbreak = "↳  "
--- vim.opt.listchars = {
---   tab = "  ",
---   extends = "⟫",
---   precdes = "⟪",
---   nbsp = "␣",
---   trail = "_",
--- }
+vim.opt.listchars = {
+	eol = " ",
+	tab = "╎ ",
+	--extends = "⟫",
+	--precedes = "⟪",
+	nbsp = "␣",
+	trail = "_",
+}
 
 vim.opt.fillchars = {
-  eob = " ",
-  fold = " ",
-  foldclose = "󰅂", -- 󰅂 
-  foldopen = "󰅀", -- 󰅀 
-  foldsep = " ",
-  msgsep = "-",
-  diff = "╱",
-  -- horiz = '━',
-  -- horizup = '┻',
-  -- horizdown = '┳',
-  -- vert = '┃',
-  -- vertleft = '┫',
-  -- vertright = '┣',
-  -- verthoriz = '╋',
+	eob = " ",
+	fold = " ",
+	foldclose = "󰅂", -- 󰅂 
+	foldopen = "󰅀", -- 󰅀 
+	foldsep = " ",
+	msgsep = "-",
+	diff = "╱",
+	-- horiz = '━',
+	-- horizup = '┻',
+	-- horizdown = '┳',
+	-- vert = '┃',
+	-- vertleft = '┫',
+	-- vertright = '┣',
+	-- verthoriz = '╋',
 }
 
 -- If sudo, disable vim swap/backup/undo/shada writing
-local USER = vim.env.USER or ''
-local SUDO_USER = vim.env.SUDO_USER or ''
+local USER = vim.env.USER or ""
+local SUDO_USER = vim.env.SUDO_USER or ""
 if
-	SUDO_USER ~= '' and USER ~= SUDO_USER
-	and vim.env.HOME ~= vim.fn.expand('~' .. USER, true)
-	and vim.env.HOME == vim.fn.expand('~' .. SUDO_USER, true)
+	SUDO_USER ~= ""
+	and USER ~= SUDO_USER
+	and vim.env.HOME ~= vim.fn.expand("~" .. USER, true)
+	and vim.env.HOME == vim.fn.expand("~" .. SUDO_USER, true)
 then
 	vim.opt_global.modeline = false
 	vim.opt_global.undofile = false
 	vim.opt_global.swapfile = false
 	vim.opt_global.backup = false
 	vim.opt_global.writebackup = false
-	vim.opt_global.shadafile = 'NONE'
+	vim.opt_global.shadafile = "NONE"
 end
 
 -- vim: set ts=2 sw=0 tw=80 noet :
