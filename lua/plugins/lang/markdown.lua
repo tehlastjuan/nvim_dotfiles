@@ -4,7 +4,6 @@ return {
 
   {
     "stevearc/conform.nvim",
-    optional = true,
     opts = {
       formatters = {
         ["markdown-toc"] = {
@@ -33,28 +32,23 @@ return {
   },
 
   {
-    "mason-org/mason.nvim",
-    opts = { ensure_installed = { "markdownlint-cli2", "markdown-toc" } },
+    "mfussenegger/nvim-lint",
+    optional = true,
+    opts = {
+      linters_by_ft = {
+        markdown = { "markdownlint-cli2" },
+      },
+    },
   },
 
-  -- {
-  --   "mfussenegger/nvim-lint",
-  --   optional = true,
-  --   opts = {
-  --     linters_by_ft = {
-  --       markdown = { "markdownlint-cli2" },
-  --     },
-  --   },
-  -- },
-
-  --{
-  --  "neovim/nvim-lspconfig",
-  --  opts = {
-  --    servers = {
-  --      marksman = {},
-  --    },
-  --  },
-  --},
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        marksman = {},
+      },
+    },
+  },
 
   -- Markdown preview - https://github.com/iamcco/markdown-preview.nvim/issues/695
   -- cd ~/.local/share/nvim/lazy/markdown-preview.nvim

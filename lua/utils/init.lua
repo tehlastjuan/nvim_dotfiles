@@ -1,22 +1,15 @@
----@class util: UtilCore
+--local CoreUtil = require("lazy.core.util")
+
+---@class util : LazyUtilCore
 ---@field cmp util.cmp
 ---@field lsp util.lsp
+---@field root util.root
+---@field ui util.ui
 local M = {}
 
-M.icons = require("icons")
-
---- Override the default title for notifications.
-for _, level in ipairs({ "info", "warn", "error" }) do
-  M[level] = function(msg, opts)
-    opts = opts or {}
-    opts.title = opts.title or "Neovim"
-    return M[level](msg, opts)
-  end
-end
-
----@return boolean
-function M.has_plugins()
-  return vim.g.noplugins
+--- @return string
+function M.config_files()
+	return vim.fn.stdpath("config")
 end
 
 --- Check if an executable exists
@@ -24,6 +17,11 @@ end
 --- @return boolean
 function M.executable(name)
   return vim.fn.executable(name) > 0
+end
+
+---@return boolean
+function M.has_plugins()
+  return vim.g.noplugins
 end
 
 ---@param name string
@@ -44,119 +42,197 @@ function M.has(plugin)
   return M.get_plugin(plugin) ~= nil
 end
 
----@param msg string
-function M.print_msg(msg)
-	print(msg)
+---@param fn fun()
+function M.on_very_lazy(fn)
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "VeryLazy",
+    callback = function()
+      fn()
+    end,
+  })
+end
+
+--- This extends a deeply nested list with a key in a table
+--- that is a dot-separated string.
+--- The nested list will be created if it does not exist.
+---@generic T
+---@param t T[]
+---@param key string
+---@param values T[]
+---@return T[]?
+function M.extend(t, key, values)
+  local keys = vim.split(key, ".", { plain = true })
+  for i = 1, #keys do
+    local k = keys[i]
+    t[k] = t[k] or {}
+    if type(t) ~= "table" then
+      return
+    end
+    t = t[k]
+  end
+  return vim.list_extend(t, values)
+end
+
+---@param name string
+function M.opts(name)
+  local plugin = M.get_plugin(name)
+  if not plugin then
+    return {}
+  end
+  local Plugin = require("lazy.core.plugin")
+  return Plugin.values(plugin, "opts", false)
+end
+
+-- delay notifications till vim.notify was replaced or after 500ms
+function M.lazy_notify()
+  local notifs = {}
+  local function temp(...)
+    table.insert(notifs, vim.F.pack_len(...))
+  end
+
+  local orig = vim.notify
+  vim.notify = temp
+
+  local timer = vim.uv.new_timer()
+  local check = assert(vim.uv.new_check())
+
+  local replay = function()
+    timer:stop()
+    check:stop()
+    if vim.notify == temp then
+      vim.notify = orig -- put back the original notify if needed
+    end
+    vim.schedule(function()
+      ---@diagnostic disable-next-line: no-unknown
+      for _, notif in ipairs(notifs) do
+        vim.notify(vim.F.unpack_len(notif))
+      end
+    end)
+  end
+
+  -- wait till vim.notify has been replaced
+  check:start(function()
+    if vim.notify ~= temp then
+      replay()
+    end
+  end)
+  -- or if it took more than 500ms, then something went wrong
+  timer:start(500, 0, replay)
+end
+
+function M.is_loaded(name)
+  local Config = require("lazy.core.config")
+  return Config.plugins[name] and Config.plugins[name]._.loaded
 end
 
 ---@param name string
 ---@param fn fun(name:string)
 function M.on_load(name, fn)
-	if M.is_loaded(name) then
-		fn(name)
-	else
-		vim.api.nvim_create_autocmd("User", {
-			pattern = "LazyLoad",
-			callback = function(event)
-				if event.data == name then
-					fn(name)
-					return true
-				end
-			end,
-		})
-	end
-end
-
--- returns the root directory based on:
--- * lsp workspace folders
--- * lsp root_dir
--- * root pattern of filename of the current buffer
--- * root pattern of cwd
----@param opts? {normalize?:boolean, buf?:number}
----@return string
-function M.get(opts)
-	opts = opts or {}
-	local buf = opts.buf or vim.api.nvim_get_current_buf()
-	local ret = M.cache[buf]
-	if not ret then
-		local roots = M.detect({ all = false, buf = buf })
-		ret = roots[1] and roots[1].paths[1] or vim.uv.cwd()
-		M.cache[buf] = ret
-	end
-
-  return ret or ""
-end
-
-function M.git_root()
-	local root = M.get()
-	local git_root = vim.fs.find(".git", { path = root, upward = true })[1]
-	local ret = git_root and vim.fn.fnamemodify(git_root, ":h") or root
-	return ret
-end
-
-function M.config_files()
-	return vim.fn.stdpath("config")
-end
-
-
-function M.bufpath(buf)
-  return M.realpath(vim.api.nvim_buf_get_name(assert(buf)))
-end
-
-function M.cwd()
-  return M.realpath(vim.uv.cwd()) or ""
-end
-
-function M.realpath(path)
-  if path == "" or path == nil then
-    return nil
+  if M.is_loaded(name) then
+    fn(name)
+  else
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "LazyLoad",
+      callback = function(event)
+        if event.data == name then
+          fn(name)
+          return true
+        end
+      end,
+    })
   end
-  path = vim.uv.fs_realpath(path) or path
-  return vim.fs.normalize(path)
 end
 
---- @param filetype string
---- @return {}
-function M.fetch_ft_windows(filetype)
-	local wins = vim.fn.filter(vim.api.nvim_list_wins(), function(_, v)
-		local file_type = vim.api.nvim_get_option_value("filetype", { buf = vim.api.nvim_win_get_buf(v) })
-		return vim.api.nvim_win_get_config(v).relative ~= "" and file_type == filetype
-	end)
+-- Wrapper around vim.keymap.set that will
+-- not create a keymap if a lazy key handler exists.
+-- It will also set `silent` to true by default.
+function M.safe_keymap_set(mode, lhs, rhs, opts)
+  local keys = require("lazy.core.handler").handlers.keys
+  ---@cast keys KeysHandler
+  local modes = type(mode) == "string" and { mode } or mode
 
-	return wins
+  ---@param m string
+  modes = vim.tbl_filter(function(m)
+    return not (keys.have and keys:have(lhs, m))
+  end, modes)
+
+  -- do not create the keymap if a lazy keys handler exists
+  if #modes > 0 then
+    opts = opts or {}
+    opts.silent = opts.silent ~= false
+    if opts.remap and not vim.g.vscode then
+      ---@diagnostic disable-next-line: no-unknown
+      opts.remap = nil
+    end
+    vim.keymap.set(modes, lhs, rhs, opts)
+  end
 end
 
---- @param filetype string
-function M.close_ft_windows(filetype)
-	local wins = vim.fn.filter(vim.api.nvim_list_wins(), function(_, v)
-		local file_type = vim.api.nvim_get_option_value("filetype", { buf = vim.api.nvim_win_get_buf(v) })
-		return vim.api.nvim_win_get_config(v).relative == ""
-			and v ~= vim.api.nvim_get_current_win()
-			and file_type == filetype
-	end)
-
-	for _, w in ipairs(wins) do
-		pcall(vim.api.nvim_win_close, w, false)
-	end
+---@generic T
+---@param list T[]
+---@return T[]
+function M.dedup(list)
+  local ret = {}
+  local seen = {}
+  for _, v in ipairs(list) do
+    if not seen[v] then
+      table.insert(ret, v)
+      seen[v] = true
+    end
+  end
+  return ret
 end
 
----@param buf? number
----@return string[]?
-function M.get_kind_filter(buf)
-  buf = (buf == nil or buf == 0) and vim.api.nvim_get_current_buf() or buf
-  local ft = vim.bo[buf].filetype
-  if M.icons.kind_filter == false then
-    return
+M.CREATE_UNDO = vim.api.nvim_replace_termcodes("<c-G>u", true, true, true)
+function M.create_undo()
+  if vim.api.nvim_get_mode().mode == "i" then
+    vim.api.nvim_feedkeys(M.CREATE_UNDO, "n", false)
   end
-  if M.icons.kind_filter[ft] == false then
-    return
+end
+
+--- Gets a path to a package in the Mason registry.
+--- Prefer this to `get_package`, since the package might not always be
+--- available yet and trigger errors.
+---@param pkg string
+---@param path? string
+---@param opts? { warn?: boolean }
+function M.get_pkg_path(pkg, path, opts)
+  pcall(require, "mason") -- make sure Mason is loaded. Will fail when generating docs
+  local root = vim.env.MASON or (vim.fn.stdpath("data") .. "/mason")
+  opts = opts or {}
+  opts.warn = opts.warn == nil and true or opts.warn
+  path = path or ""
+  local ret = root .. "/packages/" .. pkg .. "/" .. path
+  if opts.warn and not vim.loop.fs_stat(ret) and not require("lazy.core.config").headless() then
+    M.warn(
+      ("Mason package path not found for **%s**:\n- `%s`\nYou may need to force update the package."):format(pkg, path)
+    )
   end
-  if type(M.icons.kind_filter[ft]) == "table" then
-    ---@diagnostic disable-next-line: return-type-mismatch
-    return M.icons.kind_filter[ft]
+  return ret
+end
+
+--- Override the default title for notifications.
+for _, level in ipairs({ "info", "warn", "error" }) do
+  M[level] = function(msg, opts)
+    opts = opts or {}
+    opts.title = opts.title or "Neovim"
+    return require("lazy.core.util")[level](msg, opts)
   end
-  ---@diagnostic disable-next-line: return-type-mismatch
-  return type(M.icons.kind_filter) == "table" and type(M.icons.kind_filter.default) == "table" and M.icons.kind_filter.default or nil
+end
+
+local cache = {} ---@type table<(fun()), table<string, any>>
+---@generic T: fun()
+---@param fn T
+---@return T
+function M.memoize(fn)
+  return function(...)
+    local key = vim.inspect({ ... })
+    cache[fn] = cache[fn] or {}
+    if cache[fn][key] == nil then
+      cache[fn][key] = fn(...)
+    end
+    return cache[fn][key]
+  end
 end
 
 return M

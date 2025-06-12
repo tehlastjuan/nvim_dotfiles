@@ -20,10 +20,11 @@ local plugin_specs = {
 	{ "nvim-tree/nvim-web-devicons", lazy = true },
 
 	-- core
-	require("plugins.nvim-cmp"),
+	require("plugins.blink"),
 	require("plugins.lsp"),
 	require("plugins.conform"),
 	require("plugins.gitsigns"),
+	require("plugins.diffview"),
 	require("plugins.telescope"),
 	require("plugins.treesitter"),
 	require("plugins.which-key"),
@@ -33,7 +34,16 @@ local plugin_specs = {
 
 	-- utilities
 	require("plugins.utils"),
-	require("plugins.snippets").luasnip,
+
+	-- common lsp
+	require("plugins.lang.markdown"),
+	require("plugins.lang.json"),
+	require("plugins.lang.yaml"),
+	require("plugins.lang.toml"),
+	require("plugins.lang.clangd"),
+	require("plugins.lang.cmake"),
+	require("plugins.lang.docker"),
+	require("plugins.lang.tex"),
 
 	-- lazy extras stuff
 	--require("plugins.extras.dap.core"),
@@ -42,20 +52,11 @@ local plugin_specs = {
 	--require("plugins.extras.editor.inc-rename"),
 
 	-- additional lsp
-	require("plugins.lang.ansible"),
-	require("plugins.lang.clangd"),
-	require("plugins.lang.cmake"),
-	require("plugins.lang.docker"),
-	require("plugins.lang.git"),
-	require("plugins.lang.json"),
+	--require("plugins.lang.ansible"),
 	--require("plugins.lang.php"),
 	--require("plugins.lang.python"),
-	require("plugins.lang.tex"),
-	require("plugins.lang.toml"),
 	--require("plugins.lang.typescript"),
-	require("plugins.lang.yaml"),
-	require("plugins.lang.markdown"),
-	require("plugins.lang.java")
+	--require("plugins.lang.java")
 	--require("plugins.lang.clisp")
 	--require("plugins.lang.prolog")
 }
@@ -82,9 +83,6 @@ require("lazy").setup({
 		reset_packpath = true,
 	},
 	ui = {
-		size = { width = 0.8, height = 0.67 },
 		icons = require("icons").lazy,
-		title = "LazyLoader",
-		title_pos = "center",
 	},
 })

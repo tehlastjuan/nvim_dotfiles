@@ -4,6 +4,37 @@ return {
 	{
 		"folke/trouble.nvim",
 		cmd = { "TroubleToggle", "Trouble" },
+		keys = {
+			{
+				"<leader>xx",
+				function()
+					require("trouble").open("diagnostics")
+				end,
+				desc = "Diagnostics",
+			},
+      {
+				"<c-'>",
+				function()
+					if require("trouble").is_open() == false then
+						require("trouble").open("diagnostics")
+					end
+					---@diagnostic disable-next-line: missing-parameter, missing-fields
+					require("trouble").prev({ skip_groups = true, jump = true })
+				end,
+				desc = "Previous Trouble Item",
+			},
+			{
+				"<c-`>",
+				function()
+					if require("trouble").is_open() == false then
+						require("trouble").open("diagnostics")
+					end
+					---@diagnostic disable-next-line: missing-parameter, missing-fields
+					require("trouble").next({ skip_groups = true, jump = true })
+				end,
+				desc = "Next Trouble Item",
+			},
+		},
 		opts = {
 			modes = {
 				diagnostics = {
@@ -30,18 +61,26 @@ return {
 						type = "split",
 						relative = "editor",
 						position = "bottom",
-						size = { height = 8 },
+						size = { height = 10 },
 					},
 				},
 				---@diagnostic disable-next-line: missing-fields
 				lsp_document_symbols = {
 					pinned = true,
 					win = {
-						fixed = true,
 						type = "split",
 						relative = "editor",
-						position = "right",
-						size = 40,
+						position = "bottom",
+						size = { height = 10},
+					},
+				},
+        todo = {
+					pinned = true,
+					win = {
+						type = "split",
+						relative = "editor",
+						position = "bottom",
+						size = { height = 10},
 					},
 				},
 				--  preview = {

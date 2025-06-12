@@ -1,11 +1,6 @@
 return {
 
 	{
-		"nvim-treesitter/nvim-treesitter",
-		opts = { ensure_installed = { "cmake" } },
-	},
-
-	{
 		"mfussenegger/nvim-lint",
 		optional = true,
 		opts = {
@@ -13,11 +8,6 @@ return {
 				cmake = { "cmakelint" },
 			},
 		},
-	},
-
-	{
-		"mason-org/mason.nvim",
-		opts = { ensure_installed = { "cmakelang", "cmakelint" } },
 	},
 
 	{

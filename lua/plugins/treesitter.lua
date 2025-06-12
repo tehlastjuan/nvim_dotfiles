@@ -52,6 +52,7 @@ return {
 			ensure_installed = {
 				"bash",
 				"c",
+        "cmake",
 				"css",
 				"diff",
 				"dockerfile",
@@ -60,6 +61,7 @@ return {
 				"javascript",
 				"jsdoc",
 				"json",
+				"json5",
 				"jsonc",
 				"lua",
 				"luap",

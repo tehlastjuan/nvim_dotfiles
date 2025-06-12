@@ -1,7 +1,6 @@
 ---@class util.cmp
 local M = {}
 
-
 ---@alias util.cmp.Action fun():boolean?
 ---@type table<string, util.cmp.Action>
 M.actions = {
@@ -106,13 +105,6 @@ function M.add_missing_snippet_docs(window)
   end
 end
 
-M.CREATE_UNDO = vim.api.nvim_replace_termcodes("<c-G>u", true, true, true)
-function M.create_undo()
-  if vim.api.nvim_get_mode().mode == "i" then
-    vim.api.nvim_feedkeys(M.CREATE_UNDO, "n", false)
-  end
-end
-
 -- This is a better implementation of `cmp.confirm`:
 --  * check if the completion menu is visible without waiting for running sources
 --  * create an undo point before confirming
@@ -126,7 +118,7 @@ function M.confirm(opts)
   }, opts or {})
   return function(fallback)
     if cmp.core.view:visible() or vim.fn.pumvisible() == 1 then
-      M.create_undo()
+      Utils.create_undo()
       if cmp.confirm(opts) then
         return
       end
@@ -151,8 +143,7 @@ function M.expand(snippet)
     local msg = ok and "Failed to parse snippet,\nbut was able to fix it automatically."
       or ("Failed to parse snippet.\n" .. err)
 
-
-    M[ok and "warn" or "error"](
+    Utils[ok and "warn" or "error"](
       ([[%s
 ```%s
 %s

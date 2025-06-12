@@ -6,13 +6,32 @@ return {
 	{
 		"stevearc/conform.nvim",
 		dependencies = { "mason.nvim" },
-    lazy = true,
+		lazy = true,
 		event = "BufWritePre",
 		cmd = "ConformInfo",
+		keys = {
+			{
+				"<leader>cf",
+				function()
+					require("conform").format({ async = true })
+				end,
+				{ "n", "v" },
+				desc = "Format",
+			},
+			{
+				"<leader>cF",
+				function()
+					require("conform").format({ formatters = { "injected" }, timeout_ms = 3000 })
+				end,
+				{ "n", "v" },
+				desc = "Format Injected Langs",
+			},
+		},
 		opts = {
 			notify_on_error = false,
       --stylua: ignore
 			formatters_by_ft = {
+				bash            = { "shfmt" },
 				c               = { "clang-format", name = "clangd", timeout_ms = 500, lsp_format = "prefer" },
         cmake           = { "cmake-format" },
 				css             = { "prettier" },

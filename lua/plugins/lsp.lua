@@ -6,7 +6,13 @@ return {
 		"neovim/nvim-lspconfig",
 		event = { "BufRead", "BufNewFile" },
 		dependencies = {
-			{ "mason-org/mason.nvim", opts = {} },
+			{
+				"mason-org/mason.nvim",
+				keys = {
+					{ "<leader>m", "<cmd>Mason<cr>", "n", { silent = true, desc = "Mason" } },
+				},
+				opts = {},
+			},
 			{ "mason-org/mason-lspconfig.nvim", config = function() end },
 			{ "WhoIsSethDaniel/mason-tool-installer.nvim", opts = {} },
 		},
@@ -57,18 +63,20 @@ return {
 				callback = function(event)
 					local map = function(keys, func, desc, mode)
 						mode = mode or "n"
-						vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
+						vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = desc })
 					end
 
-					map("grn", vim.lsp.buf.rename, "[R]e[n]ame")
-					map("gra", vim.lsp.buf.code_action, "[G]oto Code [A]ction", { "n", "x" })
-					map("grr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
-					map("gri", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
-					map("grd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-					map("grD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-					map("gO", require("telescope.builtin").lsp_document_symbols, "Open Document Symbols")
-					map("gW", require("telescope.builtin").lsp_dynamic_workspace_symbols, "Open Workspace Symbols")
-					map("grt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
+					map("<leader>br", vim.lsp.buf.rename, "Buffer Rename")
+					map("ca", vim.lsp.buf.code_action, "Code Action")
+
+					map("gD", vim.lsp.buf.declaration, "Goto Declaration")
+					map("gd", require("telescope.builtin").lsp_definitions, "Goto Definition")
+					map("gr", require("telescope.builtin").lsp_references, "Goto References")
+					map("gi", require("telescope.builtin").lsp_implementations, "Goto Implementation")
+					map("gt", require("telescope.builtin").lsp_type_definitions, "Goto Type Definition")
+
+					map("<leader>cs", require("telescope.builtin").lsp_document_symbols, "Open Document Symbols")
+					map("<leader>cS", require("telescope.builtin").lsp_dynamic_workspace_symbols, "Open Workspace Symbols")
 
 					local hover = vim.lsp.buf.hover
 					---@diagnostic disable-next-line: duplicate-set-field
@@ -98,7 +106,7 @@ return {
 					--- Sets up LSP highlights for the given buffer.
 					if client:supports_method(methods.textDocument_documentHighlight) then
 						local under_cursor_highlights_group =
-							vim.api.nvim_create_augroup("tehlastjuan/cursor_highlights", { clear = false })
+							vim.api.nvim_create_augroup("under_cursor_highlights", { clear = false })
 
 						vim.api.nvim_create_autocmd({ "CursorHold", "InsertLeave" }, {
 							group = under_cursor_highlights_group,
@@ -118,9 +126,28 @@ return {
 							group = vim.api.nvim_create_augroup("lsp-detach", { clear = true }),
 							callback = function(event2)
 								vim.lsp.buf.clear_references()
-								vim.api.nvim_clear_autocmds({ group = "lsp-highlight", buffer = event2.buf })
+								vim.api.nvim_clear_autocmds({ group = "under_cursor_highlights", buffer = event2.buf })
 							end,
 						})
+					end
+
+					-- Add "Fix all" command for ESLint.
+					if client.name == "eslint" then
+						vim.keymap.set("n", "<leader>ce", function()
+							if not client then
+								return
+							end
+
+							client:request(vim.lsp.protocol.Methods.workspace_executeCommand, {
+								command = "eslint.applyAllFixes",
+								arguments = {
+									{
+										uri = vim.uri_from_bufnr(event.buf),
+										version = vim.lsp.util.buf_versions[event.buf],
+									},
+								},
+							}, nil, event.buf)
+						end, { desc = "Fix all ESLint errors", buffer = event.buf })
 					end
 				end,
 			})
@@ -139,28 +166,55 @@ return {
 
 			local ensure_installed = vim.tbl_keys(servers or {})
 			vim.list_extend(ensure_installed, {
-				bashls = "bash-language-server",
-				"clangd",
-				"clang-format",
-				cssls = "css-lsp",
-				eslint = "eslint-lsp",
-				html = "html-lsp",
-				jsonls = "json-lsp",
-				lua_ls = "lua-language-server",
-				"intelephense",
-				"php-cs-fixer",
+				-- defaults
 				"prettier",
-				"ruff",
+				"dprint",
+				-- bash
+				"bash-language-server",
 				"shellcheck",
 				"shfmt",
-				"stylua",
+				-- c
+				"clangd",
+				"clang-format",
+				-- cmake
+				"cmakelang",
+				"cmakelint",
+				-- css
+				"css-lsp",
+				"stylelint-lsp",
+				"stylelint",
+				-- docker
+				"hadolint",
+				-- html
+				"html-lsp",
+				-- javascript/typescript
 				"vtsls",
-				yamlls = "yaml-language-server",
+				"eslint-lsp",
+				-- json
+				"json-lsp",
+				-- lua
+				"lua-language-server",
+				"stylua",
+				-- markdown
+				"markdownlint-cli2",
+				"markdown-toc",
+				-- php
+				-- "intelephense",
+				-- "php-cs-fixer",
+				-- python
+				"pyright",
+				"ruff",
+				-- toml
+				"taplo",
+				-- yaml
+				"yaml-language-server",
 				"yamllint",
 				"yq",
 			})
 
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
+
+			---@type MasonLspconfigSettings
 			require("mason-lspconfig").setup({
 				ensure_installed = {},
 				automatic_enable = true,
@@ -168,9 +222,6 @@ return {
 				handlers = {
 					function(server_name)
 						local server = servers[server_name] or {}
-						-- This handles overriding only values explicitly passed
-						-- by the server configuration above. Useful when disabling
-						-- certain features of an LSP (for example, turning off formatting for ts_ls)
 						server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
 						require("lspconfig")[server_name].setup(server)
 					end,
@@ -178,6 +229,9 @@ return {
 			})
 		end,
 	},
+
+	-- json/yaml schema support
+	{ "b0o/SchemaStore.nvim", lazy = true },
 
 	{
 		"folke/lazydev.nvim",
