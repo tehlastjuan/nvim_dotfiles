@@ -45,7 +45,7 @@ return {
 				documentation = { auto_show = true },
 				list = {
 					selection = { preselect = false, auto_insert = true },
-					max_items = 10,
+					--max_items = 10,
 				},
 			},
 			sources = {

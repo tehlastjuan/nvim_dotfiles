@@ -1,4 +1,18 @@
-local prettier = { "prettierd", "prettier", stop_after_first = true }
+--local prettier = { "prettierd", "prettier", stop_after_first = true }
+
+---@param bufnr integer
+---@param ... string|string[]
+---@return string
+local function first(bufnr, ...)
+	local conform = require("conform")
+	for i = 1, select("#", ...) do
+		local formatter = select(i, ...)
+		if conform.get_formatter_info(formatter, bufnr).available then
+			return formatter
+		end
+	end
+	return select(1, ...)
+end
 
 return {
 
@@ -10,6 +24,7 @@ return {
 		event = "BufWritePre",
 		cmd = "ConformInfo",
 		keys = {
+			{ "<leader>ci", "<cmd>ConformInfo<cr>", { "n", "v" }, desc = "ConformInfo" },
 			{
 				"<leader>cf",
 				function()
@@ -31,31 +46,31 @@ return {
 			notify_on_error = false,
       --stylua: ignore
 			formatters_by_ft = {
-				bash            = { "shfmt" },
-				c               = { "clang-format", name = "clangd", timeout_ms = 500, lsp_format = "prefer" },
-        cmake           = { "cmake-format" },
-				css             = { "prettier" },
-				go              = { "gofumpt", "golines", "goimports" },
-				graphql         = { prettier },
-        handlebars      = { prettier },
-				html            = { "prettier" },
-				javascript      = { "prettier", "eslint", name = "dprint", timeout_ms = 500, lsp_format = "fallback" },
-				javascriptreact = { "prettier", name = "dprint", timeout_ms = 500, lsp_format = "fallback" },
-				json            = { "prettier", name = "dprint", timeout_ms = 500, lsp_format = "fallback" },
-				jsonc           = { "prettier", name = "dprint", timeout_ms = 500, lsp_format = "fallback" },
-				less            = { "prettier" },
-				lua             = { "stylua" },
-				markdown        = { "prettier" },
-        php             = { "intelephense", "php-cs-fixer" },
-				python          = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
-				ruby            = { "rubocop" },
-				rust            = { name = "rust_analyzer", timeout_ms = 500, lsp_format = "prefer" },
-				scss            = { "prettier" },
-				sh              = { "shfmt" },
-				sql             = { "sqruff" },
-				typescript      = { "prettier", name = "dprint", timeout_ms = 500, lsp_format = "fallback" },
-				typescriptreact = { "prettier", name = "dprint", timeout_ms = 500, lsp_format = "fallback" },
-				yaml            = { "yq", "prettier" },
+				bash              = { "shfmt" },
+				c                 = { "clang-format", name = "clangd", timeout_ms = 500, lsp_format = "prefer" },
+        cmake             = { "cmake-format" },
+				css               = { "prettier" },
+				go                = { "gofumpt", "golines", "goimports" },
+				graphql           = { "prettier" },
+        handlebars        = { "prettier" },
+				html              = { "prettier" },
+				javascript        = { "prettier", "eslint", name = "dprint", timeout_ms = 500, lsp_format = "fallback" },
+				javascriptreact   = { "prettier", name = "dprint", timeout_ms = 500, lsp_format = "fallback" },
+				json              = { "prettier", name = "dprint", timeout_ms = 500, lsp_format = "fallback" },
+				jsonc             = { "prettier", name = "dprint", timeout_ms = 500, lsp_format = "fallback" },
+				less              = { "prettier" },
+				lua               = { "stylua" },
+        markdown          = { "prettier" },
+        php               = { "intelephense", "php-cs-fixer" },
+				python            = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
+				ruby              = { "rubocop" },
+				rust              = { name = "rust_analyzer", timeout_ms = 500, lsp_format = "prefer" },
+				scss              = { "prettier" },
+				sh                = { "shfmt" },
+				sql               = { "sqruff" },
+				typescript        = { "prettier", name = "dprint", timeout_ms = 500, lsp_format = "fallback" },
+				typescriptreact   = { "prettier", name = "dprint", timeout_ms = 500, lsp_format = "fallback" },
+				yaml              = { "yq", "prettier" },
 				-- For filetypes without a formatter:
 				["_"] = { "trim_whitespace", "trim_newlines" },
 			},
@@ -81,13 +96,13 @@ return {
 				--   prepend_args = { "fix", "--rules=@PSR12" },
 				-- },
 				-- prettier = {
-				--   command = "prettier",
-				--   prepend_args = { "-w" },
+				-- 	command = "prettier",
+				-- 	prepend_args = { "-w" },
 				-- },
-				shfmt = {
-					--prepend_args = { "-i", "2" },
-					prepend_args = { "-i", "0", "-sr", "-kp" },
-				},
+				-- shfmt = {
+				-- 	--prepend_args = { "-i", "2" },
+				-- 	prepend_args = { "-i", "0", "-sr", "-kp" },
+				-- },
 			},
 		},
 
@@ -96,6 +111,18 @@ return {
 			vim.opt.formatexpr = "v:lua.require'conform'.format.formatexpr()"
 			-- Start auto-formatting by default
 			--vim.g.autoformat = true
+			require("conform").formatters = {
+				prettier = {
+					cwd = require("conform.util").root_file({ ".editorconfig", "package.json" }),
+					require_cwd = true,
+					-- command = "prettier",
+					-- prepend_args = { "-w" },
+				},
+				shfmt = {
+					--prepend_args = { "-i", "2" },
+					prepend_args = { "-i", "0", "-sr", "-kp" },
+				},
+			}
 		end,
 	},
 }

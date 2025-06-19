@@ -92,6 +92,7 @@ vim.keymap.set("n", "<leader>ur", "<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C
 
 -- Close all buffers and quit
 vim.keymap.set({ "n", "v" }, "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
+vim.keymap.set({ "n", "v" }, "<leader><esc><esc>", "<cmd>qa<cr>", { desc = "Quit all" })
 
 -- Show highlights under cursor
 vim.keymap.set("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })

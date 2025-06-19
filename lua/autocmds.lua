@@ -59,7 +59,6 @@ vim.api.nvim_create_autocmd("FileType", {
 		"help",
 		"lspinfo",
 		"man",
-    "markdown",
 		"neotest-output",
 		"neotest-output-panel",
 		"neotest-summary",

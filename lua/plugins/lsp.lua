@@ -168,6 +168,7 @@ return {
 			vim.list_extend(ensure_installed, {
 				-- defaults
 				"prettier",
+				"prettierd",
 				"dprint",
 				-- bash
 				"bash-language-server",
@@ -205,7 +206,7 @@ return {
 				"pyright",
 				"ruff",
 				-- toml
-				"taplo",
+				--"taplo",
 				-- yaml
 				"yaml-language-server",
 				"yamllint",
