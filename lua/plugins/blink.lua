@@ -2,17 +2,19 @@ return {
 
 	{ -- Autocompletion
 		"saghen/blink.cmp",
-		event = "VimEnter",
 		version = "*",
+    build = 'cargo +nightly build --release',
+		event = "VimEnter",
 		dependencies = {
-			{
-				"saghen/blink.compat",
-				optional = true,
-				version = "*",
-				opts = {},
-			},
+			--{
+			--	"saghen/blink.compat",
+			--	optional = true,
+			--	version = "*",
+			--	opts = {},
+			--},
 			"L3MON4D3/LuaSnip",
-			"folke/lazydev.nvim",
+      --"rafamadriz/friendly-snippets",
+			--"folke/lazydev.nvim",
 		},
 		--- @module 'blink.cmp'
 		--- @type blink.cmp.Config
@@ -35,10 +37,10 @@ return {
 				-- <c-n>/<c-p> or <up>/<down>: Select next/previous item
 				-- <c-e>: Hide menu
 				-- <c-k>: Toggle signature help
-      },
+			},
 			appearance = {
 				kind_icons = require("icons").kinds,
-				use_nvim_cmp_as_default = false,
+				--use_nvim_cmp_as_default = false,
 				nerd_font_variant = "mono",
 			},
 			completion = {
@@ -52,6 +54,7 @@ return {
 				providers = {
 					lazydev = { module = "lazydev.integrations.blink", score_offset = 100 },
 				},
+				--per_filetype = {},
 
 				-- Disable some sources in comments and strings.
 				default = function()
@@ -70,9 +73,10 @@ return {
 					return sources
 				end,
 			},
-			snippets = { preset = "luasnip" },
 			fuzzy = { implementation = "lua" },
+			snippets = { preset = "luasnip" },
 			signature = { enabled = true },
+      opts_extend = { "sources.default"}
 		},
 
 		config = function(_, opts)
@@ -86,18 +90,16 @@ return {
 	-- Snippets.
 	{
 		"L3MON4D3/LuaSnip",
-		version = "2.*",
-		build = (function()
-			return "make install_jsregexp"
-		end)(),
-		dependencies = {
-			{
-				"rafamadriz/friendly-snippets",
-				config = function()
-					require("luasnip.loaders.from_vscode").lazy_load()
-				end,
-			},
-		},
+		--version = "2.*",
+		--build = (function() return "make install_jsregexp" end)(),
+		--dependencies = {
+		--	{
+		--		"rafamadriz/friendly-snippets",
+		--		config = function()
+		--			require("luasnip.loaders.from_vscode").lazy_load()
+		--		end,
+		--	},
+		--},
 		keys = {
 			{
 				"<C-r>s",

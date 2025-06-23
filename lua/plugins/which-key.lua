@@ -70,7 +70,7 @@ return {
 			local wk = require("which-key")
 			wk.setup(opts)
 			if not vim.tbl_isempty(opts.defaults) then
-				wk.register(opts.defaults)
+				wk.add({}, opts.defaults)
 			end
 		end,
 	},

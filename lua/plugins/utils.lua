@@ -129,4 +129,15 @@ return {
 			},
 		},
 	},
+
+  {
+    "phelipetls/vim-hugo",
+    --lazy = false,
+    --opts = {},
+    --init = function()
+    --  return {
+    --    require("vim-hugo").setup()
+    --  }
+    --end
+  },
 }

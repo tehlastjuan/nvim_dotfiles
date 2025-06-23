@@ -149,6 +149,29 @@ return {
 							}, nil, event.buf)
 						end, { desc = "Fix all ESLint errors", buffer = event.buf })
 					end
+
+					-- workaround for gopls not supporting semanticTokensProvider
+					-- https://github.com/golang/go/issues/54531#issuecomment-1464982242
+					if client.name == "gopls" then
+						if not client then
+						  return
+						end
+
+						if not client.server_capabilities.semanticTokensProvider then
+							local semantic = client.config.capabilities.textDocument.semanticTokens
+							if semantic == nil then
+								return
+							end
+							client.server_capabilities.semanticTokensProvider = {
+								full = true,
+								legend = {
+									tokenTypes = semantic.tokenTypes,
+									tokenModifiers = semantic.tokenModifiers,
+								},
+								range = true,
+							}
+						end
+					end
 				end,
 			})
 
@@ -163,6 +186,14 @@ return {
 				has_blink and blink.get_lsp_capabilities() or {},
 				opts.capabilities or {}
 			)
+
+			--local lspconfig = require("lspconfig")
+			--for server, config in pairs(opts.servers) do
+			--	-- passing config.capabilities to blink.cmp merges with the capabilities in your
+			--	-- `opts[server].capabilities, if you've defined it
+			--	config.capabilities = require("blink.cmp").get_lsp_capabilities(config.capabilities)
+			--	lspconfig[server].setup(config)
+			--end
 
 			local ensure_installed = vim.tbl_keys(servers or {})
 			vim.list_extend(ensure_installed, {
@@ -186,6 +217,10 @@ return {
 				"stylelint",
 				-- docker
 				"hadolint",
+				-- go
+				"gofumpt",
+				"golines",
+				"goimports",
 				-- html
 				"html-lsp",
 				-- javascript/typescript
