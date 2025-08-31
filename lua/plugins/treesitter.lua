@@ -114,15 +114,15 @@ return {
 		end,
 	},
 
-	{
-		"folke/which-key.nvim",
-		opts = {
-			spec = {
-				{ "<BS>", desc = "Decrement Selection", mode = "x" },
-				{ "<c-space>", desc = "Increment Selection", mode = { "x", "n" } },
-			},
-		},
-	},
+	--{
+	--	"folke/which-key.nvim",
+	--	opts = {
+	--		spec = {
+	--			{ "<BS>", desc = "Decrement Selection", mode = "x" },
+	--			{ "<c-space>", desc = "Increment Selection", mode = { "x", "n" } },
+	--		},
+	--	},
+	--},
 
 	-- Automatically add closing tags for HTML and JSX
 	{

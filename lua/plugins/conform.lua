@@ -95,34 +95,33 @@ return {
 				--   command = "php-cs-fixer",
 				--   prepend_args = { "fix", "--rules=@PSR12" },
 				-- },
-				-- prettier = {
-				-- 	command = "prettier",
-				-- 	prepend_args = { "-w" },
-				-- },
-				-- shfmt = {
-				-- 	--prepend_args = { "-i", "2" },
-				-- 	prepend_args = { "-i", "0", "-sr", "-kp" },
-				-- },
-			},
-		},
-
-		init = function()
-			-- Use conform for gq.
-			vim.opt.formatexpr = "v:lua.require'conform'.format.formatexpr()"
-			-- Start auto-formatting by default
-			--vim.g.autoformat = true
-			require("conform").formatters = {
 				prettier = {
-					cwd = require("conform.util").root_file({ ".editorconfig", "package.json" }),
-					require_cwd = true,
-					-- command = "prettier",
-					-- prepend_args = { "-w" },
+					command = "prettier",
+					prepend_args = { "-w" },
 				},
 				shfmt = {
 					--prepend_args = { "-i", "2" },
 					prepend_args = { "-i", "0", "-sr", "-kp" },
 				},
-			}
+			},
+		},
+		init = function()
+			-- Use conform for gq.
+			vim.opt.formatexpr = "v:lua.require'conform'.format.formatexpr()"
+			-- Start auto-formatting by default
+			--vim.g.autoformat = true
+			--require("conform").formatters = {
+			--	prettier = {
+			--		cwd = require("conform.util").root_file({ ".editorconfig", "package.json" }),
+			--		require_cwd = true,
+			--		-- command = "prettier",
+			--		-- prepend_args = { "-w" },
+			--	},
+			--	shfmt = {
+			--		--prepend_args = { "-i", "2" },
+			--		prepend_args = { "-i", "0", "-sr", "-kp" },
+			--	},
+			--}
 		end,
 	},
 }

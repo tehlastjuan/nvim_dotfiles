@@ -100,6 +100,7 @@ function M.git_component()
 	if not head or head == "" then
 		return ""
 	end
+
 	return string.format(" %s%s ", icons.misc.git, head)
 end
 

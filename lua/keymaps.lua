@@ -91,8 +91,8 @@ vim.keymap.set({ "n", "v" }, "<leader>ch", "<cmd>noh<cr><esc>", { desc = "Escape
 vim.keymap.set("n", "<leader>ur", "<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><CR>", { desc = "Redraw / clear hlsearch / diff update" })
 
 -- Close all buffers and quit
-vim.keymap.set({ "n", "v" }, "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
-vim.keymap.set({ "n", "v" }, "<leader><esc><esc>", "<cmd>qa<cr>", { desc = "Quit all" })
+vim.keymap.set({ "n", "v" }, "<leader>qq", "<cmd>qa<cr>", { silent = true, desc = "quit" })
+vim.keymap.set({ "n", "v" }, "<leader><esc><esc>", "<cmd>qa<cr>", { silent = true, desc = "quit" })
 
 -- Show highlights under cursor
 vim.keymap.set("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
@@ -120,6 +120,23 @@ vim.keymap.set("t", "<C-w>", [[<C-\><C-n><C-w>]])
 
 -- Plugin manager
 vim.keymap.set("n", "<leader>l", "<cmd>Lazy<cr>", { silent = true, desc = "Lazy" })
+
+-- vim.keymap.set("n", "<leader>y", function()
+-- 	vim.fn.setreg("+", vim.fn.expand("%:p"))
+-- end)
+
+-- Opens a scratch buffer after command
+-- https://yobibyte.github.io/vim.html
+vim.keymap.set("n", "<leader>sb", function()
+	vim.ui.input({}, function(c)
+		if c and c ~= "" then
+			vim.cmd("noswapfile vnew")
+			vim.bo.buftype = "nofile"
+			vim.bo.bufhidden = "wipe"
+			vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.fn.systemlist(c))
+		end
+	end)
+end, { desc = "Create Scratch Buffer" })
 
 -- Powerful Escape
 local power_esc = function()

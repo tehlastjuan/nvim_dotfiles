@@ -1,12 +1,6 @@
 return {
 
-	-- add json to treesitter
-	{
-		"nvim-treesitter/nvim-treesitter",
-		opts = { ensure_installed = { "json5" } },
-	},
-
-	-- correctly setup lspconfig
+	-- setup lspconfig
 	{
 		"neovim/nvim-lspconfig",
 		opts = {

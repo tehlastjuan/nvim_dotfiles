@@ -1,28 +1,30 @@
 return {
 
-	{ -- Autocompletion
+	-- Autocompletion
+	{
 		"saghen/blink.cmp",
-		version = "*",
-    build = 'cargo +nightly build --release',
+		build = "cargo +nightly build --release",
 		event = "VimEnter",
 		dependencies = {
-			--{
-			--	"saghen/blink.compat",
-			--	optional = true,
-			--	version = "*",
-			--	opts = {},
-			--},
-			"L3MON4D3/LuaSnip",
-      --"rafamadriz/friendly-snippets",
+			"LuaSnip",
 			--"folke/lazydev.nvim",
 		},
 		--- @module 'blink.cmp'
 		--- @type blink.cmp.Config
 		opts = {
+			appearance = {
+				kind_icons = require("icons").kinds,
+				nerd_font_variant = "mono",
+			},
+			completion = {
+				documentation = { auto_show = true },
+				list = {
+					selection = { preselect = false, auto_insert = true },
+					--max_items = 10,
+				},
+			},
+			fuzzy = { implementation = "lua" },
 			keymap = {
-				--preset = "enter",
-				--["<cr>"] = { "select_and_accept", "fallback" },
-				--["<c-y>"] = { "accept", "fallback" },
 				["<cr>"] = { "accept", "fallback" },
 				["<C-\\>"] = { "hide", "fallback" },
 				["<c-n>"] = { "select_next", "show" },
@@ -38,27 +40,19 @@ return {
 				-- <c-e>: Hide menu
 				-- <c-k>: Toggle signature help
 			},
-			appearance = {
-				kind_icons = require("icons").kinds,
-				--use_nvim_cmp_as_default = false,
-				nerd_font_variant = "mono",
-			},
-			completion = {
-				documentation = { auto_show = true },
-				list = {
-					selection = { preselect = false, auto_insert = true },
-					--max_items = 10,
-				},
-			},
+      -- opts_extend = { "sources.default" },
+			signature = { enabled = true },
+			snippets = { preset = "luasnip" },
 			sources = {
-				providers = {
-					lazydev = { module = "lazydev.integrations.blink", score_offset = 100 },
-				},
+				-- providers = {
+				-- 	lazydev = { module = "lazydev.integrations.blink", score_offset = 100 },
+				-- },
 				--per_filetype = {},
 
 				-- Disable some sources in comments and strings.
 				default = function()
-					local sources = { "lsp", "buffer", "lazydev" }
+					--local sources = { "lsp", "buffer", "lazydev" }
+					local sources = { "lsp", "buffer" }
 					local ok, node = pcall(vim.treesitter.get_node)
 
 					if ok and node then
@@ -73,12 +67,7 @@ return {
 					return sources
 				end,
 			},
-			fuzzy = { implementation = "lua" },
-			snippets = { preset = "luasnip" },
-			signature = { enabled = true },
-      opts_extend = { "sources.default"}
 		},
-
 		config = function(_, opts)
 			require("blink.cmp").setup(opts)
 
@@ -90,8 +79,6 @@ return {
 	-- Snippets.
 	{
 		"L3MON4D3/LuaSnip",
-		--version = "2.*",
-		--build = (function() return "make install_jsregexp" end)(),
 		--dependencies = {
 		--	{
 		--		"rafamadriz/friendly-snippets",
@@ -144,7 +131,7 @@ return {
 			---@diagnostic disable: undefined-field
 			luasnip.setup(opts)
 
-			-- Load my custom snippets:
+			-- Load custom snippets:
 			require("luasnip.loaders.from_vscode").lazy_load({
 				paths = vim.fn.stdpath("config") .. "/snippets",
 			})

@@ -9,7 +9,7 @@ return {
 			{
 				"mason-org/mason.nvim",
 				keys = {
-					{ "<leader>m", "<cmd>Mason<cr>", "n", { silent = true, desc = "Mason" } },
+					{ "<leader>m", "<cmd>Mason<cr>", "n", silent = true, desc = "Mason" },
 				},
 				opts = {},
 			},
@@ -201,6 +201,8 @@ return {
 				"prettier",
 				"prettierd",
 				"dprint",
+        -- assembler
+        "asm-lsp",
 				-- bash
 				"bash-language-server",
 				"shellcheck",
@@ -235,13 +237,13 @@ return {
 				"markdownlint-cli2",
 				"markdown-toc",
 				-- php
-				-- "intelephense",
-				-- "php-cs-fixer",
+				"intelephense",
+				"php-cs-fixer",
 				-- python
 				"pyright",
 				"ruff",
 				-- toml
-				--"taplo",
+				"taplo",
 				-- yaml
 				"yaml-language-server",
 				"yamllint",
