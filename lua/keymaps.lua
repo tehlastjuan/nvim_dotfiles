@@ -5,7 +5,7 @@ vim.keymap.set("n", "<leader>cs", function()
 	vim.cmd(":source " .. utils.config_files() .. "/init.lua")
 end, { desc = "Source current config" })
 
--- Exit insert mode
+-- function insert mode
 vim.keymap.set("i", "jk", "<esc>", { desc = "ESC" })
 vim.keymap.set("i", "kj", "<esc>", { desc = "ESC" })
 
@@ -53,31 +53,40 @@ vim.keymap.set("n", "<leader>wz", function()
 end, { desc = "List windows" })
 
 -- Buffers
-vim.keymap.set("n", "<c-,>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
-vim.keymap.set("n", "<c-.>", "<cmd>bnext<cr>", { desc = "Next buffer" })
-vim.keymap.set("n", "<c-a>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
-vim.keymap.set("n", "<c-s-a>", "<cmd>bnext<cr>", { desc = "Next buffer" })
+vim.keymap.set("n", "<C-,>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
+vim.keymap.set("n", "<C-.>", "<cmd>bnext<cr>", { desc = "Next buffer" })
+vim.keymap.set("n", "<C-a>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
+vim.keymap.set("n", "<C-s-a>", "<cmd>bnext<cr>", { desc = "Next buffer" })
 vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Buffer Delete" })
 
 --  Tabs
-vim.keymap.set("n", "<c-s-,>", "<cmd>tabprevious<cr>", { desc = "Prev tab" })
-vim.keymap.set("n", "<c-s-.>", "<cmd>tabnext<cr>", { desc = "Next tab" })
+--vim.keymap.set("n", "<C-s-,>", "<cmd>tabprevious<cr>", { desc = "Prev tab" })
+--vim.keymap.set("n", "<C-s-.>", "<cmd>tabnext<cr>", { desc = "Next tab" })
 
 -- Move Lines
-vim.keymap.set("n", "<c-s-j>", "<cmd>m .+1<cr>==", { desc = "Move down" })
-vim.keymap.set("n", "<c-s-k>", "<cmd>m .-2<cr>==", { desc = "Move up" })
-vim.keymap.set("i", "<c-s-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move down" })
-vim.keymap.set("i", "<c-s-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
-vim.keymap.set("v", "<c-s-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
-vim.keymap.set("v", "<c-s-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
+vim.keymap.set("v", "J", ":m '>+1<cr>gv=gv", { desc = "Move down" })
+vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv", { desc = "Move up" })
+
+-- Join lines, cursor stays in place
+vim.keymap.set("n", "J", "mzJ`z")
+
+-- Up & Down & Center
+-- vim.keymap.set("n", "<C-d>", "<C-d>zz")
+-- vim.keymap.set("n", "<C-u>", "<C-u>zz")
+
+-- Next & Prev & Center
+vim.keymap.set("n", "n", "Nzzzv")
+vim.keymap.set("n", "N", "nzzzv")
+
+vim.keymap.set("n", "Q", "<nop>")
 
 -- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
-vim.keymap.set("n", "n", "'Nn'[v:searchforward].'zv'", { expr = true, desc = "Next search result" })
-vim.keymap.set("x", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next search result" })
-vim.keymap.set("o", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next search result" })
-vim.keymap.set("n", "N", "'nN'[v:searchforward].'zv'", { expr = true, desc = "Prev search result" })
-vim.keymap.set("x", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
-vim.keymap.set("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
+-- vim.keymap.set("n", "n", "'Nn'[v:searchforward].'zv'", { expr = true, desc = "Next search result" })
+-- vim.keymap.set("x", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next search result" })
+-- vim.keymap.set("o", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next search result" })
+-- vim.keymap.set("n", "N", "'nN'[v:searchforward].'zv'", { expr = true, desc = "Prev search result" })
+-- vim.keymap.set("x", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
+-- vim.keymap.set("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
 
 -- https://stackoverflow.com/questions/3249275/multiple-commands-on-same-line
 -- stylua: ignore
@@ -109,7 +118,7 @@ vim.keymap.del("n", "gra") -- mapped Normal and Visual mode to |vim.lsp.buf.code
 vim.keymap.del("n", "grr") -- mapped Normal mode to |vim.lsp.buf.references()|
 vim.keymap.del("n", "gri") -- mapped Normal mode to |vim.lsp.buf.implementation()|
 vim.keymap.del("n", "gO") -- mapped in Normal mode to |vim.lsp.buf.document_symbol()|
-vim.keymap.del("i", "<c-s>") -- mapped in Insert mode to |vim.lsp.buf.signature_help()|
+vim.keymap.del("i", "<C-s>") -- mapped in Insert mode to |vim.lsp.buf.signature_help()|
 
 -- Terminal navigation
 vim.keymap.set("t", "<C-h>", [[<Cmd>wincmd h<CR>]])

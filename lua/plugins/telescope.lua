@@ -70,13 +70,16 @@ return {
 				desc = "Grep (Relative Dir)",
 			},
 			{
+				"<leader>ff",
+				function()
+					require("telescope").extensions.file_browser.file_browser({})
+				end,
+				desc = "Find Files (Browser)",
+			},
+			{
 				"<leader>z",
 				function()
-					require("telescope").extensions.zoxide.list({
-						prompt_title = "Zoxide",
-						previewer = false,
-						layout_config = { width = 0.6, height = 0.6 },
-					})
+					require("telescope").extensions.zoxide.list({ })
 				end,
 				desc = "Find Files (Zoxide)",
 			},
@@ -113,6 +116,7 @@ return {
 		},
 		opts = function()
 			local actions = require("telescope.actions")
+      local fb_actions = require("telescope._extensions.file_browser.actions")
 
 			local open_with_trouble = function(...)
 				local file_type = vim.api.nvim_get_option_value("filetype", { buf = vim.api.nvim_get_current_buf() })
@@ -138,10 +142,10 @@ return {
 
 			return {
 				defaults = {
-					prompt_prefix = " ",
-					selection_caret = "▍ ",
+          initial_mode = "normal",
+					prompt_prefix = " ",
+					selection_caret = "  ",
 					multi_icon = " ",
-
 					path_display = { "truncate" },
 					file_ignore_patterns = { "node_modules" },
 					set_env = { COLORTERM = "truecolor" },
@@ -160,7 +164,7 @@ return {
 						return 0
 					end,
 
-					sorting_strategy = "descending",
+					sorting_strategy = "ascending",
 					layout_strategy = "vertical",
 					results_title = false,
 					prompt_title = false,
@@ -170,8 +174,8 @@ return {
 						width = 0.8,
 						height = 0.9,
 						preview_cutoff = 1,
-						preview_height = 0.6,
-						prompt_position = "bottom",
+						preview_height = 0.55,
+						prompt_position = "top",
 					},
 
 					history = {
@@ -180,95 +184,71 @@ return {
 
 					mappings = {
 						i = {
-							["<c-t>"] = open_with_trouble,
-							["<a-t>"] = open_with_trouble,
-
+							["<C-t>"] = open_with_trouble,
+							["<C-Esc>"] = actions.close,
+							["<C-f>"] = c_actions.smart_send_to_qflist,
 							["<C-Down>"] = actions.cycle_history_next,
 							["<C-Up>"] = actions.cycle_history_prev,
-							--["<C-d>"] = actions.preview_scrolling_down,
-							--["<C-u>"] = actions.preview_scrolling_up,
-
-							["<Tab>"] = actions.move_selection_worse,
-							["<C-Tab>"] = actions.move_selection_better,
-
+							["<C-k>"] = actions.move_selection_better,
+							["<C-j>"] = actions.move_selection_worse,
 							["<C-u>"] = actions.results_scrolling_up,
 							["<C-d>"] = actions.results_scrolling_down,
+							["<C-s-k>"] = actions.preview_scrolling_up,
+							["<C-s-j>"] = actions.preview_scrolling_down,
+							["<C-s-h>"] = actions.preview_scrolling_left,
+							["<C-s-l>"] = actions.preview_scrolling_right,
+              -- ["<C-f>"] = fb_actions.toggle_browser,
+							-- ["<Tab>"] = fb_actions.goto_parent_dir,
+							-- ["<C-Tab>"] = fb_actions.goto_cwd,
+							-- ["<C-p>"] = c_actions.results_scrolling_up,
+							-- ["<C-n>"] = c_actions.results_scrolling_down,
 
-							--['<C-q>'] = c_actions.smart_send_to_qflist,
-
-							["<C-n>"] = actions.cycle_history_next,
-							["<C-p>"] = actions.cycle_history_prev,
-
-							["<C-b>"] = actions.preview_scrolling_up,
-							["<C-f>"] = actions.preview_scrolling_down,
-							["<C-k>"] = actions.preview_scrolling_up,
-							["<C-j>"] = actions.preview_scrolling_down,
-							["<C-h>"] = actions.preview_scrolling_left,
-							["<C-l>"] = actions.preview_scrolling_right,
 						},
 						n = {
-							["<Esc>"] = actions.close,
-							["q"] = actions.close,
-
-							["<Tab>"] = actions.move_selection_worse,
-							["<C-Tab>"] = actions.move_selection_better,
-							["<C-u>"] = c_actions.results_scrolling_up,
-							["<C-d>"] = c_actions.results_scrolling_down,
-
-							["<C-b>"] = actions.preview_scrolling_up,
-							["<C-f>"] = actions.preview_scrolling_down,
-							["<C-h>"] = actions.preview_scrolling_left,
-							["<C-j>"] = actions.preview_scrolling_down,
-							["<C-k>"] = actions.preview_scrolling_up,
-							["<C-l>"] = actions.preview_scrolling_right,
-
-							["<C-n>"] = actions.cycle_history_next,
-							["<C-p>"] = actions.cycle_history_prev,
-
+							["t"] = open_with_trouble,
 							["*"] = actions.toggle_all,
 							["u"] = actions.drop_all,
-							["J"] = actions.toggle_selection + actions.move_selection_next,
-							["K"] = actions.toggle_selection + actions.move_selection_previous,
+							["f"] = c_actions.smart_send_to_qflist,
+              ["sh"] = actions.select_horizontal,
+							["sv"] = actions.select_vertical,
+							["q"] = actions.close,
+							["<Esc>"] = actions.close,
+							["<C-Esc>"] = actions.close,
+              ["<C-Down>"] = actions.cycle_history_next,
+							["<C-Up>"] = actions.cycle_history_prev,
+							["<C-k>"] = actions.move_selection_better,
+							["<C-j>"] = actions.move_selection_worse,
+							["<C-u>"] = actions.results_scrolling_up,
+							["<C-d>"] = actions.results_scrolling_down,
+							["<C-s-k>"] = actions.preview_scrolling_up,
+							["<C-s-j>"] = actions.preview_scrolling_down,
+							["<C-s-h>"] = actions.preview_scrolling_left,
+							["<C-s-l>"] = actions.preview_scrolling_right,
+
 							[" "] = {
 								actions.toggle_selection + actions.move_selection_next,
 								type = "action",
 								opts = { nowait = true },
 							},
 
-							["sv"] = actions.select_horizontal,
-							["sg"] = actions.select_vertical,
-							["st"] = actions.select_tab,
-
-							["w"] = c_actions.smart_send_to_qflist,
-							["e"] = c_actions.send_to_qflist,
-
-							["!"] = actions.edit_command_line,
-
-							["t"] = open_with_trouble,
-
-							["p"] = function()
-								local entry = require("telescope.actions.state").get_selected_entry()
-								require("rafi.util.preview").open(entry.path)
-							end,
-
-							-- Compare selected files with diffprg
-							["c"] = function(prompt_bufnr)
-								if #vim.g.diffprg == 0 then
-									print("Set `g:diffprg` to use this feature")
-									return
-								end
-								local from_entry = require("telescope.from_entry")
-								local action_state = require("telescope.actions.state")
-								local picker = action_state.get_current_picker(prompt_bufnr)
-								local entries = {}
-								for _, entry in ipairs(picker:get_multi_selection()) do
-									table.insert(entries, from_entry.path(entry, false, false))
-								end
-								if #entries > 0 then
-									table.insert(entries, 1, vim.g.diffprg)
-									vim.fn.system(entries)
-								end
-							end,
+              -- Compare selected files with diffprg
+							-- ["c"] = function(prompt_bufnr)
+							-- 	if #vim.g.diffprg == 0 then
+							-- 		print("Set `g:diffprg` to use this feature")
+							-- 		return
+							-- 	end
+							-- 	local from_entry = require("telescope.from_entry")
+							-- 	local action_state = require("telescope.actions.state")
+							-- 	local picker = action_state.get_current_picker(prompt_bufnr)
+							-- 	local entries = {}
+							-- 	for _, entry in ipairs(picker:get_multi_selection()) do
+							-- 		table.insert(entries, from_entry.path(entry, false, false))
+							-- 	end
+							-- 	if #entries > 0 then
+							-- 		table.insert(entries, 1, vim.g.diffprg)
+							-- 		vim.fn.system(entries)
+							-- 	end
+							-- end,
 						},
 					},
 				},
@@ -276,12 +256,59 @@ return {
 					find_files = {
 						find_command = find_command,
 						hidden = true,
-						--theme = require("telescope.themes"):get_custom() and "custom" or "",
 					},
 				},
 				extensions = {
+					file_browser = {
+						cwd_to_path = true,
+						grouped = true,
+						-- prompt_title = "File Browser",
+						-- previewer = true,
+						-- sorting_strategy = "ascending",
+						-- layout_config = {
+						-- 	preview_height = 0.5,
+						-- 	prompt_position = "top",
+						-- },
+						mappings = {
+							["i"] = {
+                ["<C-Esc>"] = actions.close,
+                -- files
+								["<CR>"] = fb_actions.open,
+								["<C-r>"] = fb_actions.rename,
+								["<C-n>"] = fb_actions.create,
+								-- ["<S-CR>"] = fb_actions.create_from_prompt,
+                -- ["<C-s-m>"] = fb_actions.move,
+								-- ["<C-s-y>"] = fb_actions.copy,
+								-- ["<C-s-d>"] = fb_actions.remove,
+								["<C-h>"] = fb_actions.goto_parent_dir,
+								["<C-l>"] = fb_actions.goto_cwd,
+								["<C-t>"] = fb_actions.change_cwd,
+								["<C-.>"] = fb_actions.toggle_hidden,
+								-- ["<C-e>"] = fb_actions.goto_home_dir,
+                -- ["<C-f>"] = fb_actions.toggle_browser,
+								--["<C-s>"] = fb_actions.toggle_all,
+								--["<bs>"] = fb_actions.backspace,
+							},
+							["n"] = {
+                ["<C-Esc>"] = actions.close,
+								["o"] = fb_actions.open,
+								["n"] = fb_actions.create,
+                ["r"] = fb_actions.rename,
+                ["d"] = fb_actions.remove,
+								["m"] = fb_actions.move,
+								["y"] = fb_actions.copy,
+								["h"] = fb_actions.goto_parent_dir,
+								["l"] = fb_actions.goto_cwd,
+								["t"] = fb_actions.change_cwd,
+								["."] = fb_actions.toggle_hidden
+								-- ["e"] = fb_actions.goto_home_dir,
+								-- ["f"] = fb_actions.toggle_browser,
+								-- ["s"] = fb_actions.toggle_all,
+							},
+						},
+					},
 					zoxide = {
-						prompt_title = "[ Zoxide directories ]",
+						prompt_title = "Zoxide directories",
 						mappings = {
 							default = {
 								action = function(selection)
