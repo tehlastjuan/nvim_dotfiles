@@ -64,29 +64,27 @@ vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Buffer Delete" }
 --vim.keymap.set("n", "<C-s-.>", "<cmd>tabnext<cr>", { desc = "Next tab" })
 
 -- Move Lines
-vim.keymap.set("v", "J", ":m '>+1<cr>gv=gv", { desc = "Move down" })
-vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv", { desc = "Move up" })
+vim.keymap.set("n", "<c-s-j>", "<cmd>m .+1<cr>==", { desc = "Move down" })
+vim.keymap.set("n", "<c-s-k>", "<cmd>m .-2<cr>==", { desc = "Move up" })
+vim.keymap.set("i", "<c-s-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move down" })
+vim.keymap.set("i", "<c-s-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
+vim.keymap.set("v", "<c-s-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
+vim.keymap.set("v", "<c-s-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
--- Join lines, cursor stays in place
-vim.keymap.set("n", "J", "mzJ`z")
-
--- Up & Down & Center
--- vim.keymap.set("n", "<C-d>", "<C-d>zz")
--- vim.keymap.set("n", "<C-u>", "<C-u>zz")
-
--- Next & Prev & Center
-vim.keymap.set("n", "n", "Nzzzv")
-vim.keymap.set("n", "N", "nzzzv")
-
+-- Nop
 vim.keymap.set("n", "Q", "<nop>")
 
+-- Next & Prev & Center
+-- vim.keymap.set("n", "n", "Nzzzv")
+-- vim.keymap.set("n", "N", "nzzzv")
+
 -- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
--- vim.keymap.set("n", "n", "'Nn'[v:searchforward].'zv'", { expr = true, desc = "Next search result" })
--- vim.keymap.set("x", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next search result" })
--- vim.keymap.set("o", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next search result" })
--- vim.keymap.set("n", "N", "'nN'[v:searchforward].'zv'", { expr = true, desc = "Prev search result" })
--- vim.keymap.set("x", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
--- vim.keymap.set("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
+vim.keymap.set("n", "n", "'Nn'[v:searchforward].'zv'", { expr = true, desc = "Next search result" })
+vim.keymap.set("n", "N", "'nN'[v:searchforward].'zv'", { expr = true, desc = "Prev search result" })
+vim.keymap.set("x", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next search result" })
+vim.keymap.set("x", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
+vim.keymap.set("o", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next search result" })
+vim.keymap.set("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev search result" })
 
 -- https://stackoverflow.com/questions/3249275/multiple-commands-on-same-line
 -- stylua: ignore
