@@ -68,17 +68,20 @@ vim.keymap.set("v", "J", ":m '>+1<cr>gv=gv", { desc = "Move down" })
 vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
 -- Join lines, cursor stays in place
-vim.keymap.set("n", "J", "mzJ`z")
+-- vim.keymap.set("n", "J", "mzJ`z")
 
 -- Up & Down & Center
 -- vim.keymap.set("n", "<C-d>", "<C-d>zz")
 -- vim.keymap.set("n", "<C-u>", "<C-u>zz")
 
 -- Next & Prev & Center
-vim.keymap.set("n", "n", "Nzzzv")
-vim.keymap.set("n", "N", "nzzzv")
+vim.keymap.set("n", "N", "Nzzzv")
+vim.keymap.set("n", "n", "nzzzv")
 
 vim.keymap.set("n", "Q", "<nop>")
+
+vim.keymap.set("n", "<C-q>", "q")
+vim.keymap.set("n", "q", "<nop>")
 
 -- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
 -- vim.keymap.set("n", "n", "'Nn'[v:searchforward].'zv'", { expr = true, desc = "Next search result" })
@@ -101,7 +104,7 @@ vim.keymap.set("n", "<leader>ur", "<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C
 
 -- Close all buffers and quit
 vim.keymap.set({ "n", "v" }, "<leader>qq", "<cmd>qa<cr>", { silent = true, desc = "quit" })
-vim.keymap.set({ "n", "v" }, "<leader><esc><esc>", "<cmd>qa<cr>", { silent = true, desc = "quit" })
+-- vim.keymap.set({ "n", "v" }, "<leader><esc><esc>", "<cmd>qa<cr>", { silent = true, desc = "quit" })
 
 -- Show highlights under cursor
 vim.keymap.set("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
@@ -175,19 +178,19 @@ vim.keymap.set("n", "<esc>", function() power_esc() end, { desc = "Escape and cl
 --end, { desc = "File explorer" })
 
 -- Trouble
-vim.keymap.set("n", "<leader>;", function()
-	--vim.cmd('Telescope buffers sort_mru=true sort_lastused=true')
-	--require("telescope.builtin").buffers()
-
-	vim.cmd(":enew | !ls")
-	local wins = utils.fetch_ft_windows("")
-	local buf = vim.api.nvim_win_get_buf(wins[1])
-	print(vim.inspect(buf))
-	require("trouble.sources.telescope").open(buf)
-	--vim.defer_fn(function()
-	--  require("trouble.sources.telescope").open(buf)
-	--end, 50)
-
-	--require("trouble").open("telescope_files")
-	--require("trouble.sources.telescope").open(buf)
-end, { desc = "Switch Buffer (Trouble)" })
+-- vim.keymap.set("n", "<leader>;", function()
+-- 	--vim.cmd('Telescope buffers sort_mru=true sort_lastused=true')
+-- 	--require("telescope.builtin").buffers()
+-- 
+-- 	vim.cmd(":enew | !ls")
+-- 	local wins = utils.fetch_ft_windows("")
+-- 	local buf = vim.api.nvim_win_get_buf(wins[1])
+-- 	print(vim.inspect(buf))
+-- 	require("trouble.sources.telescope").open(buf)
+-- 	--vim.defer_fn(function()
+-- 	--  require("trouble.sources.telescope").open(buf)
+-- 	--end, 50)
+-- 
+-- 	--require("trouble").open("telescope_files")
+-- 	--require("trouble.sources.telescope").open(buf)
+-- end, { desc = "Switch Buffer (Trouble)" })

@@ -20,19 +20,19 @@ return {
 				documentation = { auto_show = true },
 				list = {
 					selection = { preselect = false, auto_insert = true },
-					--max_items = 10,
+					--max_items = -1,
 				},
 			},
 			fuzzy = { implementation = "lua" },
 			keymap = {
-				["<cr>"] = { "accept", "fallback" },
-				["<C-\\>"] = { "hide", "fallback" },
-				["<c-n>"] = { "select_next", "show" },
-				["<tab>"] = { "select_next", "snippet_forward", "fallback" },
-				["<c-tab>"] = { "select_prev" },
-				["<c-p>"] = { "select_prev" },
-				["<c-b>"] = { "scroll_documentation_up", "fallback" },
-				["<c-f>"] = { "scroll_documentation_down", "fallback" },
+				["<cr>"]    = { "accept", "fallback" },
+				["<C-Esc>"] = { "hide", "fallback" },
+				["<c-n>"]   = { "select_next", "show" },
+				["<c-p>"]   = { "select_prev", "show" },
+				["<tab>"]   = { "select_next", "snippet_forward", "fallback" },
+				["<c-tab>"] = { "select_prev", "snippet_backward", "fallback" },
+				["<c-b>"]   = { "scroll_documentation_up", "fallback" },
+				["<c-f>"]   = { "scroll_documentation_down", "fallback" },
 				-- All presets have the following mappings:
 				-- <tab>/<s-tab>: move to right/left of your snippet expansion
 				-- <c-space>: Open menu or open docs if already open
@@ -44,15 +44,15 @@ return {
 			signature = { enabled = true },
 			snippets = { preset = "luasnip" },
 			sources = {
-				-- providers = {
-				-- 	lazydev = { module = "lazydev.integrations.blink", score_offset = 100 },
-				-- },
+				providers = {
+					lazydev = { module = "lazydev.integrations.blink", score_offset = 100 },
+				},
 				--per_filetype = {},
 
 				-- Disable some sources in comments and strings.
 				default = function()
-					--local sources = { "lsp", "buffer", "lazydev" }
-					local sources = { "lsp", "buffer" }
+					local sources = { "lsp", "buffer", "lazydev" }
+					-- local sources = { "lsp", "buffer" }
 					local ok, node = pcall(vim.treesitter.get_node)
 
 					if ok and node then
@@ -79,14 +79,14 @@ return {
 	-- Snippets.
 	{
 		"L3MON4D3/LuaSnip",
-		--dependencies = {
-		--	{
-		--		"rafamadriz/friendly-snippets",
-		--		config = function()
-		--			require("luasnip.loaders.from_vscode").lazy_load()
-		--		end,
-		--	},
-		--},
+		dependencies = {
+			{
+				"rafamadriz/friendly-snippets",
+				config = function()
+					require("luasnip.loaders.from_vscode").lazy_load()
+				end,
+			},
+		},
 		keys = {
 			{
 				"<C-r>s",

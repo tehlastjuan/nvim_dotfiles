@@ -13,8 +13,9 @@ return {
 				},
 				opts = {},
 			},
-			{ "mason-org/mason-lspconfig.nvim", config = function() end },
+			{ "mason-org/mason-lspconfig.nvim", config = function() end, },
 			{ "WhoIsSethDaniel/mason-tool-installer.nvim", opts = {} },
+      { "saghen/blink.cmp" },
 		},
 		opts = function()
 			---@class PluginLspOpts
@@ -154,7 +155,7 @@ return {
 					-- https://github.com/golang/go/issues/54531#issuecomment-1464982242
 					if client.name == "gopls" then
 						if not client then
-						  return
+							return
 						end
 
 						if not client.server_capabilities.semanticTokensProvider then
@@ -201,8 +202,8 @@ return {
 				"prettier",
 				"prettierd",
 				"dprint",
-        -- assembler
-        "asm-lsp",
+				-- assembler
+				"asm-lsp",
 				-- bash
 				"bash-language-server",
 				"shellcheck",
@@ -261,10 +262,17 @@ return {
 					function(server_name)
 						local server = servers[server_name] or {}
 						server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-						require("lspconfig")[server_name].setup(server)
+						local server_configs = vim.iter(vim.api.nvim_get_runtime_file("lsp/*.lua", true)) or {}
+						if server_configs[server_name] then
+						  vim.lsp.enable(server_configs[server_name])
+						else
+							require("lspconfig")[server_name].setup(server)
+						end
 					end,
 				},
 			})
+
+			-- load custom lsp configs
 		end,
 	},
 

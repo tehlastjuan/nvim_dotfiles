@@ -41,14 +41,14 @@ return {
 	--  },
 	--},
 
-	{
-		"neovim/nvim-lspconfig",
-		opts = {
-			servers = {
-				marksman = {},
-			},
-		},
-	},
+	-- {
+	-- 	"neovim/nvim-lspconfig",
+	-- 	opts = {
+	-- 		servers = {
+	-- 			marksman = {},
+	-- 		},
+	-- 	},
+	-- },
 
 	-- Markdown preview - https://github.com/iamcco/markdown-preview.nvim/issues/695
 	-- cd ~/.local/share/nvim/lazy/markdown-preview.nvim

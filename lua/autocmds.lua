@@ -67,48 +67,13 @@ vim.api.nvim_create_autocmd("FileType", {
 		"spectre_panel",
 		"startuptime",
 		"tsplayground",
-    "trouble",
+		"trouble",
 	},
 	callback = function(args)
 		vim.keymap.set("n", "q", "<cmd>quit<cr>", { buffer = args.buf })
 		vim.keymap.set("n", "<esc>", "<cmd>quit<cr>", { buffer = args.buf })
 	end,
-	--callback = function(args)
-	--  vim.bo[args.buf].buflisted = false
-	--  vim.schedule(function()
-	--    vim.keymap.set("n", "q", function()
-	--      vim.cmd("close")
-	--      pcall(vim.api.nvim_buf_delete, args.buf, { force = true })
-	--    end, {
-	--      buffer = args.buf,
-	--      silent = true,
-	--      desc = "Quit buffer",
-	--    })
-	--  end)
-	--end,
 })
-
--- make it easier to close man-files when opened inline
---vim.api.nvim_create_autocmd("FileType", {
---  group = augroup("man_unlisted"),
---  pattern = { "man" },
---  callback = function(args)
---    vim.bo[args.buf].buflisted = false
---  end,
---})
-
--- close some filetypes with <q>
---vim.api.nvim_create_autocmd("FileType", {
---  group = augroup("close_man_with_q"),
---  pattern = { "man" },
---  callback = function(args)
---    vim.keymap.set("n", "q", ":q<cr>", {
---      buffer = args.buf,
---      silent = true,
---      desc = "Quit buffer",
---    })
---  end,
---})
 
 -- Wrap and check for spell in text filetypes
 vim.api.nvim_create_autocmd("FileType", {
@@ -184,19 +149,6 @@ vim.api.nvim_create_autocmd({ "BufDelete", "BufWipeout" }, {
 	desc = "Write to ShaDa when deleting/wiping out buffers",
 	command = "wshada",
 })
-
--- Set up LSP servers.
--- vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
--- 	once = true,
--- 	callback = function()
--- 		local server_configs = vim.iter(vim.api.nvim_get_runtime_file("lsp/*.lua", true))
--- 			:map(function(file)
--- 				return vim.fn.fnamemodify(file, ":t:r")
--- 			end)
--- 			:totable()
--- 		vim.lsp.enable(server_configs)
--- 	end,
--- })
 
 -- list available keymaps
 vim.api.nvim_create_user_command("UnmappedKeys", function()
