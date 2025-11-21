@@ -56,10 +56,12 @@ return {
 		},
 	},
 
+  -- silent !xdg-open http://localhost:3000/
 	{
 		"ray-x/web-tools.nvim",
+		cmd = { "BrowserOpen", "BrowserRestart", "BrowserStop" },
 		keys = {
-			{ "<leader>cb", "<cmd>BrowserOpen<cr>", "n", desc = "Browser Preview", remap = true },
+			{ "<leader>cb", "<cmd>BrowserOpen --open http://localhost:3000<cr>", "n", desc = "Browser Preview", remap = true },
 		},
 		opts = {
 			keymaps = {
@@ -115,29 +117,39 @@ return {
 
 	{
 		"chomosuke/typst-preview.nvim",
-		lazy = false, -- or ft = 'typst'
-		version = "0.3.*",
-		build = function()
-			require("typst-preview").update()
-		end,
+		cmd = { "TypstPreview", "TypstPreviewToggle", "TypstPreviewUpdate" },
 		keys = {
 			{
 				"<leader>ct",
 				ft = "typst",
-				"<cmd>TypstPreview<cr>",
-				desc = "Typst Preview",
+				"<cmd>TypstPreviewToggle<cr>",
+				desc = "Toggle Typst Preview",
+			},
+		},
+		opts = {
+			dependencies_bin = {
+				tinymist = "tinymist",
 			},
 		},
 	},
 
-  {
-    "phelipetls/vim-hugo",
-    --lazy = false,
-    --opts = {},
-    --init = function()
-    --  return {
-    --    require("vim-hugo").setup()
-    --  }
-    --end
-  },
+	{
+		"folke/ts-comments.nvim",
+		opts = {
+			lang = {
+				typst = { "// %s", "/* %s */" },
+			},
+		},
+	},
+
+	{
+		"phelipetls/vim-hugo",
+		--lazy = false,
+		--opts = {},
+		--init = function()
+		--  return {
+		--    require("vim-hugo").setup()
+		--  }
+		--end
+	},
 }

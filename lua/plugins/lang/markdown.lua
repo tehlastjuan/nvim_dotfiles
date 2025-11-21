@@ -50,12 +50,49 @@ return {
 	-- 	},
 	-- },
 
+	-- {
+	-- 	"brianhuster/live-preview.nvim",
+	-- 	dependencies = {
+	-- 		-- You can choose one of the following pickers
+	-- 		"nvim-telescope/telescope.nvim",
+	-- 		-- "ibhagwan/fzf-lua",
+	-- 		-- "echasnovski/mini.pick",
+	-- 		-- "folke/snacks.nvim",
+	-- 	},
+	-- 	cmd = { "LivePreview start", "LivePreview close", "LivePreview pick" },
+	-- 	ft = { "markdown" },
+
+	-- 	config = function()
+	-- 		require("livepreview.config").set({
+	-- 			port = 5500,
+	-- 			browser = "brave",
+	-- 			dynamic_root = false,
+	-- 			sync_scroll = true,
+	-- 			picker = "telescope",
+	-- 			address = "127.0.0.1",
+	-- 		})
+	-- 	end,
+	-- 	keys = {
+	-- 		{
+	-- 			"<leader>cp",
+	-- 			ft = "markdown",
+	-- 			"<cmd>LivePreview start<cr>",
+	-- 			desc = "LivePreview",
+	-- 		},
+	-- 	},
+	-- },
+
 	-- Markdown preview - https://github.com/iamcco/markdown-preview.nvim/issues/695
 	-- cd ~/.local/share/nvim/lazy/markdown-preview.nvim
 	-- npm install / yarn
 	{
 		"iamcco/markdown-preview.nvim",
 		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+		build = ":call mkdp#util#install()",
+		init = function()
+			vim.g.mkdp_filetypes = { "markdown" }
+			vim.g.mkdp_browser = "/usr/bin/brave"
+		end,
 		ft = { "markdown" },
 		keys = {
 			{
@@ -65,12 +102,8 @@ return {
 				desc = "Markdown Preview",
 			},
 		},
-
-		build = function()
-			vim.fn["mkdp#util#install"]()
-		end,
-		config = function()
-			vim.cmd([[do FileType]])
-		end,
+		--config = function()
+		--	vim.cmd([[do FileType]])
+		--end,
 	},
 }
