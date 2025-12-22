@@ -53,6 +53,7 @@ local plugin_specs = {
 	--require("plugins.extras.editor.inc-rename"),
 
 	-- additional lsp
+	require("plugins.lang.go"),
 	--require("plugins.lang.ansible"),
 	--require("plugins.lang.php"),
 	--require("plugins.lang.python"),

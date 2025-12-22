@@ -84,6 +84,7 @@ return {
 
 	-- Markdown preview - https://github.com/iamcco/markdown-preview.nvim/issues/695
 	-- cd ~/.local/share/nvim/lazy/markdown-preview.nvim
+  -- NODE_OPTIONS=--openssl-legacy-provider npm install / npm build
 	-- npm install / yarn
 	{
 		"iamcco/markdown-preview.nvim",
