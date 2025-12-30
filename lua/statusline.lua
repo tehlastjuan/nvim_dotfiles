@@ -93,6 +93,23 @@ function M.mode_component()
 	})
 end
 
+--- Hostname.
+---@return string
+function M.hostname_component()
+  -- local fd_hostname = assert(io.open("/etc/hostname"), "r")
+  -- local hostname = fd_hostname:read("*l")
+  -- fd_hostname:close()
+
+  local hostname = ""
+	local fh,_ = assert(io.popen("uname -n 2>/dev/null", "r"))
+  if fh then
+    hostname = fh:read()
+  end
+
+  -- return string.format(" @%s", hostname)
+	return string.format("%%#StatuslineHostname# @%s", hostname)
+end
+
 --- Git status (if any).
 ---@return string
 function M.git_component()
@@ -101,7 +118,8 @@ function M.git_component()
 		return ""
 	end
 
-	return string.format(" %s%s ", icons.misc.git, head)
+  -- return string.format(" %s%s ", icons.misc.git, head)
+	return string.format("%%#StatuslineBranch# *%s ", head)
 end
 
 --- Filename (if any).
@@ -402,6 +420,7 @@ function M.render()
 	return table.concat({
 		concat_components({
 			M.mode_component(),
+			M.hostname_component(),
 			M.git_component(),
 			M.filename_component(),
 			M.dap_component(),

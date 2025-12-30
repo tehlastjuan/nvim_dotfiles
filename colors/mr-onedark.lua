@@ -107,6 +107,11 @@ local colors = {
 	dark_yellow      = "#9a6b16",
 }
 
+local statusline = {
+  fg = colors.fg,
+  bg = colors.bg0,
+}
+
 -- Terminal colors.
 vim.g.terminal_color_0 = colors.black
 vim.g.terminal_color_1 = colors.red
@@ -153,22 +158,24 @@ for mode, color in pairs({
 	Other   = "orange",
 }) do
 	hl.statusline["StatuslineMode" .. mode] = { fg = colors.bg, bg = colors[color] }
-	hl.statusline["StatuslineSep" .. mode] = { fg = colors[color], bg = colors.bg1 }
+	hl.statusline["StatuslineSep" .. mode] = { fg = colors[color], bg = colors.bg }
 end
 
 hl.statusline = vim.tbl_extend("error", hl.statusline, {
-	StatuslineRegular   = { fg = colors.fg, bg = colors.bg1 },
-	StatuslineItalic    = { fg = colors.fg, bg = colors.bg1, fmt = "italic" },
-	StatuslineBold      = { fg = colors.fg, bg = colors.bg1, fmt = "bold" },
-	StatuslineSpinner   = { fg = colors.bright_green, bg = colors.bg1, fmt = "bold" },
-	StatuslineDir       = { fg = colors.orange, bg = colors.bg1, fmt = "bold" },
-	StatuslineGitAdd    = { fg = colors.bright_green, bg = colors.bg1 },
-	StatuslineGitMod    = { fg = colors.bright_blue, bg = colors.bg1 },
-	StatuslineGitRem    = { fg = colors.bright_red, bg = colors.bg1 },
-	StatuslineFileMod   = { fg = colors.red, bg = colors.bg1 },
-	StatuslineFileUnMod = { fg = colors.bg1, bg = colors.bg1 },
-	StatuslineCols      = { fg = colors.blue, bg = colors.bg1 },
-	StatuslineLines     = { fg = colors.fg, bg = colors.bg1 },
+	StatuslineRegular   = { fg = colors.fg, bg = statusline.bg },
+	StatuslineItalic    = { fg = colors.fg, bg = statusline.bg, fmt = "italic" },
+	StatuslineBold      = { fg = colors.fg, bg = statusline.bg, fmt = "bold" },
+	StatuslineSpinner   = { fg = colors.bright_green, bg = statusline.bg, fmt = "bold" },
+	StatuslineHostname  = { fg = colors.bright_blue, bg = statusline.bg, fmt = "bold" },
+	StatuslineBranch    = { fg = colors.orange, bg = statusline.bg, fmt = "bold" },
+	StatuslineDir       = { fg = colors.fg, bg = statusline.bg },
+	StatuslineGitAdd    = { fg = colors.bright_green, bg = statusline.bg },
+	StatuslineGitMod    = { fg = colors.bright_blue, bg = statusline.bg },
+	StatuslineGitRem    = { fg = colors.bright_red, bg = statusline.bg },
+	StatuslineFileMod   = { fg = colors.red, bg = statusline.bg },
+	StatuslineFileUnMod = { fg = statusline.bg, bg = statusline.bg },
+	StatuslineCols      = { fg = colors.blue, bg = statusline.bg },
+	StatuslineLines     = { fg = colors.fg, bg = statusline.bg },
 })
 
 hl.common = {
@@ -220,10 +227,10 @@ hl.common = {
 	SpellCap = { fg = colors.none, fmt = "undercurl", sp = colors.yellow },
 	SpellLocal = { fg = colors.none, fmt = "undercurl", sp = colors.blue },
 	SpellRare = { fg = colors.none, fmt = "undercurl", sp = colors.purple },
-	StatusLine = { fg = colors.fg, bg = colors.bg1 },
-	StatusLineNC = { fg = colors.grey, bg = colors.bg },
-	StatusLineTerm = { fg = colors.fg, bg = colors.bg1 },
-	StatusLineTermNC = { fg = colors.grey, bg = colors.bg },
+	StatusLine = { fg = colors.fg, bg = statusline.bg },
+	StatusLineNC = { fg = colors.grey, bg = statusline.bg },
+	StatusLineTerm = { fg = colors.fg, bg = statusline.bg },
+	StatusLineTermNC = { fg = colors.grey, bg = statusline.bg },
 	Substitute = { fg = colors.bg, bg = colors.green },
 	TabLine = { fg = colors.fg, bg = colors.bg1 },
 	TabLineFill = { fg = colors.grey, bg = colors.bg1 },
