@@ -158,7 +158,7 @@ for mode, color in pairs({
 	Other   = "orange",
 }) do
 	hl.statusline["StatuslineMode" .. mode] = { fg = colors.bg, bg = colors[color] }
-	hl.statusline["StatuslineSep" .. mode] = { fg = colors[color], bg = colors.bg }
+	hl.statusline["StatuslineSep" .. mode] = { fg = colors[color], bg = statusline.bg }
 end
 
 hl.statusline = vim.tbl_extend("error", hl.statusline, {
@@ -166,7 +166,7 @@ hl.statusline = vim.tbl_extend("error", hl.statusline, {
 	StatuslineItalic    = { fg = colors.fg, bg = statusline.bg, fmt = "italic" },
 	StatuslineBold      = { fg = colors.fg, bg = statusline.bg, fmt = "bold" },
 	StatuslineSpinner   = { fg = colors.bright_green, bg = statusline.bg, fmt = "bold" },
-	StatuslineHostname  = { fg = colors.bright_blue, bg = statusline.bg, fmt = "bold" },
+	StatuslineHostname  = { fg = colors.blue, bg = statusline.bg, fmt = "bold" },
 	StatuslineBranch    = { fg = colors.orange, bg = statusline.bg, fmt = "bold" },
 	StatuslineDir       = { fg = colors.fg, bg = statusline.bg },
 	StatuslineGitAdd    = { fg = colors.bright_green, bg = statusline.bg },
