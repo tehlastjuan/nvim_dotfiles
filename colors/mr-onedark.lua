@@ -110,6 +110,7 @@ local colors = {
 local statusline = {
   fg = colors.fg,
   bg = colors.bg0,
+  nc = colors.bg,
 }
 
 -- Terminal colors.
@@ -228,9 +229,9 @@ hl.common = {
 	SpellLocal = { fg = colors.none, fmt = "undercurl", sp = colors.blue },
 	SpellRare = { fg = colors.none, fmt = "undercurl", sp = colors.purple },
 	StatusLine = { fg = colors.fg, bg = statusline.bg },
-	StatusLineNC = { fg = colors.grey, bg = statusline.bg },
-	StatusLineTerm = { fg = colors.fg, bg = statusline.bg },
-	StatusLineTermNC = { fg = colors.grey, bg = statusline.bg },
+	StatusLineNC = { fg = colors.grey, bg = statusline.nc },
+	StatusLineTerm = { fg = colors.fg, bg = statusline.nc },
+	StatusLineTermNC = { fg = colors.grey, bg = statusline.nc },
 	Substitute = { fg = colors.bg, bg = colors.green },
 	TabLine = { fg = colors.fg, bg = colors.bg1 },
 	TabLineFill = { fg = colors.grey, bg = colors.bg1 },
