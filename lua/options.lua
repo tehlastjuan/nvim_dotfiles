@@ -135,6 +135,14 @@ vim.opt.formatoptions = vim.opt.formatoptions
   + "j" -- Auto-remove comments when joining lines, if possible.
   - "2" -- I'm not in gradeschool anymore
 
+-- Auto-folding w/ treesitter
+vim.opt.foldmethod = "marker"
+-- vim.opt.foldexpr = "getline(v:lnum)=~'^\\s*$'&&getline(v:lnum+1)=~'\\S'?'<1':1"
+--
+--vim.opt.foldmethod = "syntax"
+--vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+--vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
+
 -- Fuzzy find.
 vim.opt.path:append("**")
 
@@ -282,22 +290,5 @@ vim.opt.fillchars = {
 	-- vertright = '┣',
 	-- verthoriz = '╋',
 }
-
--- If sudo, disable vim swap/backup/undo/shada writing
-local USER = vim.env.USER or ""
-local SUDO_USER = vim.env.SUDO_USER or ""
-if
-	SUDO_USER ~= ""
-	and USER ~= SUDO_USER
-	and vim.env.HOME ~= vim.fn.expand("~" .. USER, true)
-	and vim.env.HOME == vim.fn.expand("~" .. SUDO_USER, true)
-then
-	vim.opt_global.modeline = false
-	vim.opt_global.undofile = false
-	vim.opt_global.swapfile = false
-	vim.opt_global.backup = false
-	vim.opt_global.writebackup = false
-	vim.opt_global.shadafile = "NONE"
-end
 
 -- vim: set ts=2 sw=0 tw=80 noet :

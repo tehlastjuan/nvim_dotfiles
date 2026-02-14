@@ -1,34 +1,17 @@
-local plugin_dir = vim.fn.stdpath("data") .. "/lazy/"
-local lazypath = plugin_dir .. "/lazy.nvim"
-
--- Bootstrap lazy.nvim
-if not vim.uv.fs_stat(lazypath) then
-	vim.fn.system({
-		"git",
-		"clone",
-		"--filter=blob:none",
-		"https://github.com/folke/lazy.nvim.git",
-		"--branch=stable",
-		lazypath,
-	})
-end
-
----@type vim.Option
-vim.opt.rtp:prepend(lazypath)
-
-local plugin_specs = {
+return {
 	{ "nvim-tree/nvim-web-devicons", lazy = true },
+	{ "b0o/SchemaStore.nvim", lazy = true },
 
 	-- core
 	require("plugins.blink"),
-	require("plugins.lsp"),
+	require("plugins.mason"),
+	require("plugins.treesitter"),
+	require("plugins.luasnip"),
 	require("plugins.conform"),
 	require("plugins.gitsigns"),
-	require("plugins.diffview"),
 	require("plugins.telescope"),
-	require("plugins.treesitter"),
 	require("plugins.miniclue"),
-	--require("plugins.which-key"),
+	require("plugins.diffview"),
 	require("plugins.ibl"),
 	require("plugins.todo-comments"),
 	require("plugins.trouble"),
@@ -37,14 +20,14 @@ local plugin_specs = {
 	require("plugins.utils"),
 
 	-- common lsp
+	-- require("plugins.lang.cmake"),
+	--require("plugins.lang.clangd"),
+	--require("plugins.lang.docker"),
+	--require("plugins.lang.json"),
 	require("plugins.lang.markdown"),
-	require("plugins.lang.json"),
-	require("plugins.lang.yaml"),
-	require("plugins.lang.toml"),
-	require("plugins.lang.clangd"),
-	require("plugins.lang.cmake"),
-	require("plugins.lang.docker"),
 	require("plugins.lang.tex"),
+	--require("plugins.lang.toml"),
+	--require("plugins.lang.yaml"),
 
 	-- lazy extras stuff
 	--require("plugins.extras.dap.core"),
@@ -53,7 +36,7 @@ local plugin_specs = {
 	--require("plugins.extras.editor.inc-rename"),
 
 	-- additional lsp
-	require("plugins.lang.go"),
+	--require("plugins.lang.go"),
 	--require("plugins.lang.ansible"),
 	--require("plugins.lang.php"),
 	--require("plugins.lang.python"),
@@ -62,29 +45,3 @@ local plugin_specs = {
 	--require("plugins.lang.clisp")
 	--require("plugins.lang.prolog")
 }
-
--- Configure plugins.
-require("lazy").setup({
-	spec = plugin_specs,
-	build = {
-		warn_on_override = true,
-	},
-	rocks = {
-		enabled = false,
-	},
-	install = {
-		missing = false,
-	},
-	change_detection = {
-		notify = false,
-	},
-	performance = {
-		cache = {
-			enabled = true,
-		},
-		reset_packpath = true,
-	},
-	ui = {
-		icons = require("icons").lazy,
-	},
-})

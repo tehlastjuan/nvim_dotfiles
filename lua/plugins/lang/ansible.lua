@@ -6,13 +6,13 @@ return {
 	},
 
 	{
-		"neovim/nvim-lspconfig",
+		"mason-org/mason-lspconfig.nvim",
 		opts = {
-			servers = {
-				ansiblels = {},
-			},
+			ensure_installed = { "ansiblels" },
 		},
 	},
+
+	--local ensure_installed = vim.list_extend(ansiblels, {})
 
 	{
 		"mfussenegger/nvim-ansible",

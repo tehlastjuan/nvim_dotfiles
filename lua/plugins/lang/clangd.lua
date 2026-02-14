@@ -31,55 +31,42 @@ return {
 		},
 	},
 
-	-- Correctly setup lspconfig for clangd
+	---@type vim.lsp.Config
 	{
-		"neovim/nvim-lspconfig",
-		opts = {
-			servers = {
-				-- Ensure mason installs the server
-				clangd = {
-					keys = {
-						{ "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
-					},
-					root_dir = function(fname)
-						return require("lspconfig.util").root_pattern(
-							"Makefile",
-							"configure.ac",
-							"configure.in",
-							"config.h.in",
-							"meson.build",
-							"meson_options.txt",
-							"build.ninja"
-						)(fname) or require("lspconfig.util").root_pattern(
-							"compile_commands.json",
-							"compile_flags.txt"
-						)(fname) or vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
-					end,
-					capabilities = {
-						offsetEncoding = { "utf-16" },
-					},
-					cmd = {
-						"clangd",
-						"--background-index",
-						"--clang-tidy",
-						"--header-insertion=iwyu",
-						"--completion-style=detailed",
-						"--function-arg-placeholders",
-						"--fallback-style=llvm",
-					},
-					init_options = {
-						usePlaceholders = true,
-						completeUnimported = true,
-						clangdFileStatus = true,
-					},
-				},
-			},
-			setup = {
-				clangd = function(_, opts)
-					require("clangd_extensions").setup(vim.tbl_deep_extend("force", {}, { server = opts }))
-					return false
-				end,
-			},
+		cmd = {
+			"clangd",
+			"--background-index",
+			"--clang-tidy",
+			"--header-insertion=iwyu",
+			"--completion-style=detailed",
+			"--function-arg-placeholders",
+			"--fallback-style=llvm",
+		},
+		filetypes = { "c", "cpp" },
+		capabilities = {
+			offsetEncoding = { "utf-16" },
+		},
+		root_markers = {
+			"Makefile",
+			"configure.ac",
+			"configure.in",
+			"config.h.in",
+			"meson.build",
+			"meson_options.txt",
+			"build.ninja",
+			"compile_commands.json",
+			"compile_flags.txt",
+		},
+		init_options = {
+			usePlaceholders = true,
+			completeUnimported = true,
+			clangdFileStatus = true,
+		},
+		setup = {
+			clangd = function(_, opts)
+				require("clangd_extensions").setup(vim.tbl_deep_extend("force", {}, { server = opts }))
+				return false
+			end,
 		},
 	},
 

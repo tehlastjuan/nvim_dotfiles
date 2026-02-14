@@ -14,9 +14,8 @@ local function first(bufnr, ...)
 	return select(1, ...)
 end
 
+-- formatter
 return {
-
-	-- formatter
 	{
 		"stevearc/conform.nvim",
 		dependencies = { "mason.nvim" },
@@ -48,23 +47,25 @@ return {
 			formatters_by_ft = {
 				bash              = { "shfmt" },
 				c                 = { "clang-format", name = "clangd", timeout_ms = 500, lsp_format = "prefer" },
-        cmake             = { "cmake-format" },
+				cs                = { "clang-format", name = "clangd", timeout_ms = 500, lsp_format = "prefer" },
+        cmake             = { "cmake_format" },
 				css               = { "prettier" },
 				go                = { "gofumpt", "golines", "goimports" },
 				graphql           = { "prettier" },
         handlebars        = { "prettier" },
 				html              = { "prettier" },
-				javascript        = { "prettier", "eslint", name = "dprint", timeout_ms = 500, lsp_format = "fallback" },
+				javascript        = { "prettier", name = "dprint", timeout_ms = 500, lsp_format = "fallback" },
 				javascriptreact   = { "prettier", name = "dprint", timeout_ms = 500, lsp_format = "fallback" },
 				json              = { "prettier", name = "dprint", timeout_ms = 500, lsp_format = "fallback" },
 				jsonc             = { "prettier", name = "dprint", timeout_ms = 500, lsp_format = "fallback" },
 				less              = { "prettier" },
 				lua               = { "stylua" },
-        markdown          = { "prettier" },
-        php               = { "intelephense", "php-cs-fixer" },
+        ["markdown"]      = { "markdownlint-cli2", "markdown-toc", "prettier" },
+				["markdown.mdx"]  = { "markdownlint-cli2", "markdown-toc", "prettier" },
+        php               = { "php_cs_fixer" },
 				python            = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
-				ruby              = { "rubocop" },
-				rust              = { name = "rust_analyzer", timeout_ms = 500, lsp_format = "prefer" },
+				--ruby              = { "rubocop" },
+				rust              = { "rustfmt" },
 				scss              = { "prettier" },
 				sh                = { "shfmt" },
 				sql               = { "sqruff" },

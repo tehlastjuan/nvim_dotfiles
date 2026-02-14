@@ -11,11 +11,9 @@ return {
 	},
 
 	{
-		"neovim/nvim-lspconfig",
+		"mason-org/mason-lspconfig.nvim",
 		opts = {
-			servers = {
-				neocmake = {},
-			},
+			ensure_installed = { "neocmake" },
 		},
 	},
 

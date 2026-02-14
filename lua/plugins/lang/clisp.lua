@@ -1,11 +1,20 @@
 return {
 
 	-- clisp
-	{
-		"neovim/nvim-lspconfig",
-		config = function()
-			local lspconfig = require("lspconfig")
 
+	{
+		"mason-org/mason-lspconfig.nvim",
+		opts = {
+			ensure_installed = { "ansiblels" },
+		},
+	},
+
+
+
+
+	{
+		config = function()
+			local lspconfig = vim.lsp.config
 			-- Check if the config is already defined (useful when reloading this file)
 			if not lspconfig.configs.cl_lsp then
 				lspconfig.configs.cl_lsp = {

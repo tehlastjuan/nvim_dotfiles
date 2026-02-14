@@ -1,12 +1,10 @@
 local icons = require("icons")
---local methods = vim.lsp.protocol.Methods
---local utils = require("utils_lsp")
 
 -- Define the diagnostic signs.
---for severity, icon in pairs(diagnostic_icons) do
---	local hl = "DiagnosticSign" .. severity:sub(1, 1) .. severity:sub(2):lower()
---	vim.fn.sign_define(hl, { text = icon, texthl = hl })
---end
+for severity, icon in pairs(icons.diagnostics) do
+	local hl = "DiagnosticSign" .. severity:sub(1, 1) .. severity:sub(2):lower()
+	vim.fn.sign_define(hl, { text = icon, texthl = hl })
+end
 
 -- Diagnostic configuration.
 ---@type vim.diagnostic.Opts

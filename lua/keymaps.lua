@@ -188,7 +188,7 @@ vim.keymap.set("n", "<esc>", function() power_esc() end, { desc = "Escape and cl
 -- vim.keymap.set("n", "<leader>;", function()
 -- 	--vim.cmd('Telescope buffers sort_mru=true sort_lastused=true')
 -- 	--require("telescope.builtin").buffers()
--- 
+--
 -- 	vim.cmd(":enew | !ls")
 -- 	local wins = utils.fetch_ft_windows("")
 -- 	local buf = vim.api.nvim_win_get_buf(wins[1])
@@ -197,7 +197,7 @@ vim.keymap.set("n", "<esc>", function() power_esc() end, { desc = "Escape and cl
 -- 	--vim.defer_fn(function()
 -- 	--  require("trouble.sources.telescope").open(buf)
 -- 	--end, 50)
--- 
+--
 -- 	--require("trouble").open("telescope_files")
 -- 	--require("trouble.sources.telescope").open(buf)
 -- end, { desc = "Switch Buffer (Trouble)" })

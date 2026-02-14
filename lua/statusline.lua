@@ -393,7 +393,7 @@ function M.check_filetype()
 
 	local filetype = vim.bo.filetype
 	for _, value in ipairs(ft_to_str) do
-		if filetype == value or filetype == "" then
+		if filetype == value then
 			return true
 		end
 	end
@@ -413,14 +413,14 @@ function M.render()
 	end
 
 	if M.check_filetype() then
-		return "%#StatusLineNC#%="
-		--return table.concat({ M.mode_component(), "%#StatusLineNC#%=" })
+		--return "%#StatusLineNC#%="
+		return table.concat({ M.mode_component(), "%#StatusLineNC#%=" })
 	end
 
 	return table.concat({
 		concat_components({
 			M.mode_component(),
-			M.hostname_component(),
+			--M.hostname_component(),
 			M.git_component(),
 			M.filename_component(),
 			M.dap_component(),

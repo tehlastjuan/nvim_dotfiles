@@ -52,6 +52,7 @@ return {
 			ensure_installed = {
 				"bash",
 				"c",
+				"c_sharp",
         "cmake",
 				"css",
 				"diff",
