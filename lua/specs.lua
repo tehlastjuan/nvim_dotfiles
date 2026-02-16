@@ -4,7 +4,7 @@ return {
 
 	-- core
 	require("plugins.blink"),
-	require("plugins.mason"),
+	require("plugins.lspconfig"),
 	require("plugins.treesitter"),
 	require("plugins.luasnip"),
 	require("plugins.conform"),

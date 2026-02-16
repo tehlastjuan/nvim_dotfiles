@@ -15,9 +15,18 @@ M.ft = {
 }
 
 --stylua: ignore
+M.folds = {
+  top               = "┊",
+  middle            = "├",
+  last              = "└",
+  fold_open         = "",
+  fold_closed       = "",
+  ws                = " ",
+}
+
+--stylua: ignore
 M.misc = {
   bug                 = " ",
-  dashed_bar          = "┊",
   ellipsis            = "…", -- 󰇘
   fileModified        = "󱪗 ",
   git                 = " ", --  󰘬
@@ -27,8 +36,17 @@ M.misc = {
   spinner             = "󱥸 ",
   terminal            = " ",
   toolbox             = "󰦬 ",
-  vertical_bar        = "│",
   vim                 = " ",
+  vbar_half           = "╎",
+  vbar_third          = "┆",
+  vbar_dashed         = "┊",
+  vbar_solid          = "│",
+  whitespace          = "⋅",
+  vbar_sp_half        = "╎ ",
+  vbar_sp_third       = "┆ ",
+  vbar_sp_dashed      = "┊ ",
+  vbar_sp_solid       = "│ ",
+  whitespace_sp       = "⋅ ",
 }
 
 --stylua: ignore

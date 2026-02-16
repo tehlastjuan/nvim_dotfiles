@@ -2,15 +2,7 @@
 return {
 	{
 		"L3MON4D3/LuaSnip",
-		-- dependencies = {
-		-- 	{
-		-- 		"rafamadriz/friendly-snippets",
-		-- 		config = function()
-		-- 			require("luasnip.loaders.from_vscode").lazy_load()
-		-- 		end,
-		-- 	},
-		-- },
-		keys = {
+    keys = {
 			{
 				"<C-r>s",
 				function()
@@ -30,13 +22,13 @@ return {
 				ext_opts = {
 					[types.insertNode] = {
 						unvisited = {
-							virt_text = { { "|", "Conceal" } },
+							--virt_text = { { "|", "Conceal" } },
 							virt_text_pos = "inline",
 						},
 					},
 					[types.exitNode] = {
 						unvisited = {
-							virt_text = { { "|", "Conceal" } },
+							--virt_text = { { "|", "Conceal" } },
 							virt_text_pos = "inline",
 						},
 					},
@@ -68,6 +60,4 @@ return {
 			---@diagnostic enable: undefined-field
 		end,
 	},
-
-
 }

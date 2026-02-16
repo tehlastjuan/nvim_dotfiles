@@ -4,11 +4,14 @@ return {
 		"saghen/blink.cmp",
 		build = "cargo +nightly build --release",
 		event = "VimEnter",
-		dependencies = { "LuaSnip" },
+		dependencies = {
+			"LuaSnip",
+			"rafamadriz/friendly-snippets",
+		},
 		opts = {
 			appearance = {
 				kind_icons = require("icons").kinds,
-				-- nerd_font_variant = "mono",
+				nerd_font_variant = "mono",
 			},
 			completion = {
 				documentation = { auto_show = true },
@@ -27,16 +30,14 @@ return {
 					},
 				},
 			},
-			--fuzzy = { implementation = "lua" },
 			keymap = {
 				["<cr>"] = { "accept", "fallback" },
 				["<C-Esc>"] = { "hide", "fallback" },
 				["<c-n>"] = { "select_next", "show" },
-				["<c-p>"] = { "select_prev", "show" },
 				["<tab>"] = { "select_next", "snippet_forward", "fallback" },
-				["<c-tab>"] = { "select_prev", "snippet_backward", "fallback" },
-				["<c-b>"] = { "scroll_documentation_up", "fallback" },
-				["<c-f>"] = { "scroll_documentation_down", "fallback" },
+				["<c-p>"] = { "select_prev", "show" },
+				["<c-h>"] = { "scroll_documentation_up", "fallback" },
+				["<c-l>"] = { "scroll_documentation_down", "fallback" },
 				-- All presets have the following mappings:
 				-- <tab>/<s-tab>: move to right/left of your snippet expansion
 				-- <c-space>: Open menu or open docs if already open
@@ -46,16 +47,19 @@ return {
 			},
 			--opts_extend = { "sources.default" },
 			signature = { enabled = true },
-			snippets = { preset = "luasnip" },
+			-- snippets = {
+			-- 	luasnip = true,
+			-- 	friendly_snippets = true,
+			-- },
 			sources = {
-				--providers = {
-				--	lazydev = { module = "lazydev.integrations.blink", score_offset = 100 },
-				--},
-				--per_filetype = {},
+				providers = {
+					snippets = {
+						opts = { friendly_snippets = true, luasnip = true },
+					},
+				},
 
 				-- Disable some sources in comments and strings.
 				default = function()
-					--local sources = { "lsp", "buffer", "lazydev" }
 					local sources = { "lsp", "buffer" }
 					local ok, node = pcall(vim.treesitter.get_node)
 

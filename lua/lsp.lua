@@ -16,10 +16,11 @@ local function on_attach(client, bufnr)
 		vim.keymap.set(mode, lhs, rhs, opts)
 	end
 
-	map("[e", function()
+	map("[[", function()
 		vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR })
 	end, "Previous error")
-	map("]e", function()
+
+	map("]]", function()
 		vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR })
 	end, "Next error")
 
@@ -63,7 +64,6 @@ local function on_attach(client, bufnr)
 			if require("blink.cmp.completion.windows.menu").win:is_open() then
 				require("blink.cmp").hide()
 			end
-
 			vim.lsp.buf.signature_help()
 		end, "Signature help", "i")
 	end
@@ -185,12 +185,12 @@ vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
     ---@type MasonLspconfigSettings
     -- require("mason-lspconfig").setup()
 
-		local servers = vim.iter(vim.api.nvim_get_runtime_file("lsp/*.lua", true))
-			:map(function(file)
-				return vim.fn.fnamemodify(file, ":t:r")
-			end)
-			:totable()
-		vim.lsp.enable(servers)
+		-- local servers = vim.iter(vim.api.nvim_get_runtime_file("lsp/*.lua", true))
+		-- 	:map(function(file)
+		-- 		return vim.fn.fnamemodify(file, ":t:r")
+		-- 	end)
+		-- 	:totable()
+		-- vim.lsp.enable(servers)
 	end,
 })
 

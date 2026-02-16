@@ -12,13 +12,6 @@ vim.g.autoformat = false
 -- * a function with signature `function(buf) -> string|string[]`
 vim.g.root_spec = { "lsp", { ".git", "lua" }, "cwd" }
 
--- LazyVim automatically configures lazygit:
---  * theme, based on the active colorscheme.
---  * editorPreset to nvim-remote
---  * enables nerd font icons
--- Set to false to disable.
-vim.g.lazygit_config = false
-
 -- Setup the terminal to use * pwsh, * powershell
 -- vim.opt.shell("pwsh")
 

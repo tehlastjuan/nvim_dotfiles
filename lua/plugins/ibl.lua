@@ -1,3 +1,5 @@
+local icons = require("icons").misc
+
 return {
 
 	-- indent guides for Neovim
@@ -7,41 +9,36 @@ return {
 		opts = function()
 			return {
 				indent = {
-					char = "┆",
-					tab_char = "╎",
+					char = icons.vbar_half,
 					smart_indent_cap = false,
 				},
 				whitespace = {
-					remove_blankline_trail = true,
+					remove_blankline_trail = false,
 					highlight = { "Function" },
 				},
 				scope = {
 					enabled = true,
-					char = "│",
-					show_start = true,
+					char = icons.vbar_solid,
+					show_start = false,
 					show_end = false,
 				},
 				exclude = {
 					filetypes = {
-						"alpha",
-						"checkhealth",
-						"dashboard",
+						--"checkhealth",
 						"git",
 						"gitcommit",
 						"help",
 						"lazy",
-						"lazyterm",
 						"lspinfo",
 						"man",
 						"mason",
-						"neo-tree",
 						"notify",
 						"Outline",
 						"TelescopePrompt",
 						"TelescopeResults",
 						"terminal",
 						"toggleterm",
-						"Trouble",
+						--"Trouble",
 					},
 				},
 			}

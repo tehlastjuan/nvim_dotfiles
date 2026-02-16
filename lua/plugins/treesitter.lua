@@ -36,24 +36,12 @@ return {
 		},
 		version = false, -- last release is way too old and doesn't work on Windows
 		build = ":TSUpdate",
-		--event = { "BufReadPre", "BufNewFile" },
-		--lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
-    cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
-		keys = {
-			{ "<c-space>", desc = "Increment Selection" },
-			{ "<bs>", desc = "Decrement Selection", mode = "x" },
-		},
-		opts_extend = { "ensure_installed" },
-		---@type TSConfig
-		---@diagnostic disable-next-line: missing-fields
 		opts = {
-			highlight = { enable = true },
-			indent = { enable = false },
 			ensure_installed = {
 				"bash",
 				"c",
 				"c_sharp",
-        "cmake",
+				"cmake",
 				"css",
 				"diff",
 				"dockerfile",
@@ -76,6 +64,7 @@ return {
 				"regex",
 				"rust",
 				"scss",
+				"sh",
 				"sql",
 				"toml",
 				"tsx",
@@ -87,14 +76,19 @@ return {
 				"xml",
 				"yaml",
 			},
+			highlight = { enable = true },
 			incremental_selection = {
 				enable = true,
 				keymaps = {
-					init_selection = "<C-space>",
-					node_incremental = "<C-space>",
+					init_selection = "<cr>",
+					node_incremental = "<cr>",
 					scope_incremental = false,
 					node_decremental = "<bs>",
 				},
+			},
+			indent = {
+				enable = true,
+				disable = { "yaml" },
 			},
 		},
 		config = function(_, opts)
@@ -111,19 +105,9 @@ return {
 				command = "TSBufEnable incremental_selection",
 			})
 
-			require("nvim-treesitter.configs").setup(opts)
+			-- require("nvim-treesitter.configs").setup(opts)
 		end,
 	},
-
-	--{
-	--	"folke/which-key.nvim",
-	--	opts = {
-	--		spec = {
-	--			{ "<BS>", desc = "Decrement Selection", mode = "x" },
-	--			{ "<c-space>", desc = "Increment Selection", mode = { "x", "n" } },
-	--		},
-	--	},
-	--},
 
 	-- Automatically add closing tags for HTML and JSX
 	{

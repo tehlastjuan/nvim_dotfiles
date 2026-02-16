@@ -69,48 +69,48 @@ local cfg = {
 }
 
 local colors = {
-	black            = "#151820",
-	bg               = "#1e222a",
-	bg0              = "#242b38",
-	bg1              = "#2d3343",
-	bg2              = "#343e4f",
-	bg3              = "#363c51",
-	grey             = "#546178",
-	light_grey       = "#7d899f",
-	fg               = "#a5b0c5",
+	black = "#151820",
+	bg = "#1e222a",
+	bg0 = "#242b38",
+	bg1 = "#2d3343",
+	bg2 = "#343e4f",
+	bg3 = "#363c51",
+	grey = "#546178",
+	light_grey = "#7d899f",
+	fg = "#a5b0c5",
 	-- cyan
-	bright_cyan      = "#7adcd7",
-	cyan             = "#4dbdcb",
-	dark_cyan        = "#25747d",
+	bright_cyan = "#7adcd7",
+	cyan = "#4dbdcb",
+	dark_cyan = "#25747d",
 	-- green
-	green            = "#98c379",
-	bright_green     = "#ace98e",
-	dark_green       = "#303d27",
+	green = "#98c379",
+	bright_green = "#ace98e",
+	dark_green = "#303d27",
 	-- blue
-	bright_blue      = "#73ccfe",
-	blue             = "#61afef",
-	dark_blue        = "#265478",
+	bright_blue = "#73ccfe",
+	blue = "#61afef",
+	dark_blue = "#265478",
 	transparent_blue = "#19272C",
 	-- magenta
-	bright_purple    = "#da9ef2",
-	purple           = "#ca72e4",
-	dark_purple      = "#8f36a9",
+	bright_purple = "#da9ef2",
+	purple = "#ca72e4",
+	dark_purple = "#8f36a9",
 	--orange
-	orange           = "#d99a5e",
+	orange = "#d99a5e",
 	-- red
-	bright_red       = "#e06c75",
-	red              = "#be5046",
-	dark_red         = "#3c2729",
+	bright_red = "#e06c75",
+	red = "#be5046",
+	dark_red = "#3c2729",
 	-- yellow
-	bright_yellow    = "#f0d197",
-	yellow           = "#ebc275",
-	dark_yellow      = "#9a6b16",
+	bright_yellow = "#f0d197",
+	yellow = "#ebc275",
+	dark_yellow = "#9a6b16",
 }
 
 local statusline = {
-  fg = colors.fg,
-  bg = colors.bg0,
-  nc = colors.bg,
+	fg = colors.fg,
+	bg = colors.bg0,
+	nc = colors.bg,
 }
 
 -- Terminal colors.
@@ -151,32 +151,32 @@ local hl = {
 }
 
 for mode, color in pairs({
-	Normal  = "green",
+	Normal = "green",
 	Pending = "yellow",
-	Visual  = "purple",
-	Insert  = "blue",
+	Visual = "purple",
+	Insert = "blue",
 	Command = "blue",
-	Other   = "orange",
+	Other = "orange",
 }) do
 	hl.statusline["StatuslineMode" .. mode] = { fg = colors.bg, bg = colors[color] }
 	hl.statusline["StatuslineSep" .. mode] = { fg = colors[color], bg = statusline.bg }
 end
 
 hl.statusline = vim.tbl_extend("error", hl.statusline, {
-	StatuslineRegular   = { fg = colors.fg, bg = statusline.bg },
-	StatuslineItalic    = { fg = colors.fg, bg = statusline.bg, fmt = "italic" },
-	StatuslineBold      = { fg = colors.fg, bg = statusline.bg, fmt = "bold" },
-	StatuslineSpinner   = { fg = colors.bright_green, bg = statusline.bg, fmt = "bold" },
-	StatuslineHostname  = { fg = colors.blue, bg = statusline.bg, fmt = "bold" },
-	StatuslineBranch    = { fg = colors.orange, bg = statusline.bg, fmt = "bold" },
-	StatuslineDir       = { fg = colors.fg, bg = statusline.bg },
-	StatuslineGitAdd    = { fg = colors.bright_green, bg = statusline.bg },
-	StatuslineGitMod    = { fg = colors.bright_blue, bg = statusline.bg },
-	StatuslineGitRem    = { fg = colors.bright_red, bg = statusline.bg },
-	StatuslineFileMod   = { fg = colors.red, bg = statusline.bg },
+	StatuslineRegular = { fg = colors.fg, bg = statusline.bg },
+	StatuslineItalic = { fg = colors.fg, bg = statusline.bg, fmt = "italic" },
+	StatuslineBold = { fg = colors.fg, bg = statusline.bg, fmt = "bold" },
+	StatuslineSpinner = { fg = colors.bright_green, bg = statusline.bg, fmt = "bold" },
+	StatuslineHostname = { fg = colors.blue, bg = statusline.bg, fmt = "bold" },
+	StatuslineBranch = { fg = colors.orange, bg = statusline.bg, fmt = "bold" },
+	StatuslineDir = { fg = colors.fg, bg = statusline.bg },
+	StatuslineGitAdd = { fg = colors.bright_green, bg = statusline.bg },
+	StatuslineGitMod = { fg = colors.bright_blue, bg = statusline.bg },
+	StatuslineGitRem = { fg = colors.bright_red, bg = statusline.bg },
+	StatuslineFileMod = { fg = colors.red, bg = statusline.bg },
 	StatuslineFileUnMod = { fg = statusline.bg, bg = statusline.bg },
-	StatuslineCols      = { fg = colors.blue, bg = statusline.bg },
-	StatuslineLines     = { fg = colors.fg, bg = statusline.bg },
+	StatuslineCols = { fg = colors.blue, bg = statusline.bg },
+	StatuslineLines = { fg = colors.fg, bg = statusline.bg },
 })
 
 hl.common = {
@@ -242,7 +242,7 @@ hl.common = {
 	Visual = { bg = colors.bg3 },
 	VisualNOS = { fg = colors.none, bg = colors.bg2, fmt = "underline" },
 	WarningMsg = { fg = colors.yellow, fmt = "bold" },
-	Whitespace = { fg = colors.bg1 },
+	Whitespace = { fg = colors.bg2 },
 	WildMenu = { fg = colors.bg, bg = colors.blue },
 	WinSeparator = { fg = colors.bg3 },
 	WinBar = { fg = colors.light_grey, bg = colors.bg, fmt = "none" },
@@ -458,7 +458,10 @@ hl.plugins.lsp = {
 		fg = diagnostics_hint_color,
 	},
 
-	DiagnosticUnderlineError = { fmt = cfg.diagnostics.undercurl and "undercurl" or "underline", sp = colors.bright_red },
+	DiagnosticUnderlineError = {
+		fmt = cfg.diagnostics.undercurl and "undercurl" or "underline",
+		sp = colors.bright_red,
+	},
 	DiagnosticUnderlineHint = { fmt = cfg.diagnostics.undercurl and "undercurl" or "underline", sp = colors.purple },
 	DiagnosticUnderlineInfo = { fmt = cfg.diagnostics.undercurl and "undercurl" or "underline", sp = colors.blue },
 	DiagnosticUnderlineWarn = { fmt = cfg.diagnostics.undercurl and "undercurl" or "underline", sp = colors.yellow },
@@ -770,14 +773,15 @@ hl.plugins.indent_blankline = {
 	IndentBlanklineIndent5 = { fg = colors.purple },
 	IndentBlanklineIndent6 = { fg = colors.red },
 	IndentBlanklineChar = { fg = colors.bg1, fmt = "nocombine" },
-	IndentBlanklineContextChar = { fg = colors.grey, fmt = "nocombine" },
+	IndentBlanklineContextChar = { fg = colors.grey, fmt = "underline" },
 	IndentBlanklineContextStart = { sp = colors.grey, fmt = "underline" },
-	IndentBlanklineContextSpaceChar = { fmt = "nocombine" },
+	IndentBlanklineContextSpaceChar = { colors.grey, fmt = "underline" },
 
 	-- Ibl v3
 	IblIndent = { fg = colors.bg1, fmt = "nocombine" },
-	IblWhitespace = { fg = colors.grey, fmt = "nocombine" },
+	IblWhitespace = { fg = colors.bg2, fmt = "nocombine" },
 	IblScope = { fg = colors.grey, fmt = "nocombine" },
+	IblUnderline = { fg = colors.bg2, fmt = "underline" },
 }
 
 hl.plugins.mini = {
@@ -930,7 +934,7 @@ hl.plugins.trouble = {
 hl.plugins.misc = {
 	--BufferLineOffsetSeparator = { fg = colors.bg3, bg = colors.bg },
 	LazyNormal = { bg = colors.bg0 },
-  LazyProp = { fg = colors.light_grey, bg = colors.bg0 },
+	LazyProp = { fg = colors.light_grey, bg = colors.bg0 },
 	MasonNormal = { bg = colors.bg0 },
 	SnippetTabstop = { bg = colors.bg },
 	TelescopePromptNormal = { bg = colors.bg0 },
